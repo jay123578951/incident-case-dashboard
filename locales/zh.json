@@ -1,0 +1,23 @@
+{
+  "app": {
+    "name": "水源救援系統",
+    "description": "水源救援系統 - 實時監控和管理水源狀況"
+  },
+  "common": {
+    "loading": "加載中...",
+    "error": "發生錯誤",
+    "success": "操作成功",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "刪除",
+    "edit": "編輯",
+    "add": "添加",
+    "search": "搜索"
+  },
+  "navigation": {
+    "dashboard": "儀表板",
+    "map": "地圖",
+    "reports": "報告",
+    "settings": "設置"
+  }
+}
