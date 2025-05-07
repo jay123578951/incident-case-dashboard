@@ -1,48 +1,40 @@
 <template>
-  <v-app-bar flat app color="white" dark class="border-b px-4">
-    <template v-slot:prepend>
-      <v-img
-        :width="32"
-        :height="32"
-        src="/images/logo.svg"
-        class="mr-2"
-      ></v-img>
-    </template>
-    <v-toolbar-title class="ms-0">
-      <span class="text-2xl font-bold tracking-[0.15px]"
-        >智慧救災水源管理系統</span
-      >
-    </v-toolbar-title>
-    <v-btn
-      icon
-      density="compact"
-      class="d-flex"
-      style="height: 32px !important"
-    >
-      <v-badge :content="6" color="danger-8">
-        <svg
-          width="28"
-          height="28"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M12.003 20C13.0962 20 13.9709 19.125 13.9709 18H10.0038C10.0038 19.125 10.8784 20 12.003 20ZM18.7189 15.3438C18.1254 14.6875 16.9696 13.7188 16.9696 10.5C16.9696 8.09375 15.2828 6.15625 12.9713 5.65625V5C12.9713 4.46875 12.534 4 12.003 4C11.4407 4 11.0034 4.46875 11.0034 5V5.65625C8.69186 6.15625 7.00507 8.09375 7.00507 10.5C7.00507 13.7188 5.84931 14.6875 5.25581 15.3438C5.06839 15.5312 4.97468 15.7812 5.00592 16C5.00592 16.5312 5.38076 17 6.0055 17H17.9692C18.5939 17 18.9688 16.5312 19 16C19 15.7812 18.9063 15.5312 18.7189 15.3438Z"
-            fill="#3A3B45"
-          />
-        </svg>
-      </v-badge>
-    </v-btn>
-    <p class="px-4">管理者 張OO</p>
-    <v-btn
-      variant="flat"
-      color="gray-3"
-      class="!text-gray-600"
-      style="padding: 0.5rem 1rem !important"
-      >登出</v-btn
-    >
-  </v-app-bar>
+<header class="bg-white">
+  <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+    <div class="hidden lg:flex lg:gap-x-12">
+      <a href="#" class="text-sm/6 font-semibold text-gray-900">Features</a>
+      <a href="#" class="text-sm/6 font-semibold text-gray-900">Marketplace</a>
+      <a href="#" class="text-sm/6 font-semibold text-gray-900">Company</a>
+    </div>
+  </nav>
+  <div class="lg:hidden" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 z-10"></div>
+    <div class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+      <div class="flex items-center justify-between">
+        <a href="#" class="-m-1.5 p-1.5">
+          <span class="sr-only">Your Company</span>
+          <img class="h-8 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="">
+        </a>
+        <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
+          <span class="sr-only">Close menu</span>
+          <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="mt-6 flow-root">
+        <div class="-my-6 divide-y divide-gray-500/10">
+          <div class="space-y-2 py-6">
+            <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Features</a>
+            <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Marketplace</a>
+            <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Company</a>
+          </div>
+          <div class="py-6">
+            <a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log in</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
 </template>
-
-<script setup></script>

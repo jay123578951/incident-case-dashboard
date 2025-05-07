@@ -2,7 +2,6 @@
   <BaseChart
     :options="chartOptions"
     :height="height"
-    :showBackground="showBackground"
   />
 </template>
 
@@ -15,15 +14,16 @@ const props = defineProps({
   series: Array,
   yAxisTitle: String,
   height: String,
+  spacing: { type: Number, default: 30 },
   showBackground: { type: Boolean, default: true }
 });
 
 const chartOptions = computed(() => ({
   chart: {
-    type: 'column',
+    type: 'pie',
     animation: true,
     backgroundColor: props.showBackground ? 'white' : 'transparent',
-    spacing: 30
+    spacing: props.spacing,
   },
   title: { 
     text: props.title, 
@@ -33,14 +33,21 @@ const chartOptions = computed(() => ({
     },
     margin: 20,
   },
-  xAxis: { categories: props.categories },
-  yAxis: { title: { text: props.yAxisTitle } },
   plotOptions: {
     series: { animation: { duration: 500 } },
-    column: {
+    pie: {
+      allowPointSelect: true,
+      borderWidth: 1,
+      cursor: 'pointer',
       dataLabels: {
-        enabled: false
-      }
+        enabled: true,
+        format: '<b>{point.name}</b><br>{point.percentage:.2f}%',
+        distance: 46,
+        style: {
+          color: '#51596B'
+        }
+      },
+      showInLegend: true
     }
   },
   series: props.series,
@@ -48,4 +55,4 @@ const chartOptions = computed(() => ({
     enabled: false
   }
 }));
-</script>
+</script> 

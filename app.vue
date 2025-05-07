@@ -1,15 +1,13 @@
 <template>
   <v-app>
     <Header />
-    <Navigation v-model="drawer" />
+    <!-- <Navigation v-model="drawer" /> -->
 
     <v-main>
-      <Breadcrumbs />
-      <v-container fluid class="min-h-[calc(100vh-64px-65px-44px)]">
-        <NuxtPage />
-      </v-container>
-      <Footer />
+      <NuxtLayout />
     </v-main>
+
+    <Footer />
   </v-app>
 </template>
 

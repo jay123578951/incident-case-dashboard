@@ -1,16 +1,16 @@
 <template>
-  <div class="bg-white p-4">
-    <div ref="chartRef" class="w-full"></div>
-  </div>
-
-  <div class="relative p-4">
+  <div class="relative">
     <div
       v-if="loading"
-      class="absolute inset-0 z-10 flex items-center justify-center bg-white bg-opacity-70"
+      class="absolute inset-0 z-10 flex items-center justify-center"
     >
       <span class="text-gray-600">Loading chart...</span>
     </div>
-    <div ref="chartRef" class="h-96 w-full"></div>
+    <div
+      ref="chartRef"
+      class="w-full"
+      :style="{ height: props.height }"
+    ></div>
   </div>
 </template>
 
@@ -18,7 +18,9 @@
 import Highcharts from 'highcharts';
 
 const props = defineProps({
-  options: { type: Object, required: true }
+  options: { type: Object, required: true },
+  height: { type: String, default: '24rem' },
+  showLoadingBackground: { type: Boolean, default: true }
 });
 
 const chartRef = ref(null);

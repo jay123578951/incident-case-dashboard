@@ -82,7 +82,7 @@
     <v-dialog v-model="isModalOpen" width="850" min-height="600">
       <v-card>
         <v-card-title
-          class="d-flex justify-space-between align-center border-b border-gray-200 px-4 py-2"
+          class="d-flex justify-space-between items-center border-b border-gray-200 px-4 py-2"
         >
           <span>消防栓位置</span>
           <v-btn

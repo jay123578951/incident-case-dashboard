@@ -3,11 +3,19 @@ import fireHydrant from './assets/fireHydrant/fire-hydrant';
 import aboveGroundUnused from './assets/fireHydrant/above-ground-unused';
 import underGroundUnused from './assets/fireHydrant/under-ground-unused';
 
+import folder from './assets/dashboard/folder';
+import icTrendingDown from './assets/dashboard/ic-trending_down';
+import icTrendingUp from './assets/dashboard/ic-trending_up';
+
 // 所有 icon 名與 SVG 對應
 const svgContents = {
   'fire-hydrant': fireHydrant,
   'above-ground-unused': aboveGroundUnused,
-  'under-ground-unused': underGroundUnused
+  'under-ground-unused': underGroundUnused,
+
+  'folder': folder,
+  'ic-trending_down': icTrendingDown,
+  'ic-trending_up': icTrendingUp,
 };
 
 // 產生每個 icon 的 Vue component
