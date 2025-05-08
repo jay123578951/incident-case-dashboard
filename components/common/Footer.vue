@@ -1,5 +1,5 @@
 <template>
-  <v-footer color="gray-11" class="justify-center py-3 text-sm">
-    Copyright © 2023 桃園市政府消防局. All rights reserved.
+  <v-footer color="#7C8494" class="justify-center py-3 text-sm">
+    Copyright © 2025 內政部消防署. All rights reserved.
   </v-footer>
 </template>

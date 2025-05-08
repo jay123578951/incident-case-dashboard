@@ -22,8 +22,11 @@
               <p class="text-[#666D80] text-xl font-medium mb-4">{{ item.title }}</p>
               <p class="text-[40px] leading-10 font-bold">{{ item.value }}</p>
             </div>
-            <div class="p-3.5 bg-[#DAF5FE] rounded-[20px]">
-              <v-icon :icon="item.icon" size="32"></v-icon>
+            <div
+              class="p-3.5 rounded-[20px]"
+              :style="{ backgroundColor: item.bgColor }"
+            >
+              <v-icon :icon="item.icon" size="32" :color="item.iconColor" opacity="0.4" viewBox="0 0 32 32"></v-icon>
             </div>
           </div>
           <div class="text-lg text-[#666D80]">
@@ -63,50 +66,50 @@ const selectedYear = computed(() => selectedDate.value.year)
 const years = ref(['114', '113'])
 const months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
 
+const uiConfigs = [
+  { icon: 'custom:folder', cols: '3', iconColor: '#317E99', bgColor: '#DAF5FE' },
+  { icon: 'custom:car', cols: '3', iconColor: '#705800', bgColor: '#FEEFB7' },
+  { icon: 'custom:people', cols: '2', iconColor: '#2C9481', bgColor: '#C4F5EB' },
+  { icon: 'custom:death', cols: '2', iconColor: '#483EAD', bgColor: '#EAE8FF' },
+  { icon: 'custom:person', cols: '2', iconColor: '#51596B', bgColor: '#E9ECF2' }
+];
+
 const rawData = ref([
   {
     title: '年度案件數量 (件)',
     value: '95',
     lastYearValue: '664',
-    icon: 'custom:folder',
-    cols: '3',
   },
   {
     title: '年度案件數量 (件)',
     value: '95',
     lastYearValue: '664',
-    icon: 'custom:folder',
-    cols: '3',
   },
   {
     title: '年度案件數量 (件)',
     value: '95',
     lastYearValue: '664',
-    icon: 'custom:folder',
-    cols: '2',
   },
   {
     title: '年度案件數量 (件)',
     value: '95',
     lastYearValue: '664',
-    icon: 'custom:folder',
-    cols: '2',
   },
   {
     title: '年度案件數量 (件)',
     value: '95',
     lastYearValue: '664',
-    icon: 'custom:folder',
-    cols: '2',
   },
 ])
 
 // 處理數據，計算差異和格式化
 const processedData = computed(() => {
-  return rawData.value.map(item => {
+  return rawData.value.map((item, index) => {
     const difference = calculateAnnualDifference(item.value, item.lastYearValue);
+    const config = uiConfigs[index] || {};
     return {
       ...item,
+      ...config,
       formattedDifference: `${difference.sign} ${difference.value}`,
       percentage: calculateAnnualPercentage(item.value, item.lastYearValue)
     };

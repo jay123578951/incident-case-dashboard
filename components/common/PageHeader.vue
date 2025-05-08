@@ -16,6 +16,7 @@
         @update:model-value="handleYearChange"
       ></v-select>
       <v-select
+        v-if="showMonth"
         v-model="selectedMonth"
         label="月份"
         :items="months"
@@ -45,6 +46,10 @@ const props = defineProps({
   modelValue: {
     type: Object,
     required: true
+  },
+  showMonth: {
+    type: Boolean,
+    default: true
   }
 })
 

@@ -1,5 +1,8 @@
 <template>
-  <div class="grid grid-cols-2 gap-4 rounded-xl">
+  <div
+    class="grid rounded-xl"
+    :class="rightColumn.length > 0 ? 'grid-cols-2 gap-4' : 'grid-cols-1'"
+  >
     <!-- 左欄 -->
     <div>
       <div class="flex bg-[#51596B] text-white text-lg font-semibold rounded-lg mb-2 px-3 py-2">
@@ -25,13 +28,14 @@
         >
           <div class="w-1/3 font-bold">{{ item.name }}</div>
           <div class="w-1/3 text-end">{{ item.cases }}</div>
-          <div class="w-1/3 text-end">{{ item.percent.toFixed(2) }}%</div>
+          <div v-if="item.percent" class="w-1/3 text-end">{{ item.percent.toFixed(2) }}%</div>
+          <div v-else class="w-1/3 text-end">{{ item.rescued }}</div>
         </li>
       </ul>
     </div>
 
     <!-- 右欄 -->
-    <div>
+    <div v-if="rightColumn.length > 0">
       <div class="flex bg-[#51596B] text-white text-lg font-semibold rounded-lg mb-2 px-3 py-2">
         <template v-for="(title, index) in listTitle" :key="index">
           <div
@@ -55,7 +59,8 @@
         >
           <div class="w-1/3 font-bold">{{ item.name }}</div>
           <div class="w-1/3 text-end">{{ item.cases }}</div>
-          <div class="w-1/3 text-end">{{ item.percent.toFixed(2) }}%</div>
+          <div v-if="item.percent" class="w-1/3 text-end">{{ item.percent.toFixed(2) }}%</div>
+          <div v-else class="w-1/3 text-end">{{ item.rescued }}</div>
         </li>
       </ul>
     </div>
@@ -70,7 +75,7 @@ const props = defineProps({
   },  
   rightColumn: {
     type: Array,
-    required: true
+    default: () => []
   },
   listTitle: {
     type: Array,

@@ -50,37 +50,31 @@ const selectedDate = ref({
 const selectedYear = computed(() => selectedDate.value.year)
 const selectedMonth = computed(() => selectedDate.value.month)
 
-const causeCategories = [
-  { name: '迷路', color: '#9E96FA' },
-  { name: '創傷', color: '#F288BE' },
-  { name: '墜谷', color: '#76DBC8' },
-  { name: '疾病', color: '#FCD547' },
-  { name: '高山症', color: '#ACEB6C' },
-  { name: '遲歸(失聯)', color: '#C596FA' },
-  { name: '疲勞', color: '#7DA9FA' },
-  { name: '天候惡劣', color: '#FA8390' },
-  { name: '動物昆蟲攻擊', color: '#62A0CC' },
-  { name: '落石', color: '#62A0CC' },
-  { name: '落雷', color: '#62A0CC' },
-  { name: '不明', color: '#5686CC' },
-  { name: '其他', color: '#7CA8E5' }
-];
-const ListTitle = ref(['原因', '案件數', '佔比%']);
+const ListTitle = ref(['原因', '案件數', '救援人數']);
 
-const reasonData = ref([
-  { name: '迷路', cases: 199, rescued: 250 },
-  { name: '創傷', cases: 101, rescued: 130 },
-  { name: '墜谷', cases: 51, rescued: 58 },
-  { name: '疾病', cases: 44, rescued: 50 },
-  { name: '高山症', cases: 23, rescued: 28 },
-  { name: '遲歸(失聯)', cases: 22, rescued: 24 },
-  { name: '疲勞', cases: 38, rescued: 40 },
-  { name: '天候惡劣', cases: 12, rescued: 20 },
-  { name: '動物昆蟲攻擊', cases: 7, rescued: 10 },
-  { name: '落石', cases: 3, rescued: 4 },
-  { name: '落雷', cases: 0, rescued: 0 },
-  { name: '不明', cases: 8, rescued: 9 },
-  { name: '其他', cases: 26, rescued: 30 }
+const reasonData = ref([ 
+  { name: '新北市', cases: 146, rescued: 250, level: 'high' },
+  { name: '台北市', cases: 101, rescued: 130, level: 'high' },
+  { name: '台中市', cases: 51, rescued: 58, level: 'high' },
+  { name: '台南市', cases: 44, rescued: 50, level: 'high' },
+  { name: '高雄市', cases: 23, rescued: 28, level: 'high' },
+  { name: '桃園市', cases: 22, rescued: 24, level: 'high' },
+  { name: '彰化縣', cases: 21, rescued: 23, level: 'high' },
+  { name: '雲林縣', cases: 19, rescued: 21, level: 'mid' },
+  { name: '苗栗縣', cases: 18, rescued: 20, level: 'mid' },
+  { name: '南投縣', cases: 17, rescued: 19, level: 'mid' },
+  { name: '嘉義縣', cases: 16, rescued: 18, level: 'mid' },
+  { name: '嘉義市', cases: 15, rescued: 17, level: 'mid' },
+  { name: '屏東縣', cases: 14, rescued: 16, level: 'low' }, 
+  { name: '宜蘭縣', cases: 13, rescued: 15, level: 'low' },
+  { name: '花蓮縣', cases: 12, rescued: 14, level: 'low' },
+  { name: '台東縣', cases: 11, rescued: 13, level: 'low' },
+  { name: '澎湖縣', cases: 10, rescued: 12, level: 'low' },
+  { name: '金門縣', cases: 9, rescued: 11, level: 'low' },
+  { name: '連江縣', cases: 8, rescued: 0, level: 'low' },
+  { name: '新竹縣', cases: 0, rescued: 0, level: 'none' },
+  { name: '新竹市', cases: 0, rescued: 0, level: 'none' },
+  { name: '基隆市', cases: 0, rescued: 0, level: 'none' },
 ]);
 
 const totalCases = computed(() => {
@@ -91,40 +85,11 @@ const totalRescued = computed(() => {
   return reasonData.value.reduce((sum, item) => sum + item.rescued, 0);
 });
 
-const top5Reasons = computed(() => {
-  return [...reasonData.value]
-    .sort((a, b) => b.cases - a.cases)
-    .slice(0, 5);
-});
+const sortedReasonData = computed(() =>
+  [...reasonData.value].sort((a, b) => b.cases - a.cases)
+);
 
-const mergedData = computed(() => {
-  const nameToItem = Object.fromEntries(reasonData.value.map(i => [i.name, i]));
-  const total = causeCategories.reduce((sum, cat) => sum + (nameToItem[cat.name]?.cases || 0), 0);
-
-  return causeCategories.map(cat => {
-    const item = nameToItem[cat.name] || {};
-    const cases = item.cases || 0;
-    return {
-      ...cat,
-      cases,
-      rescued: item.rescued || 0,
-      percent: total ? (cases / total) * 100 : 0,
-      ...(item.level !== undefined ? { level: item.level } : {})
-    };
-  });
-});
-
-const chartSeries = computed(() => [
-  {
-    colorByPoint: false,
-    data: mergedData.value.map(i => ({
-      name: i.name,
-      y: i.cases,
-      color: i.color
-    }))
-  }
-]);
-
-const leftColumn = computed(() => mergedData.value.slice(0, 9));
-const rightColumn = computed(() => mergedData.value.slice(9, 13));
+const mid = computed(() => Math.ceil(sortedReasonData.value.length / 2));
+const leftColumn = computed(() => sortedReasonData.value.slice(0, mid.value));
+const rightColumn = computed(() => sortedReasonData.value.slice(mid.value));
 </script>

@@ -1,40 +1,127 @@
 <template>
-<header class="bg-white">
-  <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
-    <div class="hidden lg:flex lg:gap-x-12">
-      <a href="#" class="text-sm/6 font-semibold text-gray-900">Features</a>
-      <a href="#" class="text-sm/6 font-semibold text-gray-900">Marketplace</a>
-      <a href="#" class="text-sm/6 font-semibold text-gray-900">Company</a>
-    </div>
-  </nav>
-  <div class="lg:hidden" role="dialog" aria-modal="true">
-    <div class="fixed inset-0 z-10"></div>
-    <div class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-      <div class="flex items-center justify-between">
-        <a href="#" class="-m-1.5 p-1.5">
-          <span class="sr-only">Your Company</span>
-          <img class="h-8 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="">
-        </a>
-        <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
-          <span class="sr-only">Close menu</span>
-          <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      <div class="mt-6 flow-root">
-        <div class="-my-6 divide-y divide-gray-500/10">
-          <div class="space-y-2 py-6">
-            <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Features</a>
-            <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Marketplace</a>
-            <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Company</a>
-          </div>
-          <div class="py-6">
-            <a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log in</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
+  <v-container class="sticky top-0 bg-white z-50" fluid>
+    <v-row ref="tabRowRef" justify="center" class="py-[22px] relative">
+      <v-btn
+        v-for="(item, index) in items"
+        :key="index"
+        variant="text"
+        size="x-large"
+        class="nav-tab-btn !text-2xl !font-bold mx-4 px-1 !rounded-none relative"
+        :class="{ '!text-[#020203]': activeTab === index, '!text-[#7C8494]': activeTab !== index }"
+        @click="() => { activeTab = index; goToSection(item.id) }"
+        ref="tabButtons"
+      >
+        {{ item.name }}
+      </v-btn>
+
+      <span
+        class="absolute bottom-2 h-[4px] bg-[#67C0E0] transition-all duration-300"
+        :style="sliderStyle"
+      ></span>
+    </v-row>
+  </v-container>
 </template>
+
+<script setup>
+import { useScrollStore } from '@/stores/scrollTarget';
+
+defineOptions({
+  inheritAttrs: true
+})
+
+const items = [
+  {
+    name: '年統計數據',
+    id: 'annual'
+  },
+  {
+    name: '月統計數據',
+    id: 'monthly'
+  },
+  {
+    name: '事故原因統計',
+    id: 'causes'
+  },
+  {
+    name: '各縣市數據統計',
+    id: 'cities'
+  },
+  {
+    name: '山域機關統計',
+    id: 'mountains'
+  }
+];
+
+const scrollStore = useScrollStore();
+
+const activeTab = ref(0);
+const tabButtons = ref([]);
+const sliderStyle = ref({ left: '0px', width: '0px' });
+let observer = null;
+
+const updateSlider = () => {
+  nextTick(() => {
+    const btn = tabButtons.value[activeTab.value]?.$el;
+    if (btn) {
+      const { offsetLeft, offsetWidth } = btn;
+      sliderStyle.value = {
+        left: `${offsetLeft}px`,
+        width: `${offsetWidth}px`
+      };
+    }
+  });
+};
+
+const goToSection = (id) => {
+  scrollStore.scrollTo(id);
+  activeTab.value = items.findIndex(item => item.id === id);
+  updateSlider();
+};
+
+const createObserver = () => {
+  const options = {
+    root: null,
+    rootMargin: '-50% 0px -50% 0px', // 中心點進入視窗就觸發
+    threshold: 0
+  };
+
+  observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        const index = items.findIndex(item => item.id === entry.target.id);
+        if (index !== -1) {
+          activeTab.value = index;
+          updateSlider();
+        }
+        break;
+      }
+    }
+  }, options);
+
+  items.forEach(item => {
+    const el = document.getElementById(item.id);
+    if (el) observer.observe(el);
+  });
+};
+
+onMounted(() => {
+  createObserver();
+  updateSlider();
+});
+
+onBeforeUnmount(() => {
+  if (observer) observer.disconnect();
+});
+</script>
+
+<style scoped>
+:deep(.custom-btn:hover .v-btn__overlay) {
+  background-color: transparent !important;
+  opacity: 0 !important;
+}
+
+:deep(.custom-btn:hover .v-btn__content) {
+  color: #020203 !important;
+  transition: color 500ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+</style>

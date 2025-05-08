@@ -1,56 +1,52 @@
 <template>
     <section>
       <IndexHero class="pt-7 pb-16" />
-    
-      <IndexAnnualStatistics class="pb-24"/>
-
-      <IndexMonthlyStatistics class="pb-24"/>
-
-      <IndexCauses class="pb-24"/>
-
-      <IndexCities class="pb-24"/>
+      <IndexAnnualStatistics ref="annual" id="annual" class="pb-24" />
+      <IndexMonthlyStatistics ref="monthly" id="monthly" class="pb-24" />
+      <IndexCauses ref="causes" id="causes" class="pb-24" />
+      <IndexCities ref="cities" id="cities" class="pb-24" />
+      <IndexMountainAgency ref="mountains" id="mountains" class="pb-9" />
     </section>
-  
-    <!-- <div class="flex gap-4"> -->
-      <!-- 折線圖 -->
-      <!-- <ClientOnly>
-        <div class="flex flex-col">
-          <div>
-            <DashboardLineChart
-              title="折線圖"
-              :categories="['一月', '二月', '三月']"
-              :series="[
-                { name: '2025 年', data: [100, 150, 200], color: '#ED8F30' }
-              ]"
-              :yAxisTitle="'數量（支）'"
-            />
-          </div>
-  
-          <div>
-            <DashboardBarChart
-              title="柱狀圖"
-              :categories="['一月', '二月', '三月']"
-              :series="[
-                {
-                  name: 'A',
-                  data: [3, 5, 10],
-                  color: '#C0F0FC'
-                },
-                {
-                  name: 'B',
-                  data: [14, 8, 15],
-                  color: '#7FDDF5'
-                }
-              ]"
-            />
-          </div>
-        </div>
-      </ClientOnly> -->
-    <!-- </div> -->
 </template>
 
 <script setup>
+import { useScrollStore } from '@/stores/scrollTarget';
+
 definePageMeta({
   title: '首頁'
 });
+
+const scrollStore = useScrollStore();
+
+const annual = ref(null);
+const monthly = ref(null);
+const causes = ref(null);
+const cities = ref(null);
+const mountains = ref(null);
+
+const refsMap = {
+  annual,
+  monthly,
+  causes,
+  cities,
+  mountains
+};
+
+watch(
+  () => scrollStore.target,
+  (newTarget) => {
+    if (newTarget && refsMap[newTarget]?.value?.$el) {
+      const el = refsMap[newTarget].value.$el;
+      const headerOffset = 100;
+      const top = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+
+      window.scrollTo({
+        top,
+        behavior: 'smooth'
+      });
+
+      scrollStore.clear();
+    }
+  }
+);
 </script>
