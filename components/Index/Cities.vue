@@ -1,7 +1,7 @@
 <template>
   <div v-bind="$attrs">
     <IndexCommonPageHeader
-      title="事故原因數據統計"
+      title="各縣市數據統計"
       v-model="selectedDate"
     />
 

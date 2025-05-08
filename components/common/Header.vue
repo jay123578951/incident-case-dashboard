@@ -43,7 +43,7 @@ const items = [
     id: 'causes'
   },
   {
-    name: '各縣市數據統計',
+    name: '縣市統計',
     id: 'cities'
   },
   {
