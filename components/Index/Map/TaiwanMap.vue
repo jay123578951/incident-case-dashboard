@@ -3,50 +3,39 @@
 </template>
 
 <script setup>
+import { useLeafletMap } from '@/composables/map/core/useLeafletMap';
 import { useCountyBoundaryLayer } from '@/composables/map/visual/useCountyBoundaryLayer';
 
 const props = defineProps({
   mpaData: {
     type: Array,
     required: true
+  },
+  options: {
+    type: Object,
+    default: () => ({})
   }
 });
 
 const emit = defineEmits(['select-county']);
 
 const mapContainer = ref(null);
-let map = ref(null);
 const mapInitialized = ref(false);
+const isLoadingGeoJSON = ref(false);
+const geojson = ref(null);
 
-const { loadCountyBoundaries, resetCountySelection, dataByCounty } = useCountyBoundaryLayer(map, emit);
+const { map, isMapReady, createMap } = useLeafletMap();
+const { loadCountyBoundaries, resetCountySelection, dataByCounty } = useCountyBoundaryLayer(map, emit, props.options);
 
 watch(
-  () => props.mpaData,
-  async (newVal) => {
-    if (newVal?.length && !mapInitialized.value) {
+  () => [isMapReady.value, props.mpaData, geojson.value],
+  async ([ready, mpa, geo]) => {
+    if (ready && mpa?.length && geo && !mapInitialized.value) {
       dataByCounty.value = Object.fromEntries(
-        newVal.map(item => [item.name, { value: item.cases, level: item.level }])
+        mpa.map(item => [item.name, { value: item.cases, level: item.level }])
       );
 
-      if (!map.value) {
-        const L = await import('leaflet');
-        map.value = L.map(mapContainer.value, {
-          center: [23.6, 121],
-          zoom: 7.8,
-          zoomControl: false,         // 禁用右上角的 + / - 控制鈕
-          scrollWheelZoom: false,     // 禁用滑鼠滾輪縮放
-          doubleClickZoom: false,     // 禁用雙擊放大
-          boxZoom: false,             // 禁用框選縮放
-          touchZoom: false,           // 禁用手勢縮放（手機）
-          attributionControl: false,  // 禁用地圖來源
-          zoomSnap: 0,
-          zoomDelta: 0.25,
-          maxBounds: [[20.5, 117.5], [26.5, 123.5]]
-        });
-        map.value.options.maxBoundsViscosity = 1.0;
-      }
-
-      await loadCountyBoundaries((name) => {
+      await loadCountyBoundaries(geo, (name) => {
         console.log('點選縣市：', name);
       });
 
@@ -56,7 +45,22 @@ watch(
   { immediate: true }
 );
 
+onMounted(async () => {
+  try {
+    isLoadingGeoJSON.value = true;
+    await createMap(mapContainer.value, { showTile: false });
+
+    const res = await fetch('/geoJSON/twCounty2010.geo.json');
+    geojson.value = await res.json();
+  } catch (err) {
+    console.error('載入台灣邊界失敗:', err);
+  } finally {
+    isLoadingGeoJSON.value = false;
+  }
+});
+
 defineExpose({
+  map,
   resetCountySelection
 });
 </script>

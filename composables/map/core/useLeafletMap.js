@@ -2,7 +2,7 @@ export function useLeafletMap() {
   const map = ref(null);
   const isMapReady = ref(false);
 
-  const createMap = async (elementId = 'map') => {
+  const createMap = async (elementId = 'map', options = {}) => {
     await nextTick();
 
     const L = await import('leaflet');
@@ -32,31 +32,36 @@ export function useLeafletMap() {
 
     // 建立 Leaflet 地圖實例
     const leafletMap = L.map(elementId, {
-      center: [24.5, 121],
-      zoom: 7.4,             // 支援小數 zoom（更細膩）
-      minZoom: 7,            // 可設定地圖可縮放最小級別
-      maxZoom: 18,
-      zoomControl: false,
-      zoomSnap: 0,           // 允許非整數 zoom（可視需求加）
-      zoomDelta: 0.25        // 缩放步長（配合自訂按鈕時好用）
+      center: [23.7, 121],
+      zoom: 7.8,
+      zoomControl: false,         // 禁用右上角的 + / - 控制鈕
+      scrollWheelZoom: false,     // 禁用滑鼠滾輪縮放
+      doubleClickZoom: false,     // 禁用雙擊放大
+      boxZoom: false,             // 禁用框選縮放
+      touchZoom: false,           // 禁用手勢縮放（手機）
+      attributionControl: false,  // 禁用地圖來源
+      zoomSnap: 0,
+      zoomDelta: 0.25,
+      // maxBounds: [[20.5, 117.5], [26.5, 123.5]]
     });
 
     // 記錄 map 實例於 container 上（避免重複建立）
     container._leaflet_map = leafletMap;
 
-    // 若你仍有使用底圖，可保留；否則可註解掉以下行
-    L.tileLayer(
-      // 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      { attribution: '&copy; OpenStreetMap contributors' }
-    ).addTo(leafletMap);
+    if (options.showTile !== false) {
+      L.tileLayer(
+        // 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        { attribution: '&copy; OpenStreetMap contributors' }
+      ).addTo(leafletMap);
+    }
 
     // 加入縮放控制按鈕（如需）
-    L.control.zoom({ position: 'bottomleft' }).addTo(leafletMap);
+    // L.control.zoom({ position: 'bottomleft' }).addTo(leafletMap);
 
     // 設定地圖最大可移動範圍（限制在台灣上下左右）
     leafletMap.setMaxBounds([
-      [22.0, 117.5],  // 南西界
+      [20.5, 117.5],  // 南西界
       [26.5, 123.5]   // 北東界
     ]);
     leafletMap.options.maxBoundsViscosity = 1.0; // 彈性邊界黏性（拖到邊界時會反彈）

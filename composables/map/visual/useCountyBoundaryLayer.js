@@ -6,7 +6,12 @@ import { ref } from 'vue';
  * @param {Function} emit - 給外部使用的 emit 方法
  * @returns Object 控制函式
  */
-export function useCountyBoundaryLayer(map, emit) {
+export function useCountyBoundaryLayer(map, emit, options = {}) {
+  const defaultColor = options.defaultBorderColor || '#666D80';
+  const fadedColor = options.fadedBorderColor || '#BCC2CC';
+  const enableHover = options.enableHover !== false;
+  const enableTooltip = options.enableTooltip !== false;
+
   const countyLayer = ref(null);
   const selectedCounty = ref(null);
   const dataByCounty = ref({}); // 可外部設值
@@ -46,10 +51,7 @@ export function useCountyBoundaryLayer(map, emit) {
   /**
    * 畫出台灣縣市邊界
    */
-  const loadCountyBoundaries = async (onCountyClick = () => {}) => {
-    const res = await fetch('/geoJSON/twCounty2010.geo.json');
-    const geojson = await res.json();
-
+  const loadCountyBoundaries = async (geojson, onCountyClick = () => {}) => {
     countyLayer.value = L.geoJSON(geojson, {
       style: feature => getFeatureStyle(feature),
       onEachFeature: (feature, layer) => {
@@ -57,19 +59,26 @@ export function useCountyBoundaryLayer(map, emit) {
         const countyData = dataByCounty.value[name];
         const value = countyData?.value ?? 0;
 
-        layer.bindTooltip(`${name}：${value} 件`, {
-          direction: 'top',
-          sticky: true,
-          offset: [0, -4],
-          opacity: 1,
-          className: 'county-tooltip'
-        });
+        if (enableTooltip) {
+          layer.bindTooltip(`${name}：${value} 件`, {
+            direction: 'top',
+            sticky: true,
+            offset: [0, -4],
+            opacity: 1,
+            className: 'county-tooltip'
+          });
+        }
 
-        layer.on({
-          click: () => handleCountyClick(feature, layer, onCountyClick),
-          mouseover: () => handleHover(layer),
-          mouseout: () => resetHover(layer, feature)
-        });
+        const handlers = {
+          click: () => handleCountyClick(feature, layer, onCountyClick)
+        };
+
+        if (enableHover) {
+          handlers.mouseover = () => handleHover(layer);
+          handlers.mouseout = () => resetHover(layer, feature);
+        }
+
+        layer.on(handlers);
       }
     });
 
@@ -90,9 +99,9 @@ export function useCountyBoundaryLayer(map, emit) {
       fillColor: isInitial || isSelected
         ? getPrimaryColorFromLevel(level)
         : getFadedColorFromLevel(level),
-      fillOpacity: isSelected || isInitial ? 0.8 : 0.3,
-      color: '#333',
-      weight: isSelected ? 3 : 1
+      fillOpacity: isInitial || isSelected ? 0.8 : 0.3,
+      weight: isSelected ? 2 : 1,
+      color: isInitial || isSelected ? defaultColor : fadedColor
     };
   };
 
@@ -101,10 +110,10 @@ export function useCountyBoundaryLayer(map, emit) {
    */
   const handleHover = (layer) => {
     layer.setStyle({
-      weight: 3,
-      color: '#000',
+      weight: 2,
+      color: defaultColor,
       dashArray: '',
-      fillOpacity: 0.9
+      fillOpacity: 1
     });
     layer.bringToFront();
   };
@@ -130,19 +139,6 @@ export function useCountyBoundaryLayer(map, emit) {
   };
 
   /**
-   * 重置選取狀態，回到初始狀態
-   */
-  const resetCountySelection = () => {
-    selectedCounty.value = null;
-
-    countyLayer.value.eachLayer(layer => {
-      const feature = layer.feature;
-      const style = getFeatureStyle(feature);
-      layer.setStyle(style);
-    });
-  };
-
-  /**
    * 將選中縣市高亮，其他變淺
    */
   const highlightSelectedCounty = () => {
@@ -157,17 +153,30 @@ export function useCountyBoundaryLayer(map, emit) {
         fillColor: isSelected
           ? getPrimaryColorFromLevel(level)
           : getFadedColorFromLevel(level),
-        weight: isSelected ? 3 : 1,
-        color: '#333'
+        weight: isSelected ? 2 : 1,
+        color: isSelected ? defaultColor : fadedColor
       });
+    });
+  };
+
+  /**
+   * 重置選取狀態，回到初始狀態
+   */
+  const resetCountySelection = () => {
+    selectedCounty.value = null;
+
+    countyLayer.value.eachLayer(layer => {
+      const feature = layer.feature;
+      const style = getFeatureStyle(feature);
+      layer.setStyle(style);
     });
   };
 
   return {
     loadCountyBoundaries,
-    resetCountySelection,
     dataByCounty,
     selectedCounty,
-    highlightSelectedCounty
+    highlightSelectedCounty,
+    resetCountySelection
   };
 }

@@ -7,8 +7,8 @@
 
     <section>
       <div class="w-full flex justify-between">
-        <div class="w-5/12">
-          <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow p-4 mb-10">
+        <div class="w-[44%]">
+          <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow p-4 mb-2">
             <li class="flex flex-col items-center justify-center pe-4">
               <p class="text-[28px] font-bold mb-1.5">{{ totalCases }}</p>
               <p class="text-lg text-[#666D80]">案件數量</p>
@@ -18,26 +18,72 @@
               <p class="text-lg text-[#666D80]">救援人數</p>
             </li>
           </ul>
-          <v-img
+          <!-- <v-img
             max-width="420"
             cover
             src="/images/index/taiwan-statistical-map2.png"
-          ></v-img>
+          ></v-img> -->
+          <div class="w-full h-[620px]">
+            <ClientOnly>
+              <IndexMapTaiwanMap
+                ref="mapRef"
+                :mpa-data="computedReasonData"
+                :options="mapOptions"
+                class="max-w-[420px]"
+                @select-county="selectedName = $event"
+              />
+              <!-- <IndexMapMountainRegionMap
+                ref="parkRef"
+                :map="map"
+                :geojson="nationalParkGeojson"
+                :park-data="parkStats"
+                @select-park="selectedPark = $event"
+              /> -->
+            </ClientOnly>
+          </div>
         </div>
-        <div class="w-5/12">
-          <h2 class="text-2xl font-bold mb-4">全國山域機關統計</h2>
-          <IndexCommonStatisticsList
-            :list-title="ListTitle"
-            :left-column="leftColumn"
-            :right-column="rightColumn"
-          />
-        </div>
+        <template v-if="!selectedName">
+          <div class="w-5/12">
+            <h2 class="text-2xl font-bold mb-4">全國山域機關統計</h2>
+            <IndexCommonStatisticsList
+              :list-title="ListTitle"
+              :left-column="leftColumn"
+              :right-column="rightColumn"
+              show-level-border
+            />
+          </div>
+        </template>
+        <template v-else>
+          <div class="w-[56%]">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-2xl font-bold">{{ selectedName }}數據統計</h2>
+              <v-btn
+                variant="text"
+                size="large"
+                prepend-icon="mdi-chevron-left"
+                class="!text-[#51596B] !py-1"
+                @click="resetMap()"
+              >
+                返回全國縣市
+              </v-btn>
+            </div>
+            <IndexCommonStatisticsList
+              :list-title="cityListTitle"
+              :left-column="cityLeftColumn"
+              :right-column="cityRightColumn"
+              mode="percent"
+              :loading="isCityLoading"
+            />
+          </div>
+        </template>
       </div>
     </section>
   </div>
 </template>
 
 <script setup>
+import responseData from '@/public/json/response-data.json';
+
 defineOptions({
   inheritAttrs: true
 })
@@ -46,31 +92,79 @@ const selectedDate = ref({
   year: '114',
   month: '1'
 })
-
 const selectedYear = computed(() => selectedDate.value.year)
 const selectedMonth = computed(() => selectedDate.value.month)
 
-const ListTitle = ref(['原因', '案件數', '救援人數']);
+const mapRef = ref(null);
+const selectedName = ref(null);
+const reasonData = ref(responseData.find(item => 'mountain-agency-statistics' in item)?.['mountain-agency-statistics']);
+const cityReasonData = ref();
+const isCityLoading = ref(false);
 
-const reasonData = ref([ 
-  { name: '玉山國家公園', cases: 64, rescued: 84, level: 'high' },
-  { name: '太魯閣國家公園', cases: 59, rescued: 82, level: 'high' },
-  { name: '雪霸國家公園', cases: 51, rescued: 64, level: 'mid' },
-  { name: '陽明山國家公園', cases: 35, rescued: 46, level: 'low' },
-]);
+const ListTitle = ref(['縣市', '案件數', '救援人數']);
+const cityListTitle = ref(['原因', '案件數', '佔比']);
 
-const totalCases = computed(() => {
-  return reasonData.value.reduce((sum, item) => sum + item.cases, 0);
+const mapOptions = ref({
+  defaultBorderColor: '#BCC2CC',
+  // fadedBorderColor: '#BCC2CC ',
+  enableHover: false,
+  enableTooltip: false
 });
 
-const totalRescued = computed(() => {
-  return reasonData.value.reduce((sum, item) => sum + item.rescued, 0);
-});
+// 計算總和
+const getStatSum = (list, key) => list.reduce((sum, item) => sum + item[key], 0);
 
-const sortedReasonData = computed(() =>
-  [...reasonData.value].sort((a, b) => b.cases - a.cases)
-);
+function enrichReasonData(data) {
+  const totalCases = data.reduce((sum, item) => sum + item.cases, 0);
+  const nonZeroData = data.filter(item => item.cases > 0);
+  const sorted = [...nonZeroData].sort((a, b) => b.cases - a.cases);
+
+  const total = sorted.length;
+  const highCutoff = Math.floor(total * 0.25);
+  const midCutoff = Math.floor(total * 0.5);
+
+  return data.map((item) => {
+    const base = { ...item, percent: totalCases ? (item.cases / totalCases) * 100 : 0 };
+
+    if (item.cases === 0) return { ...base, level: 'none' };
+
+    const index = sorted.findIndex(d => d.name === item.name);
+    if (index < highCutoff) return { ...base, level: 'high' };
+    if (index < midCutoff) return { ...base, level: 'mid' };
+    return { ...base, level: 'low' };
+  });
+}
+
+const computedReasonData = computed(() => enrichReasonData(reasonData.value));
+const computedCityReasonData = computed(() => enrichReasonData(cityReasonData.value || []));
+const activeReasonData = computed(() => selectedName.value ? computedCityReasonData.value : computedReasonData.value);
+
+const totalCases = computed(() => getStatSum(activeReasonData.value, 'cases'));
+const totalRescued = computed(() => getStatSum(activeReasonData.value, 'rescued'));
+
+const sortedReasonData = computed(() => [...activeReasonData.value].sort((a, b) => b.cases - a.cases));
 
 const leftColumn = computed(() => sortedReasonData.value);
 const rightColumn = computed(() => []);
+
+const cityLeftColumn = computed(() => computedCityReasonData.value.slice(0, 9));
+const cityRightColumn = computed(() => computedCityReasonData.value.slice(9, 13));
+
+watch(selectedName, async (name) => {
+  if (!name) return;
+  try {
+    isCityLoading.value = true;
+    await new Promise(resolve => setTimeout(resolve, 500));
+    cityReasonData.value = responseData.find(item => 'city-statistics' in item)?.['city-statistics'];
+  } catch (err) {
+    console.error('載入城市資料失敗', err);
+  } finally {
+    isCityLoading.value = false;
+  }
+});
+
+const resetMap = () => {
+  mapRef.value?.resetCountySelection();
+  selectedName.value = null;
+};
 </script>

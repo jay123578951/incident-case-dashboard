@@ -70,10 +70,7 @@ export const calculateWidthPercentages = (item) => {
     throw new Error('Invalid month values');
   }
 
-  // 找出最大值作為基準
   const maxValue = Math.max(thisMonth, lastMonth);
-  
-  // 計算百分比，最小保持 20% 的寬度，並四捨五入到整數
   const thisMonthPercentage = Math.round(Math.max(20, (thisMonth / maxValue) * 100));
   const lastMonthPercentage = Math.round(Math.max(20, (lastMonth / maxValue) * 100));
 
@@ -118,4 +115,24 @@ export const calculateAnnualPercentage = (currentValue, lastValue) => {
 
   if (last === 0) return 0;
   return Math.round((Math.abs(current - last) / last) * 100);
-}; 
+};
+
+/**
+ * 將原始統計資料加上 UI 設定與差異計算
+ * @param {Array} rawData - 原始資料
+ * @param {Array} configs - 對應的 UI config 陣列
+ * @returns {Array} 已加上樣式與差異資訊的資料陣列
+ */
+export const getProcessedStatCards = (rawData, configs = []) => {
+  return rawData.map((item, index) => {
+    const difference = calculateAnnualDifference(item.value, item.lastYearValue);
+    const config = configs[index] || {};
+    return {
+      ...item,
+      ...config,
+      sign: difference.sign,
+      formattedDifference: `${difference.sign} ${difference.value}`,
+      percentage: calculateAnnualPercentage(item.value, item.lastYearValue)
+    };
+  });
+};

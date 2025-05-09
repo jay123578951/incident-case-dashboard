@@ -128,17 +128,19 @@ const mergedData = computed(() => {
   const nameToItem = Object.fromEntries(reasonData.value.map(i => [i.name, i]));
   const total = causeCategories.reduce((sum, cat) => sum + (nameToItem[cat.name]?.cases || 0), 0);
 
-  return causeCategories.map(cat => {
-    const item = nameToItem[cat.name] || {};
-    const cases = item.cases || 0;
-    return {
-      ...cat,
-      cases,
-      rescued: item.rescued || 0,
-      percent: total ? (cases / total) * 100 : 0,
-      ...(item.level !== undefined ? { level: item.level } : {})
-    };
-  });
+  return causeCategories
+    .map(cat => {
+      const item = nameToItem[cat.name] || {};
+      const cases = item.cases || 0;
+      return {
+        ...cat,
+        cases,
+        rescued: item.rescued || 0,
+        percent: total ? (cases / total) * 100 : 0,
+        ...(item.level !== undefined ? { level: item.level } : {})
+      };
+    })
+    .sort((a, b) => b.cases - a.cases);
 });
 
 const chartSeries = computed(() => [

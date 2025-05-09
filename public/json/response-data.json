@@ -1,0 +1,62 @@
+[
+  {
+    "total-annual-statistics": [
+      { "title": "年度案件數量 (件)", "value": "95", "lastYearValue": "664" },
+      { "title": "年度救援人數", "value": "95", "lastYearValue": "664" },
+      { "title": "年度獲救人數", "value": "95", "lastYearValue": "664" },
+      { "title": "年度死亡人數", "value": "95", "lastYearValue": "664" },
+      { "title": "年度失蹤人數", "value": "95", "lastYearValue": "664" }
+    ]
+  },
+  {
+    "total-city-statistics": [
+      { "name": "新北市", "cases": 146, "rescued": 250 },
+      { "name": "台北市", "cases": 101, "rescued": 130 },
+      { "name": "台中市", "cases": 51, "rescued": 58 },
+      { "name": "台南市", "cases": 44, "rescued": 50 },
+      { "name": "高雄市", "cases": 23, "rescued": 28 },
+      { "name": "桃園市", "cases": 22, "rescued": 24 },
+      { "name": "彰化縣", "cases": 21, "rescued": 23 },
+      { "name": "雲林縣", "cases": 19, "rescued": 21 },
+      { "name": "苗栗縣", "cases": 18, "rescued": 20 },
+      { "name": "南投縣", "cases": 17, "rescued": 19 },
+      { "name": "嘉義縣", "cases": 16, "rescued": 18 },
+      { "name": "嘉義市", "cases": 15, "rescued": 17 },
+      { "name": "屏東縣", "cases": 14, "rescued": 16 }, 
+      { "name": "宜蘭縣", "cases": 13, "rescued": 15 },
+      { "name": "花蓮縣", "cases": 12, "rescued": 14 },
+      { "name": "台東縣", "cases": 11, "rescued": 13 },
+      { "name": "澎湖縣", "cases": 10, "rescued": 12 },
+      { "name": "金門縣", "cases": 9, "rescued": 11 },
+      { "name": "連江縣", "cases": 8, "rescued": 0 },
+      { "name": "新竹縣", "cases": 0, "rescued": 0 },
+      { "name": "新竹市", "cases": 0, "rescued": 0 },
+      { "name": "基隆市", "cases": 0, "rescued": 0 }
+    ]
+  },
+  {
+    "city-statistics": [
+      { "name": "迷路", "cases": 199, "rescued": 250 },
+      { "name": "創傷", "cases": 101, "rescued": 130 },
+      { "name": "墜谷", "cases": 51, "rescued": 58 },
+      { "name": "疾病", "cases": 44, "rescued": 50 },
+      { "name": "高山症", "cases": 23, "rescued": 28 },
+      { "name": "遲歸(失聯)", "cases": 22, "rescued": 24 },
+      { "name": "疲勞", "cases": 38, "rescued": 40 },
+      { "name": "天候惡劣", "cases": 12, "rescued": 20 },
+      { "name": "動物昆蟲攻擊", "cases": 7, "rescued": 10 },
+      { "name": "落石", "cases": 3, "rescued": 4 },
+      { "name": "落雷", "cases": 0, "rescued": 0 },
+      { "name": "不明", "cases": 8, "rescued": 9 },
+      { "name": "其他", "cases": 26, "rescued": 30 }
+    ]
+  },
+  {
+    "mountain-agency-statistics": [ 
+      { "name": "玉山國家公園", "cases": 64, "rescued": 84 },
+      { "name": "太魯閣國家公園", "cases": 59, "rescued": 82 },
+      { "name": "雪霸國家公園", "cases": 51, "rescued": 64 },
+      { "name": "陽明山國家公園", "cases": 35, "rescued": 46 }
+    ]
+  }
+]
