@@ -1,0 +1,80 @@
+[
+  {
+    "name": "迷路",
+    "cases": 185,
+    "rescued": 235,
+    "lastYearCases": 180
+  },
+  {
+    "name": "創傷",
+    "cases": 95,
+    "rescued": 125,
+    "lastYearCases": 95
+  },
+  {
+    "name": "墜谷",
+    "cases": 48,
+    "rescued": 55,
+    "lastYearCases": 60
+  },
+  {
+    "name": "疾病",
+    "cases": 42,
+    "rescued": 48,
+    "lastYearCases": 30
+  },
+  {
+    "name": "高山症",
+    "cases": 25,
+    "rescued": 30,
+    "lastYearCases": 15
+  },
+  {
+    "name": "遲歸(失聯)",
+    "cases": 20,
+    "rescued": 22,
+    "lastYearCases": 20
+  },
+  {
+    "name": "疲勞",
+    "cases": 35,
+    "rescued": 38,
+    "lastYearCases": 32
+  },
+  {
+    "name": "天候惡劣",
+    "cases": 15,
+    "rescued": 22,
+    "lastYearCases": 25
+  },
+  {
+    "name": "動物昆蟲攻擊",
+    "cases": 8,
+    "rescued": 12,
+    "lastYearCases": 6
+  },
+  {
+    "name": "落石",
+    "cases": 4,
+    "rescued": 5,
+    "lastYearCases": 5
+  },
+  {
+    "name": "落雷",
+    "cases": 1,
+    "rescued": 1,
+    "lastYearCases": 1
+  },
+  {
+    "name": "不明",
+    "cases": 9,
+    "rescued": 10,
+    "lastYearCases": 4
+  },
+  {
+    "name": "其他",
+    "cases": 28,
+    "rescued": 32,
+    "lastYearCases": 20
+  }
+]

@@ -57,7 +57,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const selectedYear = ref(props.modelValue.year)
 const selectedMonth = ref(props.modelValue.month)
-const years = ref(['114', '113'])
+const years = ref(['114', '113', '112'])
 const months = ref(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
 
 const handleYearChange = (value) => {

@@ -1,0 +1,13 @@
+{
+  "year": "113",
+  "month": "1",
+  "previousMonth": "12",
+  "statistics": [
+    { "type": "bar", "title": "案件數量", "thisMonth": 33, "lastMonth": 39 },
+    { "type": "bar", "title": "救援人數", "thisMonth": 26, "lastMonth": 34 },
+    { "type": "bar", "title": "獲救人數", "thisMonth": 24, "lastMonth": 31 },
+    { "type": "bar", "title": "死亡人數", "thisMonth": 1, "lastMonth": 2 },
+    { "type": "text", "title": "案件量最多縣市 (件)", "value": "花蓮縣", "thisMonth": 11, "lastMonth": 14 },
+    { "type": "text", "title": "案件量最多山域機關 (件)", "value": "玉山國家公園", "thisMonth": 7, "lastMonth": 9 }
+  ]
+}

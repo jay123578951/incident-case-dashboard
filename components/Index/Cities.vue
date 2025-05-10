@@ -6,7 +6,11 @@
     />
 
     <section>
-      <div class="w-full flex justify-between gap-x-6">
+      <div v-if="rawData.length === 0" class="text-center text-[#999]">
+        尚無統計資料
+      </div>
+
+      <div v-else class="w-full flex justify-between gap-x-6">
         <div class="w-[44%]">
           <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow p-4 mb-2">
             <li class="flex flex-col items-center justify-center pe-4">
@@ -68,32 +72,46 @@
 </template>
 
 <script setup>
-import responseData from '@/public/json/response-data.json';
+import {
+  getPreviousMonth
+} from '~/utils/statistics';
 
-defineOptions({
-  inheritAttrs: true
-})
+defineOptions({ inheritAttrs: true });
 
-const selectedDate = ref({
-  year: '114',
-  month: '1'
-})
-const selectedYear = computed(() => selectedDate.value.year)
-const selectedMonth = computed(() => selectedDate.value.month)
+const selectedDate = ref({ year: '114', month: '1' });
+const selectedYear = computed(() => selectedDate.value.year);
+const selectedMonth = computed(() => selectedDate.value.month);
+
+const rawData = ref([]);
+const isLoading = ref(false);
+
+const fetchMonthlyStats = async (year, month) => {
+  try {
+    isLoading.value = true;
+    const res = await fetch(`/json/total-cities/nationwide/${year}-${month}.json`);
+    const data = await res.json();
+    rawData.value = Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.error('載入各縣市數據統計失敗', err);
+    rawData.value = [];
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+watch([selectedYear, selectedMonth], ([y, m]) => {
+  fetchMonthlyStats(y, m);
+}, { immediate: true });
 
 const mapRef = ref(null);
 const selectedName = ref(null);
-const reasonData = ref(responseData.find(item => 'total-city-statistics' in item)?.['total-city-statistics']);
 const cityReasonData = ref();
 const isCityLoading = ref(false);
 
 const ListTitle = ref(['縣市', '案件數', '救援人數']);
 const cityListTitle = ref(['原因', '案件數', '佔比']);
 
-// 計算總和
-const getStatSum = (list, key) => list.reduce((sum, item) => sum + item[key], 0);
-
-function enrichReasonData(data) {
+const enrichNationwideReasonData = (data) => {
   const totalCases = data.reduce((sum, item) => sum + item.cases, 0);
   const nonZeroData = data.filter(item => item.cases > 0);
   const sorted = [...nonZeroData].sort((a, b) => b.cases - a.cases);
@@ -103,7 +121,10 @@ function enrichReasonData(data) {
   const midCutoff = Math.floor(total * 0.5);
 
   return data.map((item) => {
-    const base = { ...item, percent: totalCases ? (item.cases / totalCases) * 100 : 0 };
+    const base = {
+      ...item,
+      percent: totalCases ? (item.cases / totalCases) * 100 : 0
+    };
 
     if (item.cases === 0) return { ...base, level: 'none' };
 
@@ -112,14 +133,28 @@ function enrichReasonData(data) {
     if (index < midCutoff) return { ...base, level: 'mid' };
     return { ...base, level: 'low' };
   });
-}
+};
 
-const computedReasonData = computed(() => enrichReasonData(reasonData.value));
-const computedCityReasonData = computed(() => enrichReasonData(cityReasonData.value || []));
+const enrichCityReasonData = (data) => {
+  if (!Array.isArray(data) || data.length === 0) return [];
+
+  const totalCases = data.reduce((sum, item) => sum + item.cases, 0);
+  return data.map((item) => ({
+    ...item,
+    percent: totalCases ? (item.cases / totalCases) * 100 : 0,
+    previousMonth: getPreviousMonth(selectedMonth.value),
+  })).sort((a, b) => b.cases - a.cases);
+};
+
+const computedReasonData = computed(() => enrichNationwideReasonData(rawData.value));
+const computedCityReasonData = computed(() => {
+  if (!cityReasonData.value || cityReasonData.value.length === 0) return [];
+  return enrichCityReasonData(cityReasonData.value);
+});
 const activeReasonData = computed(() => selectedName.value ? computedCityReasonData.value : computedReasonData.value);
 
-const totalCases = computed(() => getStatSum(activeReasonData.value, 'cases'));
-const totalRescued = computed(() => getStatSum(activeReasonData.value, 'rescued'));
+const totalCases = computed(() => activeReasonData.value.reduce((sum, item) => sum + item.cases, 0));
+const totalRescued = computed(() => activeReasonData.value.reduce((sum, item) => sum + item.rescued, 0));
 
 const sortedReasonData = computed(() => [...activeReasonData.value].sort((a, b) => b.cases - a.cases));
 const mid = computed(() => Math.ceil(sortedReasonData.value.length / 2));
@@ -133,8 +168,9 @@ watch(selectedName, async (name) => {
   if (!name) return;
   try {
     isCityLoading.value = true;
-    await new Promise(resolve => setTimeout(resolve, 500));
-    cityReasonData.value = responseData.find(item => 'city-statistics' in item)?.['city-statistics'];
+    const res = await fetch(`/json/total-cities/city/${selectedYear.value}-${selectedMonth.value}/台北市.json`);
+    const data = await res.json();
+    cityReasonData.value = Array.isArray(data) ? data : [];
   } catch (err) {
     console.error('載入城市資料失敗', err);
   } finally {
@@ -147,4 +183,3 @@ const resetMap = () => {
   selectedName.value = null;
 };
 </script>
-

@@ -7,6 +7,9 @@
 
     <section>
       <ul class="grid grid-cols-2 gap-6">
+        <li v-if="processedData.length === 0" class="col-span-6 text-center text-[#999]">
+          尚無統計資料
+        </li>
         <li
           v-for="(item, index) of processedData"
           :key="index"
@@ -109,7 +112,7 @@ const fetchMonthlyStats = async (year, month) => {
     // rawData.value = data[year][month].statistics || [];
     rawData.value = data.statistics || [];
   } catch (err) {
-    console.error('載入月統計失敗', err);
+    console.error('載入事故原因數據統計失敗', err);
     rawData.value = [];
   } finally {
     isLoading.value = false;
