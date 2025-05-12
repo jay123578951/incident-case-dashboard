@@ -5,54 +5,38 @@
     {
       "title": "年度案件數量 (件)",
       "type": "cases",
-      "value": 95,
-      "lastYearValue": 664
+      "thisYear": 95,
+      "lastYear": 664
     },
     {
       "title": "年度救援人數",
       "type": "rescued",
-      "value": 80,
-      "lastYearValue": 720
+      "thisYear": 80,
+      "lastYear": 720
     },
     {
       "title": "年度獲救人數",
       "type": "rescued_safe",
-      "value": 75,
-      "lastYearValue": 700
+      "thisYear": 75,
+      "lastYear": 700
     },
     {
       "title": "年度死亡人數",
       "type": "death",
-      "value": 5,
-      "lastYearValue": 10
+      "thisYear": 5,
+      "lastYear": 10
     },
     {
       "title": "年度失蹤人數",
       "type": "missing",
-      "value": 3,
-      "lastYearValue": 5
+      "thisYear": 3,
+      "lastYear": 5
     }
   ],
   "monthlyBreakdown": {
     "cases": {
       "113": [3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55],
       "114": [14, 8, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
-    },
-    "rescued": {
-      "113": [2, 4, 8, 12, 18, 22, 26, 30, 34, 38, 42, 46],
-      "114": [12, 6, 14, 18, 23, 27, 32, 37, 42, 47, 52, 57]
-    },
-    "rescued_safe": {
-      "113": [1, 3, 6, 9, 12, 16, 20, 24, 28, 32, 36, 40],
-      "114": [8, 5, 10, 14, 19, 24, 29, 34, 39, 44, 49, 54]
-    },
-    "death": {
-      "113": [1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1],
-      "114": [0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1]
-    },
-    "missing": {
-      "113": [0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1],
-      "114": [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0]
     }
   }
 }

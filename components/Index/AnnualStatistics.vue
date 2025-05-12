@@ -34,7 +34,7 @@
             </div>
           </div>
           <div class="text-lg text-[#666D80]">
-            <p>與{{ stats?.previousYear }}年比較
+            <p>與{{ rawData?.previousYear }}年比較
               <span
                 v-if="item.formattedDifference"
                 class="px-2 text-lg"
@@ -65,11 +65,15 @@
 </template>
 
 <script setup>
-import { getProcessedStatCards } from '~/utils/statistics'
-
 defineOptions({
   inheritAttrs: true
 })
+
+import {
+  getComparisonSign,
+  getComparisonDifference,
+  getComparisonPercentage,
+} from '~/utils/statistics';
 
 const isLoading = ref(false);
 const fetchError = ref(null);
@@ -86,25 +90,22 @@ const statCardUIConfigs = [
   { icon: 'custom:person', cols: '2', iconColor: '#51596B', bgColor: '#E9ECF2' }
 ];
 
-const stats = ref(null);
-const processedData = computed(() =>
-  getProcessedStatCards(stats.value?.summary || [], statCardUIConfigs)
-);
-
+const rawData = ref(null);
 const selectedType = ref('cases');
+
 const chartSeries = computed(() => {
-  const breakdown = stats.value?.monthlyBreakdown?.[selectedType.value];
+  const breakdown = rawData.value?.monthlyBreakdown?.[selectedType.value];
   if (!breakdown) return [];
 
   return [
     {
-      name: stats.value.previousYear,
-      data: breakdown[stats.value.previousYear],
+      name: rawData.value.previousYear,
+      data: breakdown[rawData.value.previousYear],
       color: '#64D1BD'
     },
     {
-      name: stats.value.year,
-      data: breakdown[stats.value.year],
+      name: rawData.value.year,
+      data: breakdown[rawData.value.year],
       color: '#FFB433'
     }
   ];
@@ -113,11 +114,10 @@ const chartSeries = computed(() => {
 const fetchStats = async (year) => {
   try {
     isLoading.value = true;
-    // const res = await fetch(`/json/response-data.json?year=${year}`);
     const res = await fetch(`/json/total-annual-statistics/${year}.json`);
     const data = await res.json();
-    await new Promise(resolve => setTimeout(resolve, 500));
-    stats.value = data;
+
+    rawData.value = data;
   } catch (err) {
     fetchError.value = err;
     console.error('載入年度統計失敗:', err);
@@ -126,7 +126,24 @@ const fetchStats = async (year) => {
   }
 };
 
+const processedData = computed(() => {
+  const summary = rawData.value?.summary || [];
+
+  return summary.map((item, index) => {
+    const config = statCardUIConfigs[index] || {};
+
+    return {
+      ...item,
+      ...config,
+      sign: getComparisonSign(item.thisYear, item.lastYear),
+      formattedDifference: getComparisonDifference(item.thisYear, item.lastYear),
+      percentage: getComparisonPercentage(item.thisYear, item.lastYear)
+    };
+  });
+});
+
 watch(selectedYear, (year) => {
   fetchStats(year);
 }, { immediate: true });
+
 </script>

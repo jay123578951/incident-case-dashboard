@@ -1,0 +1,443 @@
+openapi: 3.0.0
+info:
+  title: 山域事故案件儀錶板 API
+  description: 提供各年度案件與人數統計資料
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/
+
+paths:
+  /stats/yearly-summary:
+    get:
+      summary: 年統計數據
+      description: 取得指定年度與前一年度的案件統計資料
+      parameters:
+        - in: query
+          name: year
+          required: true
+          schema:
+            type: string
+            example: "114"
+      responses:
+        '200':
+          description: 成功回傳年度總覽資料
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  year:
+                    type: string
+                    example: "114"
+                  previousYear:
+                    type: string
+                    example: "113"
+                  summary:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SummaryItem'
+                  monthlyBreakdown:
+                    type: object
+                    properties:
+                      cases:
+                        type: object
+                        properties:
+                          '113':
+                            type: array
+                            items:
+                              type: integer
+                            example: [3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
+                          '114':
+                            type: array
+                            items:
+                              type: integer
+                            example: [14, 8, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
+
+  /stats/monthly-detail:
+    get:
+      summary: 月統計數據
+      description: 取得指定月份與前一月份的詳細統計資料
+      parameters:
+        - in: query
+          name: year
+          required: true
+          schema:
+            type: string
+            example: "114"
+        - in: query
+          name: month
+          required: true
+          schema:
+            type: string
+            example: "1"
+      responses:
+        '200':
+          description: 成功回傳月份統計資料
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  year:
+                    type: string
+                    example: "114"
+                  month:
+                    type: string
+                    example: "1"
+                  previousMonth:
+                    type: string
+                    example: "12"
+                  statistics:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StatisticItem'
+
+  /stats/cause-reasons:
+    get:
+      summary: 事故原因數據統計年度
+      description: 回傳全國指定年月各類事故原因的案件數、救援數與去年同期案件數比較
+      parameters:
+        - in: query
+          name: year
+          required: true
+          schema:
+            type: string
+            example: "114"
+        - in: query
+          name: month
+          required: true
+          schema:
+            type: string
+            example: "1"
+      responses:
+        '200':
+          description: 成功回傳事故原因統計
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  year:
+                    type: string
+                    example: "114"
+                  month:
+                    type: string
+                    example: "1"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CauseReasonItemWithCompare'
+                example:
+                  year: "114"
+                  month: "1"
+                  data:
+                    - name: 迷路
+                      cases: 199
+                      rescued: 250
+                      lastYearCases: 180
+                    - name: 創傷
+                      cases: 101
+                      rescued: 130
+                      lastYearCases: 95
+                    - name: 墜谷
+                      cases: 51
+                      rescued: 58
+                      lastYearCases: 60
+
+  /stats/cities-summary:
+    get:
+      summary: 各縣市數據統計
+      description: 回傳指定年月下，各縣市的案件與救援總覽統計資料
+      parameters:
+        - in: query
+          name: year
+          required: true
+          schema:
+            type: string
+            example: "114"
+        - in: query
+          name: month
+          required: true
+          schema:
+            type: string
+            example: "1"
+      responses:
+        '200':
+          description: 成功回傳城市統計資料
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  year:
+                    type: string
+                    example: "114"
+                  month:
+                    type: string
+                    example: "1"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CityStatItem'
+                example:
+                  year: "114"
+                  month: "1"
+                  data:
+                    - name: 新北市
+                      cases: 146
+                      rescued: 250
+                    - name: 台北市
+                      cases: 101
+                      rescued: 130
+
+  /stats/city-reasons:
+    get:
+      summary: 指定縣市事故原因統計
+      description: 回傳特定年月、縣市中的事故原因統計資料
+      parameters:
+        - in: query
+          name: year
+          required: true
+          schema:
+            type: string
+            example: "114"
+        - in: query
+          name: month
+          required: true
+          schema:
+            type: string
+            example: "1"
+        - in: query
+          name: city
+          required: true
+          schema:
+            type: string
+            example: 新北市
+      responses:
+        '200':
+          description: 成功回傳城市內事故原因統計資料
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  year:
+                    type: string
+                    example: "114"
+                  month:
+                    type: string
+                    example: "1"
+                  city:
+                    type: string
+                    example: 新北市
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CauseReasonItemSimple'
+                example:
+                  year: "114"
+                  month: "1"
+                  city: 新北市
+                  data:
+                    - name: 迷路
+                      cases: 199
+                      rescued: 250
+                    - name: 創傷
+                      cases: 101
+                      rescued: 130
+
+  /stats/agency-summary:
+    get:
+      summary: 各山域機關數據統計
+      description: 回傳指定年月下，各縣市的案件與救援總覽統計資料
+      parameters:
+        - in: query
+          name: year
+          required: true
+          schema:
+            type: string
+            example: "114"
+        - in: query
+          name: month
+          required: true
+          schema:
+            type: string
+            example: "1"
+      responses:
+        '200':
+          description: 成功回傳城市統計資料
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  year:
+                    type: string
+                    example: "114"
+                  month:
+                    type: string
+                    example: "1"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CityStatItem'
+                example:
+                  year: "114"
+                  month: "1"
+                  data:
+                    - name: 新北市
+                      cases: 146
+                      rescued: 250
+                    - name: 台北市
+                      cases: 101
+                      rescued: 130
+
+  /stats/agency-reason-summary:
+    get:
+      summary: 指定縣市事故原因統計
+      description: 回傳特定年月、縣市中的事故原因統計資料
+      parameters:
+        - in: query
+          name: year
+          required: true
+          schema:
+            type: string
+            example: "114"
+        - in: query
+          name: month
+          required: true
+          schema:
+            type: string
+            example: "1"
+        - in: query
+          name: city
+          required: true
+          schema:
+            type: string
+            example: 新北市
+      responses:
+        '200':
+          description: 成功回傳城市內事故原因統計資料
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  year:
+                    type: string
+                    example: "114"
+                  month:
+                    type: string
+                    example: "1"
+                  city:
+                    type: string
+                    example: 新北市
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CauseReasonItemSimple'
+                example:
+                  year: "114"
+                  month: "1"
+                  city: 新北市
+                  data:
+                    - name: 迷路
+                      cases: 199
+                      rescued: 250
+                    - name: 創傷
+                      cases: 101
+                      rescued: 130
+
+components:
+  schemas:
+
+    SummaryItem:
+      type: object
+      description: 年度統計卡片項目（案件數、死亡數等）
+      properties:
+        title:
+          type: string
+          example: 年度案件數量 (件)
+        type:
+          type: string
+          enum: [cases, rescued, rescued_safe, death, missing]
+          example: cases
+        thisYear:
+          type: integer
+          example: 95
+        lastYear:
+          type: integer
+          example: 664
+      required: [title, type, thisYear, lastYear]
+
+    StatisticItem:
+      type: object
+      description: 單月詳細統計項目
+      properties:
+        type:
+          type: string
+          enum: [bar, text]
+          example: bar
+        title:
+          type: string
+          example: 案件數量
+        thisMonth:
+          type: integer
+          example: 46
+        lastMonth:
+          type: integer
+          example: 58
+        value:
+          type: string
+          nullable: true
+          example: 新北市
+      required: [type, title, thisMonth, lastMonth]
+
+    CauseReasonItemWithCompare:
+      type: object
+      description: 含去年同期比較的事故原因統計資料（全國）
+      properties:
+        name:
+          type: string
+          example: 迷路
+        cases:
+          type: integer
+          example: 199
+        rescued:
+          type: integer
+          example: 250
+        lastYearCases:
+          type: integer
+          example: 180
+      required: [name, cases, rescued, lastYearCases]
+
+    CauseReasonItemSimple:
+      type: object
+      description: 事故原因統計資料（不含去年欄位）
+      properties:
+        name:
+          type: string
+          example: 迷路
+        cases:
+          type: integer
+          example: 199
+        rescued:
+          type: integer
+          example: 250
+      required: [name, cases, rescued]
+
+    CityStatItem:
+      type: object
+      description: 縣市或機關統計資料
+      properties:
+        name:
+          type: string
+          example: 新北市
+        cases:
+          type: integer
+          example: 146
+        rescued:
+          type: integer
+          example: 250
+      required: [name, cases, rescued]

@@ -128,13 +128,13 @@ const processedData = computed(() => {
     const base = {
       ...item,
       previousMonth: getPreviousMonth(selectedMonth.value),
-      comparisonSign: getComparisonSign(item),
-      comparisonPercentage: getComparisonPercentage(item),
-      comparisonDifference: getComparisonDifference(item)
+      comparisonSign: getComparisonSign(item.thisMonth, item.lastMonth),
+      comparisonPercentage: getComparisonPercentage(item.thisMonth, item.lastMonth),
+      comparisonDifference: getComparisonDifference(item.thisMonth, item.lastMonth)
     };
 
     if (item.type === 'bar') {
-      const widths = calculateWidthPercentages(item);
+      const widths = calculateWidthPercentages(item.thisMonth, item.lastMonth);
       return {
         ...base,
         thisMonthWidth: `${widths.thisMonthPercentage}%`,

@@ -89,7 +89,7 @@ const fetchMonthlyStats = async (year, month) => {
   try {
     isLoading.value = true;
     const res = await fetch(`/json/total-cities/nationwide/${year}-${month}.json`);
-    const data = await res.json();
+    const { data } = await res.json();
     rawData.value = Array.isArray(data) ? data : [];
   } catch (err) {
     console.error('載入各縣市數據統計失敗', err);
@@ -169,7 +169,7 @@ watch(selectedName, async (name) => {
   try {
     isCityLoading.value = true;
     const res = await fetch(`/json/total-cities/city/${selectedYear.value}-${selectedMonth.value}/台北市.json`);
-    const data = await res.json();
+    const { data } = await res.json();
     cityReasonData.value = Array.isArray(data) ? data : [];
   } catch (err) {
     console.error('載入城市資料失敗', err);

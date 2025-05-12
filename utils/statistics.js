@@ -13,126 +13,69 @@ export const getPreviousMonth = (month) => {
 
 /**
  * 計算比較符號
- * @param {Object} item - 包含 thisMonth 和 lastMonth 的對象
+ * @param {Object} item - 包含 current 和 last 的對象
  * @returns {string} '+' 或 '-'
  */
-export const getComparisonSign = (item) => {
-  const thisMonth = parseInt(item.thisMonth);
-  const lastMonth = parseInt(item.lastMonth);
-  if (isNaN(thisMonth) || isNaN(lastMonth)) {
+export const getComparisonSign = (current, last) => {
+  const currentNum = parseInt(current);
+  const lastNum = parseInt(last);
+  if (isNaN(currentNum) || isNaN(lastNum)) {
     throw new Error('Invalid month values');
   }
-  return thisMonth > lastMonth ? '+' : '-';
+  return currentNum > lastNum ? '+' : '-';
 };
 
 /**
  * 計算百分比差異（保留小數點後兩位）
- * @param {Object} item - 包含 thisMonth 和 lastMonth 的對象
+ * @param {Object} item - 包含 current 和 last 的對象
  * @returns {string} 百分比差異的絕對值
  */
-export const getComparisonPercentage = (item) => {
-  const thisMonth = parseFloat(item.thisMonth);
-  const lastMonth = parseFloat(item.lastMonth);
-  if (isNaN(thisMonth) || isNaN(lastMonth)) {
+export const getComparisonPercentage = (current, last) => {
+  const currentNum = parseFloat(current);
+  const lastNum = parseFloat(last);
+  if (isNaN(currentNum) || isNaN(lastNum)) {
     throw new Error('Invalid month values');
   }
-  if (lastMonth === 0) {
-    return thisMonth === 0 ? '0.00' : '100.00';
+  if (lastNum === 0) {
+    return currentNum === 0 ? '0.00' : '100.00';
   }
-  const percent = Math.abs((thisMonth - lastMonth) / lastMonth * 100);
+  const percent = Math.abs((currentNum - lastNum) / lastNum * 100);
   return percent.toFixed(2);
 };
 
 /**
  * 計算實際差異數量
- * @param {Object} item - 包含 thisMonth 和 lastMonth 的對象
+ * @param {Object} item - 包含 current 和 last 的對象
  * @returns {string} 帶有符號的實際差異數量
  */
-export const getComparisonDifference = (item) => {
-  const thisMonth = parseInt(item.thisMonth);
-  const lastMonth = parseInt(item.lastMonth);
-  if (isNaN(thisMonth) || isNaN(lastMonth)) {
+export const getComparisonDifference = (current, last) => {
+  const currentNum = parseInt(current);
+  const lastNum = parseInt(last);
+  if (isNaN(currentNum) || isNaN(lastNum)) {
     throw new Error('Invalid month values');
   }
-  const difference = thisMonth - lastMonth;
+  const difference = currentNum - lastNum;
   return `${difference >= 0 ? '+' : ''}${difference}`;
 };
 
 /**
  * 計算寬度百分比
- * @param {Object} item - 包含 thisMonth 和 lastMonth 的對象
+ * @param {Object} item - 包含 current 和 last 的對象
  * @returns {Object} 包含兩個月份的寬度百分比
  */
-export const calculateWidthPercentages = (item) => {
-  const thisMonth = parseInt(item.thisMonth);
-  const lastMonth = parseInt(item.lastMonth);
-  if (isNaN(thisMonth) || isNaN(lastMonth)) {
+export const calculateWidthPercentages = (current, last) => {
+  const currentNum = parseInt(current);
+  const lastNum = parseInt(last);
+  if (isNaN(currentNum) || isNaN(lastNum)) {
     throw new Error('Invalid month values');
   }
 
-  const maxValue = Math.max(thisMonth, lastMonth);
-  const thisMonthPercentage = Math.round(Math.max(20, (thisMonth / maxValue) * 100));
-  const lastMonthPercentage = Math.round(Math.max(20, (lastMonth / maxValue) * 100));
+  const maxValue = Math.max(currentNum, lastNum);
+  const currentPercentage = Math.round(Math.max(20, (currentNum / maxValue) * 100));
+  const lastPercentage = Math.round(Math.max(20, (lastNum / maxValue) * 100));
 
   return {
-    thisMonthPercentage,
-    lastMonthPercentage
+    currentPercentage,
+    lastPercentage
   };
-};
-
-/**
- * 計算年度比較差異
- * @param {string} currentValue - 當前年度值
- * @param {string} lastValue - 上一年度值
- * @returns {Object} 包含差異值和符號
- */
-export const calculateAnnualDifference = (currentValue, lastValue) => {
-  const current = parseInt(currentValue);
-  const last = parseInt(lastValue);
-  if (isNaN(current) || isNaN(last)) {
-    throw new Error('Invalid values');
-  }
-
-  const difference = current - last;
-  return {
-    value: Math.abs(difference),
-    sign: difference >= 0 ? '+' : '-'
-  };
-};
-
-/**
- * 計算年度比較百分比
- * @param {string} currentValue - 當前年度值
- * @param {string} lastValue - 上一年度值
- * @returns {number} 百分比差異
- */
-export const calculateAnnualPercentage = (currentValue, lastValue) => {
-  const current = parseInt(currentValue);
-  const last = parseInt(lastValue);
-  if (isNaN(current) || isNaN(last)) {
-    throw new Error('Invalid values');
-  }
-
-  if (last === 0) return 0;
-  return Math.round((Math.abs(current - last) / last) * 100);
-};
-
-/**
- * 將原始統計資料加上 UI 設定與差異計算
- * @param {Array} rawData - 原始資料
- * @param {Array} configs - 對應的 UI config 陣列
- * @returns {Array} 已加上樣式與差異資訊的資料陣列
- */
-export const getProcessedStatCards = (rawData, configs = []) => {
-  return rawData.map((item, index) => {
-    const difference = calculateAnnualDifference(item.value, item.lastYearValue);
-    const config = configs[index] || {};
-    return {
-      ...item,
-      ...config,
-      sign: difference.sign,
-      formattedDifference: `${difference.sign} ${difference.value}`,
-      percentage: calculateAnnualPercentage(item.value, item.lastYearValue)
-    };
-  });
 };

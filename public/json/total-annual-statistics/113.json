@@ -5,32 +5,32 @@
     {
       "title": "年度案件數量 (件)",
       "type": "cases",
-      "value": 245,
-      "lastYearValue": 195
+      "thisYear": 245,
+      "lastYear": 195
     },
     {
       "title": "年度救援人數",
       "type": "rescued",
-      "value": 95,
-      "lastYearValue": 80
+      "thisYear": 95,
+      "lastYear": 80
     },
     {
       "title": "年度獲救人數",
       "type": "rescued_safe",
-      "value": 88,
-      "lastYearValue": 75
+      "thisYear": 88,
+      "lastYear": 75
     },
     {
       "title": "年度死亡人數",
       "type": "death",
-      "value": 4,
-      "lastYearValue": 5
+      "thisYear": 4,
+      "lastYear": 5
     },
     {
       "title": "年度失蹤人數",
       "type": "missing",
-      "value": 2,
-      "lastYearValue": 3
+      "thisYear": 2,
+      "lastYear": 3
     }
   ],
   "monthlyBreakdown": {

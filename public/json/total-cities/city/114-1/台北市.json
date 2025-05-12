@@ -1,15 +1,20 @@
-[
-  { "name": "迷路", "cases": 199, "rescued": 250 },
-  { "name": "創傷", "cases": 101, "rescued": 130 },
-  { "name": "墜谷", "cases": 51, "rescued": 58 },
-  { "name": "疾病", "cases": 44, "rescued": 50 },
-  { "name": "高山症", "cases": 23, "rescued": 28 },
-  { "name": "遲歸(失聯)", "cases": 22, "rescued": 24 },
-  { "name": "疲勞", "cases": 38, "rescued": 40 },
-  { "name": "天候惡劣", "cases": 12, "rescued": 20 },
-  { "name": "動物昆蟲攻擊", "cases": 7, "rescued": 10 },
-  { "name": "落石", "cases": 3, "rescued": 4 },
-  { "name": "落雷", "cases": 0, "rescued": 0 },
-  { "name": "不明", "cases": 8, "rescued": 9 },
-  { "name": "其他", "cases": 26, "rescued": 30 }
-]
+{
+  "year": "114",
+  "month": "1",
+  "city": "新北市",
+  "data": [
+    { "name": "迷路", "cases": 199, "rescued": 250 },
+    { "name": "創傷", "cases": 101, "rescued": 130 },
+    { "name": "墜谷", "cases": 51, "rescued": 58 },
+    { "name": "疾病", "cases": 44, "rescued": 50 },
+    { "name": "高山症", "cases": 23, "rescued": 28 },
+    { "name": "遲歸(失聯)", "cases": 22, "rescued": 24 },
+    { "name": "疲勞", "cases": 38, "rescued": 40 },
+    { "name": "天候惡劣", "cases": 12, "rescued": 20 },
+    { "name": "動物昆蟲攻擊", "cases": 7, "rescued": 10 },
+    { "name": "落石", "cases": 3, "rescued": 4 },
+    { "name": "落雷", "cases": 0, "rescued": 0 },
+    { "name": "不明", "cases": 8, "rescued": 9 },
+    { "name": "其他", "cases": 26, "rescued": 30 }
+  ]
+}

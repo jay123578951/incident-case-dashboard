@@ -96,7 +96,7 @@ const fetchReasonStats = async (year, month) => {
   try {
     isLoading.value = true;
     const res = await fetch(`/json/total-causes/${year}-${month}.json`);
-    const data = await res.json();
+    const { data } = await res.json();
     reasonData.value = Array.isArray(data) ? data : [];
   } catch (err) {
     console.error('載入事故原因失敗', err);
