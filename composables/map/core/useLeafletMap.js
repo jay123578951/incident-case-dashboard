@@ -34,6 +34,7 @@ export function useLeafletMap() {
     const leafletMap = L.map(elementId, {
       center: [23.7, 121],
       zoom: 7.8,
+      dragging: false,            // 禁用拖曳
       zoomControl: false,         // 禁用右上角的 + / - 控制鈕
       scrollWheelZoom: false,     // 禁用滑鼠滾輪縮放
       doubleClickZoom: false,     // 禁用雙擊放大

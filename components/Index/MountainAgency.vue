@@ -23,22 +23,19 @@
             cover
             src="/images/index/taiwan-statistical-map2.png"
           ></v-img> -->
-          <div class="w-full h-[620px]">
+          <div class="relative w-full h-[620px]">
             <ClientOnly>
               <IndexMapTaiwanMap
-                ref="mapRef"
                 :mpa-data="computedReasonData"
                 :options="mapOptions"
                 class="max-w-[420px]"
-                @select-county="selectedName = $event"
               />
-              <!-- <IndexMapMountainRegionMap
-                ref="parkRef"
-                :map="map"
-                :geojson="nationalParkGeojson"
-                :park-data="parkStats"
-                @select-park="selectedPark = $event"
-              /> -->
+              <IndexMapMountainRegionMap
+                ref="mapRef"
+                :park-data="computedReasonData"
+                class="max-w-[420px]"
+                @select-park="selectedName = $event"
+              />
             </ClientOnly>
           </div>
         </div>
@@ -82,22 +79,39 @@
 </template>
 
 <script setup>
-import responseData from '@/public/json/response-data.json';
+// import responseData from '@/public/json/response-data.json';
 
 defineOptions({
   inheritAttrs: true
 })
 
-const selectedDate = ref({
-  year: '114',
-  month: '1'
-})
-const selectedYear = computed(() => selectedDate.value.year)
-const selectedMonth = computed(() => selectedDate.value.month)
+const selectedDate = ref({ year: '114', month: '1' });
+const selectedYear = computed(() => selectedDate.value.year);
+const selectedMonth = computed(() => selectedDate.value.month);
+
+const rawData = ref([]);
+const isLoading = ref(false);
+
+const fetchMonthlyStats = async (year, month) => {
+  try {
+    isLoading.value = true;
+    const res = await fetch(`/json/total-agency/nationwide/${year}-${month}.json`);
+    const { data } = await res.json();
+    rawData.value = Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.error('載入各縣市數據統計失敗', err);
+    rawData.value = [];
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+watch([selectedYear, selectedMonth], ([y, m]) => {
+  fetchMonthlyStats(y, m);
+}, { immediate: true });
 
 const mapRef = ref(null);
 const selectedName = ref(null);
-const reasonData = ref(responseData.find(item => 'mountain-agency-statistics' in item)?.['mountain-agency-statistics']);
 const cityReasonData = ref();
 const isCityLoading = ref(false);
 
@@ -111,10 +125,7 @@ const mapOptions = ref({
   enableTooltip: false
 });
 
-// 計算總和
-const getStatSum = (list, key) => list.reduce((sum, item) => sum + item[key], 0);
-
-function enrichReasonData(data) {
+const enrichNationwideReasonData = (data) => {
   const totalCases = data.reduce((sum, item) => sum + item.cases, 0);
   const nonZeroData = data.filter(item => item.cases > 0);
   const sorted = [...nonZeroData].sort((a, b) => b.cases - a.cases);
@@ -124,7 +135,10 @@ function enrichReasonData(data) {
   const midCutoff = Math.floor(total * 0.5);
 
   return data.map((item) => {
-    const base = { ...item, percent: totalCases ? (item.cases / totalCases) * 100 : 0 };
+    const base = {
+      ...item,
+      percent: totalCases ? (item.cases / totalCases) * 100 : 0
+    };
 
     if (item.cases === 0) return { ...base, level: 'none' };
 
@@ -133,17 +147,31 @@ function enrichReasonData(data) {
     if (index < midCutoff) return { ...base, level: 'mid' };
     return { ...base, level: 'low' };
   });
-}
+};
 
-const computedReasonData = computed(() => enrichReasonData(reasonData.value));
-const computedCityReasonData = computed(() => enrichReasonData(cityReasonData.value || []));
+const enrichCityReasonData = (data) => {
+  if (!Array.isArray(data) || data.length === 0) return [];
+
+  const totalCases = data.reduce((sum, item) => sum + item.cases, 0);
+  return data.map((item) => ({
+    ...item,
+    percent: totalCases ? (item.cases / totalCases) * 100 : 0,
+    previousMonth: getPreviousMonth(selectedMonth.value),
+  })).sort((a, b) => b.cases - a.cases);
+};
+
+const computedReasonData = computed(() => enrichNationwideReasonData(rawData.value));
+const computedCityReasonData = computed(() => {
+  if (!cityReasonData.value || cityReasonData.value.length === 0) return [];
+  console.log('cityReasonData.value', cityReasonData.value);
+  return enrichCityReasonData(cityReasonData.value);
+});
 const activeReasonData = computed(() => selectedName.value ? computedCityReasonData.value : computedReasonData.value);
 
-const totalCases = computed(() => getStatSum(activeReasonData.value, 'cases'));
-const totalRescued = computed(() => getStatSum(activeReasonData.value, 'rescued'));
+const totalCases = computed(() => activeReasonData.value.reduce((sum, item) => sum + item.cases, 0));
+const totalRescued = computed(() => activeReasonData.value.reduce((sum, item) => sum + item.rescued, 0));
 
 const sortedReasonData = computed(() => [...activeReasonData.value].sort((a, b) => b.cases - a.cases));
-
 const leftColumn = computed(() => sortedReasonData.value);
 const rightColumn = computed(() => []);
 
@@ -154,8 +182,9 @@ watch(selectedName, async (name) => {
   if (!name) return;
   try {
     isCityLoading.value = true;
-    await new Promise(resolve => setTimeout(resolve, 500));
-    cityReasonData.value = responseData.find(item => 'city-statistics' in item)?.['city-statistics'];
+    const res = await fetch(`/json/total-agency/agency/${selectedYear.value}-${selectedMonth.value}/台北市.json`);
+    const { data } = await res.json();
+    cityReasonData.value = Array.isArray(data) ? data : [];
   } catch (err) {
     console.error('載入城市資料失敗', err);
   } finally {
@@ -164,7 +193,7 @@ watch(selectedName, async (name) => {
 });
 
 const resetMap = () => {
-  mapRef.value?.resetCountySelection();
+  mapRef.value?.resetParkSelection();
   selectedName.value = null;
 };
 </script>
