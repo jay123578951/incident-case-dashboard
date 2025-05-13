@@ -96,7 +96,7 @@ paths:
   /stats/cause-reasons:
     get:
       summary: 事故原因數據統計年度
-      description: 回傳全國指定年月各類事故原因的案件數、救援數與去年同期案件數比較
+      description: 回傳全國指定年度或年月各類事故原因的案件數、救援數與去年同期案件數比較。若未提供 month，則回傳整年度資料。
       parameters:
         - in: query
           name: year
@@ -106,10 +106,11 @@ paths:
             example: "114"
         - in: query
           name: month
-          required: true
+          required: false
           schema:
             type: string
             example: "1"
+            description: 若不提供此欄位，將回傳整年度資料
       responses:
         '200':
           description: 成功回傳事故原因統計
@@ -123,6 +124,7 @@ paths:
                     example: "114"
                   month:
                     type: string
+                    nullable: true
                     example: "1"
                   data:
                     type: array
@@ -158,7 +160,7 @@ paths:
             example: "114"
         - in: query
           name: month
-          required: true
+          required: false
           schema:
             type: string
             example: "1"
@@ -204,7 +206,7 @@ paths:
             example: "114"
         - in: query
           name: month
-          required: true
+          required: false
           schema:
             type: string
             example: "1"
@@ -260,7 +262,7 @@ paths:
             example: "114"
         - in: query
           name: month
-          required: true
+          required: false
           schema:
             type: string
             example: "1"
@@ -306,7 +308,7 @@ paths:
             example: "114"
         - in: query
           name: month
-          required: true
+          required: false
           schema:
             type: string
             example: "1"

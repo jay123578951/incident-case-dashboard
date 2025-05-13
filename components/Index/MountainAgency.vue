@@ -163,7 +163,6 @@ const enrichCityReasonData = (data) => {
 const computedReasonData = computed(() => enrichNationwideReasonData(rawData.value));
 const computedCityReasonData = computed(() => {
   if (!cityReasonData.value || cityReasonData.value.length === 0) return [];
-  console.log('cityReasonData.value', cityReasonData.value);
   return enrichCityReasonData(cityReasonData.value);
 });
 const activeReasonData = computed(() => selectedName.value ? computedCityReasonData.value : computedReasonData.value);

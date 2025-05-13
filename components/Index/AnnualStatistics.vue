@@ -24,7 +24,7 @@
           <div class="flex justify-between items-center mb-7">
             <div>
               <p class="text-[#666D80] text-xl font-medium mb-4">{{ item.title }}</p>
-              <p class="text-[40px] leading-10 font-bold">{{ item.value }}</p>
+              <p class="text-[40px] leading-10 font-bold">{{ item.thisYear }}</p>
             </div>
             <div
               class="p-3.5 rounded-[20px]"
