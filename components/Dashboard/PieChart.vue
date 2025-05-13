@@ -2,6 +2,7 @@
   <BaseChart
     :options="chartOptions"
     :height="height"
+    :showBorder="showBorder"
   />
 </template>
 
@@ -15,7 +16,9 @@ const props = defineProps({
   yAxisTitle: String,
   height: String,
   spacing: { type: Number, default: 30 },
-  showBackground: { type: Boolean, default: true }
+  showBackground: { type: Boolean, default: true },
+  showBorder: { type: Boolean, default: true },
+  showShadow: { type: Boolean, default: true }
 });
 
 const chartOptions = computed(() => ({

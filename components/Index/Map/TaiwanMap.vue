@@ -7,7 +7,7 @@ import { useLeafletMap } from '@/composables/map/core/useLeafletMap';
 import { useCountyBoundaryLayer } from '@/composables/map/visual/useCountyBoundaryLayer';
 
 const props = defineProps({
-  mpaData: {
+  mapData: {
     type: Array,
     required: true
   },
@@ -28,11 +28,11 @@ const { map, isMapReady, createMap } = useLeafletMap();
 const { loadCountyBoundaries, resetCountySelection, dataByCounty, updateAllCountyStyles } = useCountyBoundaryLayer(map, emit, props.options);
 
 watch(
-  () => [isMapReady.value, props.mpaData, geojson.value],
-  async ([ready, mpa, geo]) => {
-    if (ready && mpa?.length && geo && !mapInitialized.value) {
+  () => [isMapReady.value, props.mapData, geojson.value],
+  async ([ready, taiwanData, geo]) => {
+    if (ready && taiwanData?.length && geo && !mapInitialized.value) {
       dataByCounty.value = Object.fromEntries(
-        mpa.map(item => [item.name, { value: item.cases, level: item.level }])
+        taiwanData.map(item => [item.name, { value: item.cases, level: item.level }])
       );
 
       await loadCountyBoundaries(geo, (name) => {

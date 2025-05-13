@@ -7,7 +7,7 @@ import { ref } from 'vue';
  * @param {Object} options - 額外設定：邊界顏色、hover、tooltip
  */
 export function useParkBoundaryLayer(map, emit, options = {}) {
-  const defaultColor = options.defaultBorderColor || '#1C202E';
+  const defaultColor = options.defaultBorderColor || '#666D80';
   const fadedColor = options.fadedBorderColor || '#BCC2CC';
   const enableHover = options.enableHover !== false;
   const enableTooltip = options.enableTooltip !== false;

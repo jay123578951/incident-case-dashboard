@@ -22,11 +22,11 @@
             <ClientOnly>
               <IndexMapTaiwanMap
                 ref="taiwanMapRef"
-                :mpa-data="computedReasonData"
+                :map-data="computedReasonData"
                 :options="mapOptions"
                 class="max-w-[420px]"
               />
-              <IndexMapMountainRegionMap
+              <IndexMapAgencyMap
                 ref="mapRef"
                 :park-data="computedReasonData"
                 class="max-w-[420px]"
@@ -82,7 +82,7 @@ defineOptions({
 const mapStore = useMapStore();
 const taiwanMapRef = ref(null);
 
-const selectedDate = ref({ year: '114', month: '1' });
+const selectedDate = ref({ year: '114', month: null });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
 
@@ -92,7 +92,7 @@ const isLoading = ref(false);
 const fetchMonthlyStats = async (year, month) => {
   try {
     isLoading.value = true;
-    const res = await fetch(`/json/total-agency/nationwide/${year}-${month}.json`);
+    const res = await fetch(`/json/total-agency/nationwide/${year}-1.json`);
     const { data } = await res.json();
     rawData.value = Array.isArray(data) ? data : [];
   } catch (err) {
@@ -146,6 +146,10 @@ const enrichNationwideReasonData = (data) => {
   });
 };
 
+const previousMonth = computed(() => {
+  return selectedMonth.value ? getPreviousMonth(selectedMonth.value) : null;
+});
+
 const enrichCityReasonData = (data) => {
   if (!Array.isArray(data) || data.length === 0) return [];
 
@@ -153,7 +157,7 @@ const enrichCityReasonData = (data) => {
   return data.map((item) => ({
     ...item,
     percent: totalCases ? (item.cases / totalCases) * 100 : 0,
-    previousMonth: getPreviousMonth(selectedMonth.value),
+    previousMonth: previousMonth,
   })).sort((a, b) => b.cases - a.cases);
 };
 
@@ -178,7 +182,7 @@ watch(selectedName, async (name) => {
   if (!name) return;
   try {
     isCityLoading.value = true;
-    const res = await fetch(`/json/total-agency/agency/${selectedYear.value}-${selectedMonth.value}/台北市.json`);
+    const res = await fetch(`/json/total-agency/agency/${selectedYear.value}-1/台北市.json`);
     const { data } = await res.json();
     cityReasonData.value = Array.isArray(data) ? data : [];
   } catch (err) {

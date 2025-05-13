@@ -27,7 +27,7 @@
             <ClientOnly>
               <IndexMapTaiwanMap
                 ref="mapRef"
-                :mpa-data="activeReasonData"
+                :map-data="activeReasonData"
                 class="max-w-[420px]"
                 @select-county="selectedName = $event"
               />
@@ -78,7 +78,7 @@ import {
 
 defineOptions({ inheritAttrs: true });
 
-const selectedDate = ref({ year: '114', month: '1' });
+const selectedDate = ref({ year: '114', month: null });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
 
@@ -88,7 +88,7 @@ const isLoading = ref(false);
 const fetchMonthlyStats = async (year, month) => {
   try {
     isLoading.value = true;
-    const res = await fetch(`/json/total-cities/nationwide/${year}-${month}.json`);
+    const res = await fetch(`/json/total-cities/nationwide/${year}-1.json`);
     const { data } = await res.json();
     rawData.value = Array.isArray(data) ? data : [];
   } catch (err) {
@@ -135,6 +135,10 @@ const enrichNationwideReasonData = (data) => {
   });
 };
 
+const previousMonth = computed(() => {
+  return selectedMonth.value ? getPreviousMonth(selectedMonth.value) : null;
+});
+
 const enrichCityReasonData = (data) => {
   if (!Array.isArray(data) || data.length === 0) return [];
 
@@ -142,7 +146,7 @@ const enrichCityReasonData = (data) => {
   return data.map((item) => ({
     ...item,
     percent: totalCases ? (item.cases / totalCases) * 100 : 0,
-    previousMonth: getPreviousMonth(selectedMonth.value),
+    previousMonth: previousMonth.value,
   })).sort((a, b) => b.cases - a.cases);
 };
 
@@ -168,7 +172,7 @@ watch(selectedName, async (name) => {
   if (!name) return;
   try {
     isCityLoading.value = true;
-    const res = await fetch(`/json/total-cities/city/${selectedYear.value}-${selectedMonth.value}/台北市.json`);
+    const res = await fetch(`/json/total-cities/city/${selectedYear.value}-1/台北市.json`);
     const { data } = await res.json();
     cityReasonData.value = Array.isArray(data) ? data : [];
   } catch (err) {

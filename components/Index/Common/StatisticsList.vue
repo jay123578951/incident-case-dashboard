@@ -1,6 +1,6 @@
 <template>
   <div
-    class="grid rounded-xl"
+    class="grid rounded-[12px]"
     :class="[
       loading
         ? 'grid-cols-2 gap-4'
@@ -19,7 +19,7 @@
     <template v-else>
       <!-- 左欄 -->
       <div>
-        <div class="flex bg-[#51596B] text-white text-lg font-semibold rounded-lg mb-2 px-3 py-2">
+        <div class="flex bg-[#51596B] text-white text-lg font-semibold rounded-lg mb-2 px-3 py-2 border border-[rgba(28, 32, 46, 0.1)] shadow-sm">
           <template v-for="(title, index) in listTitle" :key="index">
             <div
               class="w-1/2"
@@ -31,8 +31,8 @@
           <li
             v-for="item in leftColumn"
             :key="item.name"
-            class="flex items-center text-lg rounded-lg bg-white p-3"
-            :class="getLevelClass(item.level)"
+            class="flex items-center text-lg rounded-lg bg-white p-3 border border-[rgba(28, 32, 46, 0.1)] shadow-sm"
+            :style="getLevelStyleString(item.level)"
           >
             <div class="w-1/3 font-bold">{{ item.name }}</div>
             <div class="w-1/3 text-end">{{ item.cases }}</div>
@@ -43,7 +43,7 @@
 
       <!-- 右欄 -->
       <div v-if="rightColumn.length > 0">
-        <div class="flex bg-[#51596B] text-white text-lg font-semibold rounded-lg mb-2 px-3 py-2">
+        <div class="flex bg-[#51596B] text-white text-lg font-semibold rounded-lg mb-2 px-3 py-2 border border-[rgba(28, 32, 46, 0.1)] shadow-sm">
           <template v-for="(title, index) in listTitle" :key="index">
             <div
               class="w-1/2"
@@ -55,8 +55,8 @@
           <li
             v-for="item in rightColumn"
             :key="item.name"
-            class="flex items-center text-lg rounded-lg bg-white p-3"
-            :class="getLevelClass(item.level)"
+            class="flex items-center text-lg rounded-lg bg-white p-3 border border-[rgba(28, 32, 46, 0.1)] shadow-sm"
+            :style="getLevelStyleString(item.level)"
           >
             <div class="w-1/3 font-bold">{{ item.name }}</div>
             <div class="w-1/3 text-end">{{ item.cases }}</div>
@@ -109,14 +109,15 @@ const displayValue = (item) => {
 };
 
 const levelColors = {
-  high: 'border-s-[#FCA2AC]',
-  mid: 'border-s-[#FFE482]',
-  low: 'border-s-[#ADF0E3]',
-  none: 'border-s-[#DCDFE5]'
+  high: '#FCA2AC',
+  mid: '#FFE482',
+  low: '#ADF0E3',
+  none: '#DCDFE5'
 };
 
-const getLevelClass = (level) => {
+const getLevelStyleString = (level) => {
   if (!props.showLevelBorder || !level) return '';
-  return `border-s-[6px] ${levelColors[level] || ''}`;
+  const color = levelColors[level] || '';
+  return `border-left: 6px solid ${color} !important;`;
 };
 </script>

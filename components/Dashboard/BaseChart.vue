@@ -8,7 +8,11 @@
     </div>
     <div
       ref="chartRef"
-      class="w-full"
+      class="w-full rounded-2xl"
+      :class="{
+        'border border-[rgba(0, 0, 0, 0.05)]': props.showBorder,
+        'shadow-sm': props.showShadow
+      }"
       :style="{ height: props.height }"
     ></div>
   </div>
@@ -20,7 +24,9 @@ import Highcharts from 'highcharts';
 const props = defineProps({
   options: { type: Object, required: true },
   height: { type: String, default: '24rem' },
-  showLoadingBackground: { type: Boolean, default: true }
+  showLoadingBackground: { type: Boolean, default: true },
+  showBorder: { type: Boolean, default: false },
+  showShadow: { type: Boolean, default: false }
 });
 
 const chartRef = ref(null);

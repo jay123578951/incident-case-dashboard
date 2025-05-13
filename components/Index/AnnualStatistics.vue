@@ -15,7 +15,7 @@
           v-else
           v-for="(item, index) of processedData"
           :key="index"
-          class="bg-white rounded-2xl p-4"
+          class="bg-white rounded-2xl p-4 border border-[rgba(0, 0, 0, 0.05)] shadow-sm"
           :class="{
             'col-span-3': item.cols === '3',
             'col-span-2': item.cols === '2'
@@ -59,6 +59,8 @@
         :categories="months"
         :series="chartSeries"
         :height="'455px'"
+        :showBorder="true"
+        :showShadow="true"
       />
     </section>
   </div>

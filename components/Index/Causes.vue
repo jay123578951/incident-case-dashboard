@@ -17,13 +17,13 @@
           <li
             v-for="(item, index) of top5Reasons"
             :key="index"
-            class="col-span-2 flex items-center justify-between bg-white rounded-xl overflow-hidden pe-5"
+            class="col-span-2 flex items-center justify-between bg-white rounded-[12px] overflow-hidden pe-5 border border-[rgba(0, 0, 0, 0.05)] shadow-sm"
             :class="{
               'col-start-2': index === 0
             }"
           >
             <div class="flex items-center gap-x-3">
-              <div class="bg-gradient-to-r from-[#64D1BD] to-[#2DBFC6] w-14 aspect-square flex items-center justify-center rounded-br-[20px]">
+              <div class="bg-gradient-to-r from-[#64D1BD] to-[#2DBFC6] w-14 aspect-square flex items-center justify-center rounded-br-[20px] py-[9px]">
                 <p class="text-[28px] font-bold text-white">{{ index + 1 }}</p>
               </div>
               <p class="text-2xl font-bold text-[#51596B]">{{ item.name }}</p>
@@ -37,7 +37,7 @@
         <IndexCommonSubtitle title="事故原因比例分布" />
         <div class="w-full flex justify-between gap-x-6">
         <div class="w-[44%]">
-          <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow p-4 mb-10">
+          <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow-sm p-4 mb-10">
             <li class="flex flex-col items-center justify-center pe-4">
               <p class="text-[28px] font-bold mb-1.5">{{ totalCases }}</p>
               <p class="text-lg text-[#666D80]">案件數量</p>
@@ -52,6 +52,8 @@
             :height="'487px'"
             :spacing="0"
             :showBackground="false"
+            :showBorder="false"
+            :showShadow="false"
           />
         </div>
         <div class="w-[56%]">
@@ -69,7 +71,7 @@
 </template>
 
 <script setup>
-const selectedDate = ref({ year: '114', month: '1' });
+const selectedDate = ref({ year: '114', month: null });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
 const causeCategories = [
@@ -95,7 +97,7 @@ const reasonData = ref([]);
 const fetchReasonStats = async (year, month) => {
   try {
     isLoading.value = true;
-    const res = await fetch(`/json/total-causes/${year}-${month}.json`);
+    const res = await fetch(`/json/total-causes/${year}-1.json`);
     const { data } = await res.json();
     reasonData.value = Array.isArray(data) ? data : [];
   } catch (err) {

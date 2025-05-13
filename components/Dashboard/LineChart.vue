@@ -15,7 +15,9 @@ const props = defineProps({
   series: Array,
   yAxisTitle: String,
   height: String,
-  showBackground: { type: Boolean, default: true }
+  showBackground: { type: Boolean, default: true },
+  showBorder: { type: Boolean, default: true },
+  showShadow: { type: Boolean, default: true }
 });
 
 const chartOptions = computed(() => ({

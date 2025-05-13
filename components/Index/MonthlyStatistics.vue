@@ -13,7 +13,7 @@
         <li
           v-for="(item, index) of processedData"
           :key="index"
-          class="bg-white rounded-2xl p-4"
+          class="bg-white rounded-2xl p-4 border border-[rgba(0, 0, 0, 0.05)] shadow-sm"
         >
           <div class="flex items-top justify-between mb-3">
             <div class="flex items-center gap-x-2">
@@ -97,7 +97,7 @@ defineOptions({
   inheritAttrs: true
 })
 
-const selectedDate = ref({ year: '114', month: '1' });
+const selectedDate = ref({ year: '114', month: null });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
 
@@ -107,7 +107,7 @@ const isLoading = ref(false);
 const fetchMonthlyStats = async (year, month) => {
   try {
     isLoading.value = true;
-    const res = await fetch(`/json/total-monthly-statistics/${year}-${month}.json`);
+    const res = await fetch(`/json/total-monthly-statistics/${year}-1.json`);
     const data = await res.json();
     // rawData.value = data[year][month].statistics || [];
     rawData.value = data.statistics || [];
@@ -123,11 +123,15 @@ watch([selectedYear, selectedMonth], ([y, m]) => {
   fetchMonthlyStats(y, m);
 }, { immediate: true });
 
+const previousMonth = computed(() => {
+  return selectedMonth.value ? getPreviousMonth(selectedMonth.value) : null;
+});
+
 const processedData = computed(() => {
   return rawData.value.map((item) => {
     const base = {
       ...item,
-      previousMonth: getPreviousMonth(selectedMonth.value),
+      previousMonth: previousMonth.value,
       comparisonSign: getComparisonSign(item.thisMonth, item.lastMonth),
       comparisonPercentage: getComparisonPercentage(item.thisMonth, item.lastMonth),
       comparisonDifference: getComparisonDifference(item.thisMonth, item.lastMonth)
