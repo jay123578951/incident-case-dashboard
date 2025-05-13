@@ -96,7 +96,7 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
       fillColor: isInitial || isSelected
         ? getPrimaryColorFromLevel(level)
         : getFadedColorFromLevel(level),
-      fillOpacity: isInitial || isSelected ? 0.8 : 0.3,
+      fillOpacity: isInitial || isSelected ? 1 : 0.3,
       weight: isSelected ? 2 : 1,
       color: isInitial || isSelected ? defaultColor : fadedColor
     };
@@ -126,12 +126,14 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
   /**
    * 點擊縣市事件
    */
+  const mapStore = useMapStore();
   const handleParkClick = async (feature, layer, callback) => {
     const name = feature.properties.Name;
     selectedPark.value = name;
 
     highlightSelectedPark();
     emit?.('select-park', name);
+    mapStore.setTaiwanFaded(true);
     callback(name);
   };
 
@@ -167,6 +169,8 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
       const style = getFeatureStyle(feature);
       layer.setStyle(style);
     });
+
+    mapStore.setTaiwanFaded(false);
   };
 
   return {

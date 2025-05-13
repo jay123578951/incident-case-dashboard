@@ -88,12 +88,23 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
   /**
    * 根據資料與選擇狀態決定樣式
    */
+  const mapStore = useMapStore();
   const getFeatureStyle = (feature) => {
     const name = feature.properties.COUNTYNAME;
     const countyData = dataByCounty.value[name];
     const level = countyData?.level;
     const isSelected = selectedCounty.value === name;
     const isInitial = !selectedCounty.value;
+
+    // 如果 isTaiwanFaded，套用統一的淡色樣式
+    if (mapStore.isTaiwanFaded) {
+      return {
+        fillColor: '#F1F4F9',
+        fillOpacity: 1,
+        weight: 1,
+        color: '#E4E8EE'
+      };
+    }
 
     return {
       fillColor: isInitial || isSelected
@@ -172,11 +183,23 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
     });
   };
 
+  /**
+   * 更新所有縣市樣式
+   */
+  const updateAllCountyStyles = () => {
+    countyLayer.value.eachLayer(layer => {
+      const feature = layer.feature;
+      const style = getFeatureStyle(feature);
+      layer.setStyle(style);
+    });
+  };
+
   return {
     loadCountyBoundaries,
     dataByCounty,
     selectedCounty,
     highlightSelectedCounty,
-    resetCountySelection
+    resetCountySelection,
+    updateAllCountyStyles
   };
 }

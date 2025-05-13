@@ -25,7 +25,7 @@ const isLoadingGeoJSON = ref(false);
 const geojson = ref(null);
 
 const { map, isMapReady, createMap } = useLeafletMap();
-const { loadCountyBoundaries, resetCountySelection, dataByCounty } = useCountyBoundaryLayer(map, emit, props.options);
+const { loadCountyBoundaries, resetCountySelection, dataByCounty, updateAllCountyStyles } = useCountyBoundaryLayer(map, emit, props.options);
 
 watch(
   () => [isMapReady.value, props.mpaData, geojson.value],
@@ -61,7 +61,8 @@ onMounted(async () => {
 
 defineExpose({
   map,
-  resetCountySelection
+  resetCountySelection,
+  updateAllCountyStyles
 });
 </script>
 

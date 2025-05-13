@@ -18,14 +18,10 @@
               <p class="text-lg text-[#666D80]">救援人數</p>
             </li>
           </ul>
-          <!-- <v-img
-            max-width="420"
-            cover
-            src="/images/index/taiwan-statistical-map2.png"
-          ></v-img> -->
           <div class="relative w-full h-[620px]">
             <ClientOnly>
               <IndexMapTaiwanMap
+                ref="taiwanMapRef"
                 :mpa-data="computedReasonData"
                 :options="mapOptions"
                 class="max-w-[420px]"
@@ -34,7 +30,7 @@
                 ref="mapRef"
                 :park-data="computedReasonData"
                 class="max-w-[420px]"
-                @select-park="selectedName = $event"
+                @select-park="handleSelectPark"
               />
             </ClientOnly>
           </div>
@@ -79,11 +75,12 @@
 </template>
 
 <script setup>
-// import responseData from '@/public/json/response-data.json';
-
 defineOptions({
   inheritAttrs: true
 })
+
+const mapStore = useMapStore();
+const taiwanMapRef = ref(null);
 
 const selectedDate = ref({ year: '114', month: '1' });
 const selectedYear = computed(() => selectedDate.value.year);
@@ -191,8 +188,16 @@ watch(selectedName, async (name) => {
   }
 });
 
+const handleSelectPark = (name) => {
+  selectedName.value = name;
+  mapStore.setTaiwanFaded(true);         // 設定為淡化
+  taiwanMapRef.value?.updateAllCountyStyles(); // 更新台灣地圖樣式
+};
+
 const resetMap = () => {
   mapRef.value?.resetParkSelection();
   selectedName.value = null;
+  mapStore.setTaiwanFaded(false);        // 取消淡化
+  taiwanMapRef.value?.updateAllCountyStyles(); // 更新樣式
 };
 </script>

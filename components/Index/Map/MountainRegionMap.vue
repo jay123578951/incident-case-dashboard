@@ -39,7 +39,7 @@ watch(
       );
 
       await loadParkBoundaries(geo, (name) => {
-        console.log('點選縣市：', name);
+        console.log('點選公園：', name);
       });
 
       mapInitialized.value = true;
@@ -56,14 +56,10 @@ onMounted(async () => {
     const res = await fetch('/geoJSON/national_park_simplify_filtered.geojson');
     geojson.value = await res.json();
   } catch (err) {
-    console.error('載入台灣邊界失敗:', err);
+    console.error('載入公園圖層失敗:', err);
   } finally {
     isLoadingGeoJSON.value = false;
   }
-});
-
-watch(() => props.parkData, (newData) => {
-  dataByPark.value = newData;
 });
 
 defineExpose({
