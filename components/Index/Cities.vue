@@ -1,6 +1,6 @@
 <template>
   <div v-bind="$attrs">
-    <IndexCommonPageHeader
+    <IndexCommonDateHeader
       title="各縣市數據統計"
       v-model="selectedDate"
     />

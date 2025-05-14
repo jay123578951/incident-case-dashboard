@@ -1,6 +1,6 @@
 <template>
   <div v-bind="$attrs">
-    <IndexCommonPageHeader
+    <IndexCommonDateHeader
       title="各山域機關數據統計"
       v-model="selectedDate"
     />

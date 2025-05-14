@@ -1,77 +1,97 @@
 <template>
   <div v-bind="$attrs">
-    <IndexCommonPageHeader
+    <IndexCommonDateHeader
       title="事故原因數據統計"
-      v-model="selectedDate"
+      :show-year="false"
+      :show-month="false"
     />
 
-    <template v-if="reasonData.length === 0">
-      <div class="text-center text-[#999]">
-        尚無統計資料
-      </div>
-    </template>
-    <template v-else>
-      <section class="mb-20">
+    <section class="mb-20">
+      <div class="mb-6">
         <IndexCommonSubtitle title="事故原因前五名" />
+      </div>
+      <div class="mb-6 flex justify-center">
+        <IndexCommonDateSelector v-model="selectedDate" />
+      </div>
+
+      <template v-if="reasonData.length === 0">
+        <div class="text-center text-[#999]">
+          尚無統計資料
+        </div>
+      </template>
+      <template v-else>
         <ul class="grid grid-cols-6 gap-6">
           <li
             v-for="(item, index) of top5Reasons"
-            :key="index"
-            class="col-span-2 flex items-center justify-between bg-white rounded-[12px] overflow-hidden pe-5 border border-[rgba(0, 0, 0, 0.05)] shadow-sm"
-            :class="{
-              'col-start-2': index === 0
-            }"
-          >
-            <div class="flex items-center gap-x-3">
-              <div class="bg-gradient-to-r from-[#64D1BD] to-[#2DBFC6] w-14 aspect-square flex items-center justify-center rounded-br-[20px] py-[9px]">
-                <p class="text-[28px] font-bold text-white">{{ index + 1 }}</p>
-              </div>
-              <p class="text-2xl font-bold text-[#51596B]">{{ item.name }}</p>
+          :key="index"
+          class="col-span-2 flex items-center justify-between bg-white rounded-[12px] overflow-hidden pe-5 border border-[rgba(0, 0, 0, 0.05)] shadow-sm"
+          :class="{
+            'col-start-2': index === 0
+          }"
+        >
+          <div class="flex items-center gap-x-3">
+            <div class="bg-gradient-to-r from-[#64D1BD] to-[#2DBFC6] w-14 aspect-square flex items-center justify-center rounded-br-[20px] py-[9px]">
+              <p class="text-[28px] font-bold text-white">{{ index + 1 }}</p>
             </div>
+            <p class="text-2xl font-bold text-[#51596B]">{{ item.name }}</p>
+          </div>
             <p class="text-lg text-[#51596B]">案件數<span class="text-xl font-bold text-[#E85869] px-1">{{ item.cases }}</span>件</p>
           </li>
         </ul>
-      </section>
+      </template>
+    </section>
 
-      <section>
+    <section>
+      <div class="mb-6">
         <IndexCommonSubtitle title="事故原因比例分布" />
+      </div>
+      <div class="mb-6 flex justify-center">
+        <IndexCommonDateSelector v-model="selectedDate" />
+      </div>
+
+      <template v-if="reasonData.length === 0">
+        <div class="text-center text-[#999]">
+          尚無統計資料
+        </div>
+      </template>
+      <template v-else>
         <div class="w-full flex justify-between gap-x-6">
-        <div class="w-[44%]">
-          <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow-sm p-4 mb-10">
-            <li class="flex flex-col items-center justify-center pe-4">
-              <p class="text-[28px] font-bold mb-1.5">{{ totalCases }}</p>
-              <p class="text-lg text-[#666D80]">案件數量</p>
-            </li>
-            <li class="flex flex-col items-center justify-center ps-4">
-              <p class="text-[28px] font-bold mb-1.5">{{ totalRescued }}</p>
-              <p class="text-lg text-[#666D80]">救援人數</p>
-            </li>
-          </ul>
-          <DashboardPieChart
-            :series="chartSeries"
-            :height="'487px'"
-            :spacing="0"
-            :showBackground="false"
-            :showBorder="false"
-            :showShadow="false"
-          />
+          <div class="w-[44%]">
+        <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow-sm p-4 mb-10">
+          <li class="flex flex-col items-center justify-center pe-4">
+            <p class="text-[28px] font-bold mb-1.5">{{ totalCases }}</p>
+            <p class="text-lg text-[#666D80]">案件數量</p>
+          </li>
+          <li class="flex flex-col items-center justify-center ps-4">
+            <p class="text-[28px] font-bold mb-1.5">{{ totalRescued }}</p>
+            <p class="text-lg text-[#666D80]">救援人數</p>
+          </li>
+        </ul>
+        <DashboardPieChart
+          :series="chartSeries"
+          :height="'487px'"
+          :spacing="0"
+          :showBackground="false"
+          :showBorder="false"
+          :showShadow="false"
+        />
+      </div>
+      <div class="w-[56%]">
+        <IndexCommonStatisticsList
+          :list-title="ListTitle"
+          :left-column="leftColumn"
+          :right-column="rightColumn"
+          mode="percent"
+        />
+          </div>
         </div>
-        <div class="w-[56%]">
-          <IndexCommonStatisticsList
-            :list-title="ListTitle"
-            :left-column="leftColumn"
-            :right-column="rightColumn"
-            mode="percent"
-          />
-        </div>
-        </div>
-      </section>
-    </template>
+      </template>
+    </section>
   </div>
 </template>
 
 <script setup>
-const selectedDate = ref({ year: '114', month: null });
+const selectedDate = ref({ year: '113', month: '01' });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
 const causeCategories = [
@@ -97,7 +117,7 @@ const reasonData = ref([]);
 const fetchReasonStats = async (year, month) => {
   try {
     isLoading.value = true;
-    const res = await fetch(`/json/total-causes/${year}-1.json`);
+    const res = await fetch(`/json/cause-reasons/${year}${month}.json`);
     const { data } = await res.json();
     reasonData.value = Array.isArray(data) ? data : [];
   } catch (err) {

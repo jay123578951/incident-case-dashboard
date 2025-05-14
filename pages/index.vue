@@ -1,6 +1,6 @@
 <template>
     <section>
-      <IndexHero class="pt-7 pb-16" />
+      <IndexHero class="sm:mt-14 sm:pt-10 sm:pb-8 lg:mt-0 lg:pt-7 lg:pb-16" />
       <IndexAnnualStatistics ref="annual" id="annual" class="pb-24" />
       <IndexMonthlyStatistics ref="monthly" id="monthly" class="pb-24" />
       <IndexCauses ref="causes" id="causes" class="pb-24" />

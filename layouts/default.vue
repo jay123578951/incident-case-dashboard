@@ -6,8 +6,7 @@
     <!-- 實際內容層 -->
     <div class="relative z-10">
       <v-container
-        style="max-width: 1080px"
-        class="pa-0 max-w-[1080px] mx-auto"
+        class="!max-w-[1080px] mx-auto py-0 !px-4 md:!px-10 lg:!px-0"
         fluid
       >
         <NuxtPage />

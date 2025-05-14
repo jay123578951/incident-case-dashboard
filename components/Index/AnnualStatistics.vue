@@ -1,6 +1,6 @@
 <template>
   <div v-bind="$attrs">
-    <CommonPageHeader
+    <IndexCommonDateHeader
       title="年統計數據"
       v-model="selectedDate"
       :show-month="false"
@@ -80,7 +80,7 @@ import {
 const isLoading = ref(false);
 const fetchError = ref(null);
 
-const selectedDate = ref({ year: '114', month: '1' });
+const selectedDate = ref({ year: '113', month: '1' });
 const selectedYear = computed(() => selectedDate.value.year);
 const months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
 
@@ -116,7 +116,7 @@ const chartSeries = computed(() => {
 const fetchStats = async (year) => {
   try {
     isLoading.value = true;
-    const res = await fetch(`/json/total-annual-statistics/${year}.json`);
+    const res = await fetch(`/json/yearly-summary/${year}.json`);
     const data = await res.json();
 
     rawData.value = data;
