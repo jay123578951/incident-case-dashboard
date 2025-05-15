@@ -45,7 +45,9 @@
               >
                 {{ item.formattedDifference }}
               </span>
-              人</p>
+              <span v-if="index === 0">件</span>
+              <span v-else>人</span>
+            </p>
           </div>
         </li>
       </ul>
@@ -56,7 +58,7 @@
         v-if="chartSeries.length > 0"
         title="案件數與前一年同期比較"
         :yAxisTitle="'案件數 (件)'"
-        :categories="months"
+        :categories="categories"
         :series="chartSeries"
         :height="'455px'"
         :showBorder="true"
@@ -82,8 +84,8 @@ const fetchError = ref(null);
 
 const selectedDate = ref({ year: '113', month: '1' });
 const selectedYear = computed(() => selectedDate.value.year);
-const months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
 
+const categories = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
 const statCardUIConfigs = [
   { icon: 'custom:folder', cols: '3', iconColor: '#317E99', bgColor: '#DAF5FE' },
   { icon: 'custom:car', cols: '3', iconColor: '#705800', bgColor: '#FEEFB7' },

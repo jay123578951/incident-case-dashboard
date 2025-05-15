@@ -11,6 +11,7 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
   const fadedColor = options.fadedBorderColor || '#BCC2CC';
   const enableHover = options.enableHover !== false;
   const enableTooltip = options.enableTooltip !== false;
+  const setupTaiwanFaded = options.setupTaiwanFaded || false;
 
   const countyLayer = ref(null);
   const selectedCounty = ref(null);
@@ -96,8 +97,10 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
     const isSelected = selectedCounty.value === name;
     const isInitial = !selectedCounty.value;
 
-    // 如果 isTaiwanFaded，套用統一的淡色樣式
-    if (mapStore.isTaiwanFaded) {
+    // isTaiwanFaded = true 已點擊各山域機關數據統計年度的縣市
+    // setupTaiwanFaded = true 可以設定當點擊時台灣地圖底圖顏色
+    // 套用統一的淡色樣式
+    if (mapStore.isTaiwanFaded && setupTaiwanFaded) {
       return {
         fillColor: '#F1F4F9',
         fillOpacity: 1,

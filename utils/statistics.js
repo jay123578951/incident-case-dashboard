@@ -12,6 +12,19 @@ export const getPreviousMonth = (month) => {
 };
 
 /**
+ * 獲取上一個年份
+ * @param {string|number} year - 當前年份
+ * @returns {number} 上一個年份
+ */
+export const getPreviousYear = (year) => {
+  const currentYear = parseInt(year);
+  if (isNaN(currentYear) || currentYear < 1) {
+    throw new Error('Invalid month value');
+  }
+  return currentYear - 1;
+};
+
+/**
  * 計算比較符號
  * @param {Object} item - 包含 current 和 last 的對象
  * @returns {string} '+' 或 '-'

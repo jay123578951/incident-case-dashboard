@@ -26,7 +26,7 @@
           <div class="w-full h-[620px]">
             <ClientOnly>
               <IndexMapTaiwanMap
-                ref="mapRef"
+                ref="citiesMapRef"
                 :map-data="activeReasonData"
                 class="max-w-[420px]"
                 @select-county="selectedName = $event"
@@ -78,7 +78,7 @@ import {
 
 defineOptions({ inheritAttrs: true });
 
-const selectedDate = ref({ year: '114', month: null });
+const selectedDate = ref({ year: '113', month: null });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
 
@@ -88,7 +88,9 @@ const isLoading = ref(false);
 const fetchMonthlyStats = async (year, month) => {
   try {
     isLoading.value = true;
-    const res = await fetch(`/json/total-cities/nationwide/${year}-1.json`);
+
+    const safeMonth = month ?? '00';
+    const res = await fetch(`/json/cities-summary/${year}${safeMonth}.json`);
     const { data } = await res.json();
     rawData.value = Array.isArray(data) ? data : [];
   } catch (err) {
@@ -103,7 +105,7 @@ watch([selectedYear, selectedMonth], ([y, m]) => {
   fetchMonthlyStats(y, m);
 }, { immediate: true });
 
-const mapRef = ref(null);
+const citiesMapRef = ref(null);
 const selectedName = ref(null);
 const cityReasonData = ref();
 const isCityLoading = ref(false);
@@ -172,18 +174,21 @@ watch(selectedName, async (name) => {
   if (!name) return;
   try {
     isCityLoading.value = true;
-    const res = await fetch(`/json/total-cities/city/${selectedYear.value}-1/台北市.json`);
+
+    const encodedName = encodeURIComponent(name);
+    const url = `/json/city-reasons/${selectedYear.value}00${encodedName}.json`;
+    const res = await fetch(url);
     const { data } = await res.json();
     cityReasonData.value = Array.isArray(data) ? data : [];
   } catch (err) {
-    console.error('載入城市資料失敗', err);
+    console.error('載入城市資料失敗', err.message);
   } finally {
     isCityLoading.value = false;
   }
 });
 
 const resetMap = () => {
-  mapRef.value?.resetCountySelection();
+  citiesMapRef.value?.resetCountySelection();
   selectedName.value = null;
 };
 </script>

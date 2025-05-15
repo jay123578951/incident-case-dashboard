@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-const selectedDate = ref({ year: '113', month: '01' });
+const selectedDate = ref({ year: '113', month: null });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
 const causeCategories = [
@@ -117,7 +117,10 @@ const reasonData = ref([]);
 const fetchReasonStats = async (year, month) => {
   try {
     isLoading.value = true;
-    const res = await fetch(`/json/cause-reasons/${year}${month}.json`);
+    
+    const safeMonth = month ?? '00';
+    const res = await fetch(`/json/cause-reasons/${year}${safeMonth}.json`);
+
     const { data } = await res.json();
     reasonData.value = Array.isArray(data) ? data : [];
   } catch (err) {

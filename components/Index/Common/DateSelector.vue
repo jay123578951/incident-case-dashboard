@@ -22,6 +22,7 @@
       item-title="text"
       item-value="value"
       variant="solo"
+      clearable
       hide-details
       flat
       max-width="200"
@@ -53,21 +54,15 @@ const emit = defineEmits(['update:modelValue'])
 
 const selectedYear = ref(props.modelValue?.year ?? null)
 const selectedMonth = ref(props.modelValue?.month ?? null)
-const years = ref(['113', '112'])
-// const months = ref(
-//   Array.from({ length: 12 }, (_, i) => {
-//     const value = String(i + 1).padStart(2, '0');
-//     const text = String(i + 1);
-//     return { value, text };
-//   })
-// );
-const months = ref([
-  { value: '01', text: '1' },
-  { value: '02', text: '2' },
-  { value: '03', text: '3' },
-  { value: '04', text: '4' },
-  { value: '05', text: '5' },
-])
+const years = ref(['113', '112', '111'])
+// const startYear = computed(() => years.value.at(-1));
+const months = ref(
+  Array.from({ length: 12 }, (_, i) => {
+    const value = String(i + 1).padStart(2, '0');
+    const text = String(i + 1);
+    return { value, text };
+  })
+);
 
 const onYearChange = (value) => {
   emit('update:modelValue', {

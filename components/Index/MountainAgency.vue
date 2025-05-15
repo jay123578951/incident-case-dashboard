@@ -6,7 +6,11 @@
     />
 
     <section>
-      <div class="w-full flex justify-between">
+      <div v-if="rawData.length === 0" class="text-center text-[#999]">
+        尚無統計資料
+      </div>
+
+      <div v-else class="w-full flex justify-between">
         <div class="w-[44%]">
           <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow p-4 mb-2">
             <li class="flex flex-col items-center justify-center pe-4">
@@ -82,7 +86,7 @@ defineOptions({
 const mapStore = useMapStore();
 const taiwanMapRef = ref(null);
 
-const selectedDate = ref({ year: '114', month: null });
+const selectedDate = ref({ year: '113', month: null });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
 
@@ -92,7 +96,9 @@ const isLoading = ref(false);
 const fetchMonthlyStats = async (year, month) => {
   try {
     isLoading.value = true;
-    const res = await fetch(`/json/total-agency/nationwide/${year}-1.json`);
+
+    const safeMonth = month ?? '00';
+    const res = await fetch(`/json/agency-summary/${year}${safeMonth}.json`);
     const { data } = await res.json();
     rawData.value = Array.isArray(data) ? data : [];
   } catch (err) {
@@ -119,7 +125,8 @@ const mapOptions = ref({
   defaultBorderColor: '#BCC2CC',
   // fadedBorderColor: '#BCC2CC ',
   enableHover: false,
-  enableTooltip: false
+  enableTooltip: false,
+  setupTaiwanFaded: true,
 });
 
 const enrichNationwideReasonData = (data) => {
@@ -132,8 +139,12 @@ const enrichNationwideReasonData = (data) => {
   const midCutoff = Math.floor(total * 0.5);
 
   return data.map((item) => {
+    // 移除目前拿到的資料裡含有的「管理處」三個字
+    const cleanName = item.name.replace(/管理處$/, '');
+    
     const base = {
       ...item,
+      name: cleanName,
       percent: totalCases ? (item.cases / totalCases) * 100 : 0
     };
 
@@ -182,7 +193,9 @@ watch(selectedName, async (name) => {
   if (!name) return;
   try {
     isCityLoading.value = true;
-    const res = await fetch(`/json/total-agency/agency/${selectedYear.value}-1/台北市.json`);
+
+    // 目前 API 需有「管理處」三個字，在結尾手動補上
+    const res = await fetch(`/json/agency-reason-summary/${selectedYear.value}00${name}管理處.json`);
     const { data } = await res.json();
     cityReasonData.value = Array.isArray(data) ? data : [];
   } catch (err) {

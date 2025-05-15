@@ -154,12 +154,12 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-::v-deep .no-hover.v-btn:hover {
+:deep(.no-hover.v-btn:hover) {
     background-color: inherit !important;
     box-shadow: none !important;
 }
 
-::v-deep .no-hover.v-btn:hover::before {
+:deep(.no-hover.v-btn:hover::before) {
     opacity: 0 !important;
 }
 </style>

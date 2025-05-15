@@ -35,9 +35,7 @@ watch(
         taiwanData.map(item => [item.name, { value: item.cases, level: item.level }])
       );
 
-      await loadCountyBoundaries(geo, (name) => {
-        console.log('點選縣市：', name);
-      });
+      await loadCountyBoundaries(geo);
 
       mapInitialized.value = true;
     }

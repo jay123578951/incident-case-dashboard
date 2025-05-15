@@ -93,9 +93,50 @@ paths:
                     items:
                       $ref: '#/components/schemas/StatisticItem'
 
+  /stats/monthly-detail-compare-last-year:
+    get:
+      summary: 月統計資料（去年同期比較）
+      description: 取得指定月份與「去年同月」的詳細統計資料
+      parameters:
+        - in: query
+          name: year
+          required: true
+          schema:
+            type: string
+            example: "114"
+        - in: query
+          name: month
+          required: true
+          schema:
+            type: string
+            example: "1"
+      responses:
+        '200':
+          description: 成功回傳去年同期比較資料
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  year:
+                    type: string
+                    example: "114"
+                  month:
+                    type: string
+                    example: "1"
+                  previousYear:
+                    type: string
+                    example: "113"
+                  statistics:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/StatisticBarItem'
+                        - $ref: '#/components/schemas/StatisticTextItem'
+
   /stats/cause-reasons:
     get:
-      summary: 事故原因數據統計年度
+      summary: 事故原因數據統計
       description: 回傳全國指定年度或年月各類事故原因的案件數、救援數與去年同期案件數比較。若未提供 month，則回傳整年度資料。
       parameters:
         - in: query
@@ -510,3 +551,48 @@ components:
                 type: number
               lastMonth:
                 type: number
+
+    StatisticBarItem:
+      type: object
+      required: [type, title, thisYear, lastYear]
+      properties:
+        type:
+          type: string
+          enum: [bar]
+          example: "bar"
+        title:
+          type: string
+          example: "案件數量 (件)"
+        thisYear:
+          type: integer
+          example: 46
+        lastYear:
+          type: integer
+          example: 58
+
+    StatisticTextItem:
+      type: object
+      required: [type, title, value]
+      properties:
+        type:
+          type: string
+          enum: [text]
+          example: "text"
+        title:
+          type: string
+          example: "受理案件前三名的縣市"
+        value:
+          type: array
+          items:
+            type: object
+            required: [name, thisYear, lastYear]
+            properties:
+              name:
+                type: string
+                example: "新北市"
+              thisYear:
+                type: integer
+                example: 16
+              lastYear:
+                type: integer
+                example: 23

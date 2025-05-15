@@ -38,9 +38,7 @@ watch(
         parkData.map(item => [item.name, { value: item.cases, level: item.level }])
       );
 
-      await loadParkBoundaries(geo, (name) => {
-        console.log('點選公園：', name);
-      });
+      await loadParkBoundaries(geo);
 
       mapInitialized.value = true;
     }

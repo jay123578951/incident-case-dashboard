@@ -68,14 +68,14 @@
                           :class="item.thisMonth > item.lastMonth ? 'text-[#A81B2B] bg-[#FFD4D8]' : 'text-[#227A69] bg-[#C4F5EB]'"
                           :style="{ width: item.thisMonthWidth }"
                         >
-                          <p>{{ selectedMonth }}月</p>
+                          <p class="truncate">{{ selectedMonth }}月</p>
                           <p>{{ item.thisMonth }}</p>
                         </div>
                         <div 
                           class="flex items-center justify-between text-[#666D80] bg-[#E9ECF2] rounded-md py-1.5 px-2.5 width-transition"
                           :style="{ width: item.lastMonthWidth }"
                         >
-                          <p>{{ item.previousMonth }}月</p>
+                          <p class="truncate">{{ item.previousMonth }}月</p>
                           <p>{{ item.lastMonth }}</p>
                         </div>
                       </div>
@@ -154,9 +154,9 @@
                       v-if="item.type === 'bar'
                       "
                       class="p-2.5 rounded-lg"
-                      :class="item.thisMonth > item.lastMonth ? 'bg-[#FFD4D8]' : 'bg-[#C4F5EB]'"
+                      :class="item.thisYear > item.lastYear ? 'bg-[#FFD4D8]' : 'bg-[#C4F5EB]'"
                     >
-                      <v-icon :icon="item.thisMonth > item.lastMonth ? 'custom:ic-trending_up' : 'custom:ic-trending_down'" size="24"></v-icon>
+                      <v-icon :icon="item.thisYear > item.lastYear ? 'custom:ic-trending_up' : 'custom:ic-trending_down'" size="24"></v-icon>
                     </div>
                   </div>
                   <div v-if="item.type === 'text'">
@@ -168,18 +168,18 @@
                       <div class="grid gap-y-2.5 w-full text-lg font-bold leading-5">
                         <div 
                           class="flex items-center justify-between rounded-md py-1.5 px-2.5 width-transition"
-                          :class="item.thisMonth > item.lastMonth ? 'text-[#A81B2B] bg-[#FFD4D8]' : 'text-[#227A69] bg-[#C4F5EB]'"
+                          :class="item.thisYear > item.lastYear ? 'text-[#A81B2B] bg-[#FFD4D8]' : 'text-[#227A69] bg-[#C4F5EB]'"
                           :style="{ width: item.thisMonthWidth }"
                         >
-                          <p>{{ formattedCurrentDate }}</p>
-                          <p>{{ item.thisMonth }}</p>
+                          <p class="truncate">{{ formattedCurrentDate }}</p>
+                          <p>{{ item.thisYear }}</p>
                         </div>
                         <div 
                           class="flex items-center justify-between text-[#666D80] bg-[#E9ECF2] rounded-md py-1.5 px-2.5 width-transition"
                           :style="{ width: item.lastMonthWidth }"
                         >
-                          <p>{{ formattedPreviousDate }}</p>
-                          <p>{{ item.lastMonth }}</p>
+                          <p class="truncate">{{ formattedPreviousDate }}</p>
+                          <p>{{ item.lastYear }}</p>
                         </div>
                       </div>
                       <div class="text-right">
@@ -216,7 +216,7 @@
                         </div>
                         <div class="flex items-center gap-x-2 text-right">
                           <p class="flex items-center gap-x-1 text-xl">
-                            <span class="text-2xl font-bold">{{ caseItem.thisMonth }}</span>
+                            <span class="text-2xl font-bold">{{ caseItem.thisYear }}</span>
                             <span class="text-[#666D80]">件</span>
                           </p>
                           <p class="flex items-center text-xl text-[#666D80]">
@@ -245,7 +245,8 @@
 
 <script setup>
 import { 
-  getPreviousMonth, 
+  getPreviousMonth,
+  getPreviousYear,
   getComparisonSign, 
   getComparisonPercentage, 
   getComparisonDifference,
@@ -256,13 +257,13 @@ defineOptions({
   inheritAttrs: true
 })
 
-const selectedDate = ref({ year: '114', month: '1' });
+const selectedDate = ref({ year: '113', month: '01' });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
 
 // 新增日期格式化的計算屬性
 const formattedCurrentDate = computed(() => `${selectedYear.value}年${selectedMonth.value}月`);
-const formattedPreviousDate = computed(() => `${selectedYear.value}年${getPreviousMonth(selectedMonth.value)}月`);
+const formattedPreviousDate = computed(() => `${getPreviousYear(selectedYear.value)}年${selectedMonth.value}月`);
 
 const tabs = [
   { label: '與上個月比較', value: 'lastMonth' },
@@ -278,7 +279,7 @@ const isLoadingLastYear = ref(false);
 const fetchMonthlyStats = async (year, month) => {
   try {
     isLoadingCurrent.value = true;
-    const url = `/json/total-monthly-statistics/${year}-${month}.json`;
+    const url = `/json/monthly-detail/${year}${month}.json`;
     const res = await fetch(url);
     const data = await res.json();
     rawData.value = data.statistics || [];
@@ -293,7 +294,7 @@ const fetchMonthlyStats = async (year, month) => {
 const fetchSamePeriodLastYearStats = async (year, month) => {
   try {
     isLoadingLastYear.value = true;
-    const url = `/json/total-monthly-statistics/same-period-last-year/${year}-${month}.json`;
+    const url = `/json/monthly-detail-compare-last-year/${year}${month}.json`;
     const res = await fetch(url);
     const data = await res.json();
     samePeriodLastYearData.value = data.statistics || [];
@@ -305,7 +306,6 @@ const fetchSamePeriodLastYearStats = async (year, month) => {
   }
 };
 
-// 同時觸發兩次請求
 watch([selectedYear, selectedMonth], ([year, month]) => {
   fetchMonthlyStats(year, month);
   fetchSamePeriodLastYearStats(year, month);
@@ -321,17 +321,17 @@ const previousMonth = computed(() => {
  * @param {Array} data
  * @returns {Array}
  */
- const processData = (data) => {
+ const processData = (data, { currentKey = 'thisMonth', compareKey = 'lastMonth' } = {}) => {
   return data.map((item) => {
     if (item.type === 'bar') {
       const base = {
         ...item,
         previousMonth: previousMonth.value,
-        comparisonSign: getComparisonSign(item.thisMonth, item.lastMonth),
-        comparisonPercentage: getComparisonPercentage(item.thisMonth, item.lastMonth),
-        comparisonDifference: getComparisonDifference(item.thisMonth, item.lastMonth),
+        comparisonSign: getComparisonSign(item[currentKey], item[compareKey]),
+        comparisonPercentage: getComparisonPercentage(item[currentKey], item[compareKey]),
+        comparisonDifference: getComparisonDifference(item[currentKey], item[compareKey]),
       };
-      const widths = calculateWidthPercentages(item.thisMonth, item.lastMonth);
+      const widths = calculateWidthPercentages(item[currentKey], item[compareKey]);
       return {
         ...base,
         thisMonthWidth: `${widths.currentPercentage}%`,
@@ -343,8 +343,8 @@ const previousMonth = computed(() => {
       const processedValues = item.value.map((subItem) => ({
         ...subItem,
         previousMonth: previousMonth.value,
-        comparisonSign: getComparisonSign(subItem.thisMonth, subItem.lastMonth),
-        comparisonDifference: getComparisonDifference(subItem.thisMonth, subItem.lastMonth),
+        comparisonSign: getComparisonSign(subItem[currentKey], subItem[compareKey]),
+        comparisonDifference: getComparisonDifference(subItem[currentKey], subItem[compareKey]),
       }));
 
       return {
@@ -353,18 +353,20 @@ const previousMonth = computed(() => {
       };
     }
 
-    // 預設不變的情況
     return item;
   });
 };
 
-
-// 當月資料處理
+// 處理當月與前月（預設 thisMonth vs lastMonth）
 const processedCurrentData = computed(() => processData(rawData.value));
 
-// 去年同期資料處理
-const processedLastYearData = computed(() => processData(samePeriodLastYearData.value));
-
+// 處理去年同期（使用 thisYear vs lastYear）
+const processedLastYearData = computed(() =>
+  processData(samePeriodLastYearData.value, {
+    currentKey: 'thisYear',
+    compareKey: 'lastYear'
+  })
+);
 </script>
 
 <style scoped>
