@@ -6,8 +6,12 @@
       :show-month="false"
     />
 
-    <section class="mb-10">
-      <ul class="grid grid-cols-6 gap-6">
+    <div v-if="selectedYear === dataStartYear" class="mb-4">
+      <IndexCommonAlert :data-start-year="dataStartYear" />
+    </div>
+
+    <section class="mb-4 md:mb-6 lg:mb-10">
+      <ul class="grid grid-cols-1 md:grid-cols-6 gap-2 md:gap-4 lg:gap-6">
         <li v-if="processedData.length === 0" class="col-span-6 text-center text-[#999]">
           尚無統計資料
         </li>
@@ -21,10 +25,10 @@
             'col-span-2': item.cols === '2'
           }"
         >
-          <div class="flex justify-between items-center mb-7">
+          <div class="flex justify-between items-center mb-5 lg:mb-7">
             <div>
-              <p class="text-[#666D80] text-xl font-medium mb-4">{{ item.title }}</p>
-              <p class="text-[40px] leading-10 font-bold">{{ item.thisYear }}</p>
+              <p class="text-[#666D80] text-[18px] lg:text-xl font-medium mb-[10px] lg:mb-4">{{ item.title }}</p>
+              <p class="text-[32px] lg:text-[40px] leading-10 font-bold">{{ item.thisYear }}</p>
             </div>
             <div
               class="p-3.5 rounded-[20px]"
@@ -33,11 +37,11 @@
               <v-icon :icon="item.icon" size="32" :color="item.iconColor" opacity="0.4" viewBox="0 0 32 32"></v-icon>
             </div>
           </div>
-          <div class="text-lg text-[#666D80]">
+          <div class="text-base lg:text-lg text-[#666D80]">
             <p>與{{ rawData?.previousYear }}年比較
               <span
                 v-if="item.formattedDifference"
-                class="px-2 text-lg"
+                class="px-2"
                 :class="{
                   'text-[#E85869]': item.sign === '+',
                   'text-[#44BDA7]': item.sign === '-'
@@ -57,7 +61,7 @@
       <DashboardBarChart
         v-if="chartSeries.length > 0"
         title="案件數與前一年同期比較"
-        :yAxisTitle="'案件數 (件)'"
+        :yAxisTitle="activeBreakpoint === 'sm' ? '' : '案件數 (件)'"
         :categories="categories"
         :series="chartSeries"
         :height="'455px'"
@@ -69,6 +73,8 @@
 </template>
 
 <script setup>
+import { useBreakpoints } from '@vueuse/core'
+
 defineOptions({
   inheritAttrs: true
 })
@@ -84,6 +90,7 @@ const fetchError = ref(null);
 
 const selectedDate = ref({ year: '113', month: '1' });
 const selectedYear = computed(() => selectedDate.value.year);
+const dataStartYear = '111';
 
 const categories = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
 const statCardUIConfigs = [
@@ -93,6 +100,12 @@ const statCardUIConfigs = [
   { icon: 'custom:death', cols: '2', iconColor: '#483EAD', bgColor: '#EAE8FF' },
   { icon: 'custom:person', cols: '2', iconColor: '#51596B', bgColor: '#E9ECF2' }
 ];
+const breakpoints = useBreakpoints({
+  sm: 0,
+  md: 768,
+  lg: 1024
+})
+const activeBreakpoint = breakpoints.active()
 
 const rawData = ref(null);
 const selectedType = ref('cases');

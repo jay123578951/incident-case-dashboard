@@ -1,0 +1,42 @@
+{
+  "year": "111",
+  "previousYear": "110",
+  "summary": [
+    {
+      "title": "年度案件數量 (件)",
+      "type": "cases",
+      "thisYear": 410,
+      "lastYear": 0
+    },
+    {
+      "title": "年度救援人數",
+      "type": "rescued",
+      "thisYear": 571,
+      "lastYear": 0
+    },
+    {
+      "title": "年度獲救人數",
+      "type": "rescued_safe",
+      "thisYear": 522,
+      "lastYear": 0
+    },
+    {
+      "title": "年度死亡人數",
+      "type": "death",
+      "thisYear": 41,
+      "lastYear": 0
+    },
+    {
+      "title": "年度失蹤人數",
+      "type": "missing",
+      "thisYear": 8,
+      "lastYear": 0
+    }
+  ],
+  "monthlyBreakdown": {
+    "cases": {
+      "111": [25, 34, 45, 35, 24, 37, 51, 22, 21, 36, 52, 28],
+      "110": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+  }
+}

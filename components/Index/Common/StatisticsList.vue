@@ -4,7 +4,7 @@
     :class="[
       loading
         ? 'grid-cols-2 gap-4'
-        : (rightColumn.length > 0 ? 'grid-cols-2 gap-4' : 'grid-cols-1')
+        : (rightColumn.length > 0 ? 'grid-cols-1 md:grid-cols-2 gap-4' : 'grid-cols-1')
     ]"
   >
     <template v-if="loading">

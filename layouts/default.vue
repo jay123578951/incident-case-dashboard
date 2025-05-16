@@ -5,12 +5,12 @@
 
     <!-- 實際內容層 -->
     <div class="relative z-10">
-      <v-container
+      <div
         class="!max-w-[1080px] mx-auto py-0 !px-4 md:!px-10 lg:!px-0"
         fluid
       >
         <NuxtPage />
-      </v-container>
+      </div>
     </div>
   </div>
 </template>

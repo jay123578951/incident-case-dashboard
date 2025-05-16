@@ -6,11 +6,15 @@
         <v-btn
           v-for="(item, index) in items"
           :key="index"
+          :ripple="false"
           variant="text"
           size="x-large"
-          class="nav-tab-btn !text-2xl !leading-9 !font-bold mx-4 px-1 !rounded-none relative"
-          :class="{ '!text-[#020203]': activeTab === index, '!text-[#7C8494]': activeTab !== index }"
-          @click="() => { activeTab = index; goToSection(item.id) }"
+          class="nav-tab-btn !text-2xl !leading-9 !font-bold mx-4 !px-1 !rounded-none relative hover:bg-transparent"
+          :class="{
+            '!text-[#020203]': activeTab === index,
+            '!text-[#7C8494]': activeTab !== index
+          }"
+          @click="() => { goToSection(item.id) }"
           ref="tabButtons"
         >
           {{ item.name }}
@@ -44,21 +48,19 @@
             <v-list-item
               v-for="(item, index) in items"
               :key="index"
-              class="text-center py-4"
+              class="text-center"
             >
               <v-btn
+                :ripple="false"
                 variant="text"
                 size="x-large"
-                class="no-hover nav-tab-btn !max-w-fit !text-2xl !leading-9 !font-bold mx-4 px-1 !rounded-none w-full"
+                class="nav-tab-btn !text-2xl !leading-9 !font-bold mx-4 !px-1 !rounded-none relative hover:bg-transparent"
                 :class="{
                   '!text-[#020203] !border-b-[4px] !border-[#67C0E0]': activeTab === index,
                   '!text-[#7C8494] !border-b-[4px] !border-transparent': activeTab !== index
                 }"
-                @click="() => {
-                  activeTab = index;
-                  goToSection(item.id);
-                  closeDrawer()
-                }"
+                @click="onDrawerClosed(item.id, index)"
+                ref="tabButtons"
               >
                 {{ item.name }}
               </v-btn>
@@ -84,15 +86,13 @@ const items = [
 ];
 
 const scrollStore = useScrollStore();
-
 const drawer = ref(false);
-const activeTab = ref(0);
+const activeTab = ref(0); // 同時控制底線與文字樣式
 const tabButtons = ref([]);
 const sliderStyle = ref({ left: '0px', width: '0px' });
-let observer = null;
 
 const updateSlider = () => {
-  if (window.innerWidth < 1024) return; // 僅限桌面版
+  if (window.innerWidth < 1024) return;
   nextTick(() => {
     const btn = tabButtons.value[activeTab.value]?.$el;
     if (btn) {
@@ -105,61 +105,96 @@ const updateSlider = () => {
   });
 };
 
-const goToSection = (id) => {
+const goToSection = (id, index) => {
+  activeTab.value = index;
   scrollStore.scrollTo(id);
-  activeTab.value = items.findIndex(item => item.id === id);
   updateSlider();
 };
 
-const closeDrawer = () => {
+const onDrawerClosed = (id, index) => {
+  closeDrawer(300);
   setTimeout(() => {
-    drawer.value = false;
-  }, 150);
+    goToSection(id, index);
+  }, 300);
 };
 
-const createObserver = () => {
-  const options = {
-    root: null,
-    rootMargin: '-50% 0px -50% 0px',
-    threshold: 0
+const closeDrawer = (delay = 150) => {
+  setTimeout(() => {
+    drawer.value = false;
+  }, delay);
+};
+
+const watchScrollAndUpdateTab = () => {
+  const handler = () => {
+    const buffer = 120;
+    let closestIndex = -1;
+    let minDistance = Infinity;
+
+    items.forEach((item, index) => {
+      const el = document.getElementById(item.id);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        const distance = Math.abs(rect.top);
+        if (rect.top >= 0 && rect.top < buffer && distance < minDistance) {
+          closestIndex = index;
+          minDistance = distance;
+        }
+      }
+    });
+
+    if (closestIndex !== -1 && closestIndex !== activeTab.value) {
+      activeTab.value = closestIndex;
+      updateSlider();
+    }
   };
 
-  observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      if (entry.isIntersecting) {
-        const index = items.findIndex(item => item.id === entry.target.id);
-        if (index !== -1) {
-          activeTab.value = index;
-          updateSlider();
-        }
-        break;
-      }
-    }
-  }, options);
-
-  items.forEach(item => {
-    const el = document.getElementById(item.id);
-    if (el) observer.observe(el);
+  window.addEventListener('scroll', handler, { passive: true });
+  onBeforeUnmount(() => {
+    window.removeEventListener('scroll', handler);
   });
 };
 
-onMounted(() => {
-  createObserver();
-  updateSlider();
-});
+const initializeActiveTabFromScroll = () => {
+  const buffer = 120;
+  let closestIndex = -1;
+  let minDistance = Infinity;
 
-onBeforeUnmount(() => {
-  if (observer) observer.disconnect();
+  items.forEach((item, index) => {
+    const el = document.getElementById(item.id);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      const distance = Math.abs(rect.top);
+      if (rect.top >= 0 && rect.top < buffer && distance < minDistance) {
+        closestIndex = index;
+        minDistance = distance;
+      }
+    }
+  });
+
+  if (closestIndex !== -1) {
+    activeTab.value = closestIndex;
+    updateSlider();
+  }
+};
+
+onMounted(() => {
+  updateSlider();
+  watchScrollAndUpdateTab();
+  initializeActiveTabFromScroll();
 });
 </script>
 
 <style scoped>
 :deep(.no-hover.v-btn:hover) {
-    background-color: inherit !important;
-    box-shadow: none !important;
+  background-color: inherit !important;
+  box-shadow: none !important;
 }
 
 :deep(.no-hover.v-btn:hover::before) {
-    opacity: 0 !important;
+  opacity: 0 !important;
+}
+
+:deep(.v-btn__overlay) {
+  opacity: 0 !important;
 }
 </style>

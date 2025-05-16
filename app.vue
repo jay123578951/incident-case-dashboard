@@ -2,9 +2,7 @@
   <v-app>
     <CommonHeader v-if="showHeaderFooter" />
 
-    <v-main class="pt-0">
-      <NuxtLayout />
-    </v-main>
+    <NuxtLayout />
 
     <CommonFooter v-if="showHeaderFooter" />
   </v-app>

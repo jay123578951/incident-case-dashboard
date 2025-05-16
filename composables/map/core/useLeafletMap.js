@@ -32,7 +32,7 @@ export function useLeafletMap() {
 
     // 建立 Leaflet 地圖實例
     const leafletMap = L.map(elementId, {
-      center: [23.7, 121],
+      center: [23.7, 121.1],
       zoom: 7.8,
       dragging: false,            // 禁用拖曳
       zoomControl: false,         // 禁用右上角的 + / - 控制鈕

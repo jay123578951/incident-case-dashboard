@@ -10,19 +10,20 @@
         尚無統計資料
       </div>
 
-      <div v-else class="w-full flex justify-between">
-        <div class="w-[44%]">
+      <div v-else class="w-full flex flex-col lg:flex-row justify-between gap-8 lg:gap-0">
+        <div class="w-full lg:w-[44%] flex flex-col items-center lg:items-stretch">
           <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow p-4 mb-2">
             <li class="flex flex-col items-center justify-center pe-4">
-              <p class="text-[28px] font-bold mb-1.5">{{ totalCases }}</p>
+              <p class="text-[28px] font-bold mb-0 md:mb-1.5">{{ totalCases }}</p>
               <p class="text-lg text-[#666D80]">案件數量</p>
             </li>
             <li class="flex flex-col items-center justify-center ps-4">
-              <p class="text-[28px] font-bold mb-1.5">{{ totalRescued }}</p>
+              <p class="text-[28px] font-bold mb-0 md:mb-1.5">{{ totalRescued }}</p>
               <p class="text-lg text-[#666D80]">救援人數</p>
             </li>
           </ul>
-          <div class="relative w-full h-[620px]">
+
+          <div class="relative w-full max-w-[420px] h-[620px]">
             <ClientOnly>
               <IndexMapTaiwanMap
                 ref="taiwanMapRef"
@@ -40,8 +41,10 @@
           </div>
         </div>
         <template v-if="!selectedName">
-          <div class="w-5/12">
-            <h2 class="text-2xl font-bold mb-4">全國山域機關統計</h2>
+          <div class="w-full lg:w-5/12">
+            <h2 class="text-2xl font-bold mb-4">
+              {{ selectedDate.year }}年{{ selectedMonthName }} 全國山域機關統計
+            </h2>
             <IndexCommonStatisticsList
               :list-title="ListTitle"
               :left-column="leftColumn"
@@ -51,9 +54,11 @@
           </div>
         </template>
         <template v-else>
-          <div class="w-[56%]">
+          <div class="w-full lg:w-[56%]">
             <div class="flex justify-between items-center mb-4">
-              <h2 class="text-2xl font-bold">{{ selectedName }}數據統計</h2>
+              <h2 class="text-2xl font-bold">
+                {{ selectedDate.year }}年{{ selectedMonthName }} 數據統計
+              </h2>
               <v-btn
                 variant="text"
                 size="large"
@@ -79,6 +84,8 @@
 </template>
 
 <script setup>
+import { useBreakpoints } from '@vueuse/core';
+
 defineOptions({
   inheritAttrs: true
 })
@@ -89,6 +96,17 @@ const taiwanMapRef = ref(null);
 const selectedDate = ref({ year: '113', month: null });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
+const selectedMonthName = computed(() => getMonthName(selectedMonth.value));
+const getMonthName = (month) => {
+  const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+  return monthNames[month - 1];
+};
+const breakpoints = useBreakpoints({
+  sm: 0,
+  md: 768,
+  lg: 1024
+})
+const activeBreakpoint = breakpoints.active()
 
 const rawData = ref([]);
 const isLoading = ref(false);
@@ -186,8 +204,8 @@ const sortedReasonData = computed(() => [...activeReasonData.value].sort((a, b) 
 const leftColumn = computed(() => sortedReasonData.value);
 const rightColumn = computed(() => []);
 
-const cityLeftColumn = computed(() => computedCityReasonData.value.slice(0, 9));
-const cityRightColumn = computed(() => computedCityReasonData.value.slice(9, 13));
+const cityLeftColumn = computed(() => activeBreakpoint.value === 'sm' ? computedCityReasonData.value : computedCityReasonData.value.slice(0, 9));
+const cityRightColumn = computed(() => activeBreakpoint.value === 'sm' ? [] : computedCityReasonData.value.slice(9, 13));
 
 watch(selectedName, async (name) => {
   if (!name) return;

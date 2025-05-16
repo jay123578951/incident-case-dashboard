@@ -1,40 +1,48 @@
 <template>
   <div class="flex items-center gap-2">
-    <v-select
-      v-if="showYear"
-      v-model="selectedYear"
-      label="年度"
-      :items="years"
-      variant="solo"
-      hide-details
-      flat
-      max-width="200"
-      append-inner-icon="mdi-chevron-down"
-      menu-icon=""
-      class="w-[200px]"
-      @update:model-value="onYearChange"
-    />
-    <v-select
-      v-if="showMonth"
-      v-model="selectedMonth"
-      label="月份"
-      :items="months"
-      item-title="text"
-      item-value="value"
-      variant="solo"
-      clearable
-      hide-details
-      flat
-      max-width="200"
-      append-inner-icon="mdi-chevron-down"
-      menu-icon=""
-      class="w-[200px]"
-      @update:model-value="onMonthChange"
-    />
+    <client-only>
+      <v-select
+        v-if="showYear"
+        v-model="selectedYear"
+        label="年度"
+        :items="years"
+        variant="solo"
+        hide-details
+        flat
+        theme="light"
+        :density="computedDensity"
+        max-width="200"
+        append-inner-icon="mdi-chevron-down"
+        menu-icon=""
+        class="w-[140px] lg:w-[200px]"
+        @update:model-value="onYearChange"
+      >
+      </v-select>
+      <v-select
+        v-if="showMonth"
+        v-model="selectedMonth"
+        label="月份"
+        :items="months"
+        item-title="text"
+        item-value="value"
+        variant="solo"
+        :clearable="enableClearable"
+        hide-details
+        flat
+        :density="computedDensity"
+        max-width="200"
+        append-inner-icon="mdi-chevron-down"
+        menu-icon=""
+        class="w-[140px] lg:w-[200px]"
+        @update:model-value="onMonthChange"
+      />
+    </client-only>
   </div>
 </template>
 
 <script setup>
+import { useBreakpoints } from '@vueuse/core'
+
 const props = defineProps({
   modelValue: {
     type: Object,
@@ -47,15 +55,16 @@ const props = defineProps({
   showMonth: {
     type: Boolean,
     default: true
+  },
+  enableClearable: {
+    type: Boolean,
+    default: true
   }
 })
 
 const emit = defineEmits(['update:modelValue'])
 
-const selectedYear = ref(props.modelValue?.year ?? null)
-const selectedMonth = ref(props.modelValue?.month ?? null)
 const years = ref(['113', '112', '111'])
-// const startYear = computed(() => years.value.at(-1));
 const months = ref(
   Array.from({ length: 12 }, (_, i) => {
     const value = String(i + 1).padStart(2, '0');
@@ -63,6 +72,37 @@ const months = ref(
     return { value, text };
   })
 );
+const breakpoints = useBreakpoints({
+  sm: 0,
+  md: 768,
+  lg: 1024
+})
+const activeBreakpoint = breakpoints.active()
+const computedDensity = computed(() => {
+  if (activeBreakpoint.value === 'sm') return 'comfortable'
+  if (activeBreakpoint.value === 'md') return 'comfortable'
+  return 'default'
+})
+
+const selectedYear = computed({
+  get: () => props.modelValue.year,
+  set: (val) => {
+    emit('update:modelValue', {
+      year: val,
+      month: props.modelValue.month
+    });
+  }
+});
+
+const selectedMonth = computed({
+  get: () => props.modelValue.month,
+  set: (val) => {
+    emit('update:modelValue', {
+      year: props.modelValue.year,
+      month: val
+    });
+  }
+});
 
 const onYearChange = (value) => {
   emit('update:modelValue', {
@@ -77,11 +117,11 @@ const onMonthChange = (value) => {
     month: value
   })
 }
-
-watch(() => props.modelValue, (newVal) => {
-  selectedYear.value = newVal.year
-  if (props.showMonth) {
-    selectedMonth.value = newVal.month
-  }
-}, { deep: true })
 </script>
+
+<style scoped>
+.v-theme--light{
+  --v-hover-opacity: 0.04;
+  --v-theme-overlay-multiplier: 1;
+}
+</style>

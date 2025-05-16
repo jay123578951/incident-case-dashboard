@@ -2,11 +2,13 @@
   <BaseChart
     :options="chartOptions"
     :height="height"
+    :width="width"
     :showBorder="showBorder"
   />
 </template>
 
 <script setup>
+import { useBreakpoints } from '@vueuse/core'
 import BaseChart from './BaseChart.vue';
 
 const props = defineProps({
@@ -15,11 +17,18 @@ const props = defineProps({
   series: Array,
   yAxisTitle: String,
   height: String,
+  width: String,
   spacing: { type: Number, default: 30 },
   showBackground: { type: Boolean, default: true },
   showBorder: { type: Boolean, default: true },
   showShadow: { type: Boolean, default: true }
 });
+const breakpoints = useBreakpoints({
+  sm: 0,
+  md: 768,
+  lg: 1024
+})
+const activeBreakpoint = breakpoints.active()
 
 const chartOptions = computed(() => ({
   chart: {
@@ -34,7 +43,6 @@ const chartOptions = computed(() => ({
       fontSize: '24px', 
       fontWeight: 'bold'
     },
-    margin: 20,
   },
   plotOptions: {
     series: { animation: { duration: 500 } },
@@ -45,7 +53,7 @@ const chartOptions = computed(() => ({
       dataLabels: {
         enabled: true,
         format: '<b>{point.name}</b><br>{point.percentage:.2f}%',
-        distance: 46,
+        distance: activeBreakpoint.value === 'sm' ? 0 : 20,
         style: {
           color: '#51596B'
         }

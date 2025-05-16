@@ -2,16 +2,12 @@
   <div v-bind="$attrs">
     <IndexCommonDateHeader
       title="事故原因數據統計"
-      :show-year="false"
-      :show-month="false"
+      v-model="selectedDate"
     />
 
-    <section class="mb-20">
-      <div class="mb-6">
-        <IndexCommonSubtitle title="事故原因前五名" />
-      </div>
-      <div class="mb-6 flex justify-center">
-        <IndexCommonDateSelector v-model="selectedDate" />
+    <section class="mb-10 lg:mb-20">
+      <div class="mb-6 md:mb-5 lg:mb-6">
+        <IndexCommonSubtitle :title="`${selectedDate.year}年 事故原因前五名`" />
       </div>
 
       <template v-if="reasonData.length === 0">
@@ -20,18 +16,18 @@
         </div>
       </template>
       <template v-else>
-        <ul class="grid grid-cols-6 gap-6">
+        <ul class="grid grid-cols-1 lg:grid-cols-6 gap-2.5 lg:gap-6">
           <li
             v-for="(item, index) of top5Reasons"
-          :key="index"
-          class="col-span-2 flex items-center justify-between bg-white rounded-[12px] overflow-hidden pe-5 border border-[rgba(0, 0, 0, 0.05)] shadow-sm"
-          :class="{
-            'col-start-2': index === 0
-          }"
-        >
+            :key="index"
+            class="col-span-1 lg:col-span-2 flex items-center justify-between bg-white rounded-[12px] overflow-hidden pe-5 border border-[rgba(0, 0, 0, 0.05)] shadow-sm"
+            :class="{
+              'lg:col-start-2': index === 0
+            }"
+          >
           <div class="flex items-center gap-x-3">
             <div class="bg-gradient-to-r from-[#64D1BD] to-[#2DBFC6] w-14 aspect-square flex items-center justify-center rounded-br-[20px] py-[9px]">
-              <p class="text-[28px] font-bold text-white">{{ index + 1 }}</p>
+              <p class="text-2xl md:text-[28px] font-bold text-white">{{ index + 1 }}</p>
             </div>
             <p class="text-2xl font-bold text-[#51596B]">{{ item.name }}</p>
           </div>
@@ -42,11 +38,8 @@
     </section>
 
     <section>
-      <div class="mb-6">
-        <IndexCommonSubtitle title="事故原因比例分布" />
-      </div>
-      <div class="mb-6 flex justify-center">
-        <IndexCommonDateSelector v-model="selectedDate" />
+      <div class="mb-6 md:mb-5 lg:mb-6">
+        <IndexCommonSubtitle :title="`${selectedDate.year}事 故原因比例分布`" />
       </div>
 
       <template v-if="reasonData.length === 0">
@@ -55,34 +48,35 @@
         </div>
       </template>
       <template v-else>
-        <div class="w-full flex justify-between gap-x-6">
-          <div class="w-[44%]">
-        <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow-sm p-4 mb-10">
-          <li class="flex flex-col items-center justify-center pe-4">
-            <p class="text-[28px] font-bold mb-1.5">{{ totalCases }}</p>
-            <p class="text-lg text-[#666D80]">案件數量</p>
-          </li>
-          <li class="flex flex-col items-center justify-center ps-4">
-            <p class="text-[28px] font-bold mb-1.5">{{ totalRescued }}</p>
-            <p class="text-lg text-[#666D80]">救援人數</p>
-          </li>
-        </ul>
-        <DashboardPieChart
-          :series="chartSeries"
-          :height="'487px'"
-          :spacing="0"
-          :showBackground="false"
-          :showBorder="false"
-          :showShadow="false"
-        />
-      </div>
-      <div class="w-[56%]">
-        <IndexCommonStatisticsList
-          :list-title="ListTitle"
-          :left-column="leftColumn"
-          :right-column="rightColumn"
-          mode="percent"
-        />
+        <div class="w-full flex flex-col lg:flex-row gap-8 lg:gap-6">
+          <div class="w-full lg:w-[44%] flex flex-col items-center lg:items-stretch">
+            <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow-sm p-4 mb-4 md:mb-10">
+              <li class="flex flex-col items-center justify-center pe-4">
+                <p class="text-[28px] font-bold mb-0 md:mb-1.5">{{ totalCases }}</p>
+                <p class="text-lg text-[#666D80]">案件數量</p>
+              </li>
+              <li class="flex flex-col items-center justify-center ps-4">
+                <p class="text-[28px] font-bold mb-0 md:mb-1.5">{{ totalRescued }}</p>
+                <p class="text-lg text-[#666D80]">救援人數</p>
+              </li>
+            </ul>
+            <DashboardPieChart
+              :series="chartSeries"
+              :height="activeBreakpoint === 'sm' ? 'fit-content' : '487px'"
+              :width="activeBreakpoint === 'sm' ? '360px' : ''"
+              :spacing="0"
+              :showBackground="false"
+              :showBorder="false"
+              :showShadow="false"
+            />
+          </div>
+          <div class="w-full lg:w-[56%]">
+            <IndexCommonStatisticsList
+              :list-title="ListTitle"
+              :left-column="leftColumn"
+              :right-column="rightColumn"
+              mode="percent"
+            />
           </div>
         </div>
       </template>
@@ -91,6 +85,8 @@
 </template>
 
 <script setup>
+import { useBreakpoints } from '@vueuse/core'
+
 const selectedDate = ref({ year: '113', month: null });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
@@ -109,6 +105,12 @@ const causeCategories = [
   { name: '不明', color: '#5686CC' },
   { name: '其他', color: '#7CA8E5' }
 ];
+const breakpoints = useBreakpoints({
+  sm: 0,
+  md: 768,
+  lg: 1024
+})
+const activeBreakpoint = breakpoints.active()
 
 const ListTitle = ref(['原因', '案件數', '佔比%']);
 const isLoading = ref(false);
@@ -165,6 +167,6 @@ const chartSeries = computed(() => [
   }
 ]);
 
-const leftColumn = computed(() => mergedData.value.slice(0, 9));
-const rightColumn = computed(() => mergedData.value.slice(9, 13));
+const leftColumn = computed(() => activeBreakpoint.value === 'sm' ? mergedData.value : mergedData.value.slice(0, 9));
+const rightColumn = computed(() => activeBreakpoint.value === 'sm' ? [] : mergedData.value.slice(9, 13));
 </script>

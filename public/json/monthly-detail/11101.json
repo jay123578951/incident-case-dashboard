@@ -1,0 +1,63 @@
+{
+  "year": "111",
+  "month": "1",
+  "previousMonth": "12",
+  "statistics": [
+    {
+      "type": "bar",
+      "title": "案件數量 (件)",
+      "thisMonth": 28,
+      "lastMonth": 0
+    },
+    {
+      "type": "bar",
+      "title": "死亡人數 (人)",
+      "thisMonth": 3,
+      "lastMonth": 0
+    },
+    {
+      "type": "bar",
+      "title": "消防員出勤人次 (人)",
+      "thisMonth": 226,
+      "lastMonth": 0
+    },
+    {
+      "type": "bar",
+      "title": "直升機出勤次數 (次)",
+      "thisMonth": 5,
+      "lastMonth": 0
+    },
+    {
+      "type": "text",
+      "title": "受理案件前三名的縣市",
+      "value": [
+        {
+          "name": "臺中市",
+          "thisMonth": 7,
+          "lastMonth": 0
+        },
+        {
+          "name": "花蓮縣",
+          "thisMonth": 2,
+          "lastMonth": 0
+        },
+        {
+          "name": "南投縣",
+          "thisMonth": 2,
+          "lastMonth": 0
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "受理案件前三名的山域機關",
+      "value": [
+        {
+          "name": "玉山國家公園管理處",
+          "thisMonth": 0,
+          "lastMonth": 0
+        }
+      ]
+    }
+  ]
+}

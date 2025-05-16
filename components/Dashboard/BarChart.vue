@@ -7,7 +7,15 @@
 </template>
 
 <script setup>
+import { useBreakpoints } from '@vueuse/core'
 import BaseChart from './BaseChart.vue';
+
+const breakpoints = useBreakpoints({
+  sm: 0,
+  md: 768,
+  lg: 1024
+})
+const activeBreakpoint = breakpoints.active()
 
 const props = defineProps({
   title: String,
@@ -23,7 +31,8 @@ const chartOptions = computed(() => ({
     type: 'column',
     animation: true,
     backgroundColor: props.showBackground ? 'white' : 'transparent',
-    spacing: 30
+    spacing: activeBreakpoint.value === 'sm' ? 16 : 30,
+    spacingTop: activeBreakpoint.value === 'sm' ? 24 : 30,
   },
   title: { 
     text: props.title, 
@@ -31,13 +40,15 @@ const chartOptions = computed(() => ({
       fontSize: '24px', 
       fontWeight: 'bold'
     },
-    margin: 20,
+    margin: activeBreakpoint.value === 'sm' ? 24 : 20,
   },
   xAxis: { categories: props.categories },
   yAxis: { title: { text: props.yAxisTitle } },
   plotOptions: {
     series: { animation: { duration: 500 } },
     column: {
+      stacking: activeBreakpoint.value === 'sm' ? 'normal' : '',
+      grouping: activeBreakpoint.value === 'sm' ? false : true,
       dataLabels: {
         enabled: false
       }

@@ -8,12 +8,15 @@
     </div>
     <div
       ref="chartRef"
-      class="w-full rounded-2xl"
+      class="w-full max-w-full rounded-2xl"
       :class="{
         'border border-[rgba(0, 0, 0, 0.05)]': props.showBorder,
         'shadow-sm': props.showShadow
       }"
-      :style="{ height: props.height }"
+      :style="{
+        height: props.height,
+        width: props.width
+      }"
     ></div>
   </div>
 </template>
@@ -24,6 +27,7 @@ import Highcharts from 'highcharts';
 const props = defineProps({
   options: { type: Object, required: true },
   height: { type: String, default: '24rem' },
+  width: { type: String, default: '' },
   showLoadingBackground: { type: Boolean, default: true },
   showBorder: { type: Boolean, default: false },
   showShadow: { type: Boolean, default: false }
