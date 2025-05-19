@@ -43,6 +43,7 @@ export function useLeafletMap() {
       attributionControl: false,  // 禁用地圖來源
       zoomSnap: 0,
       zoomDelta: 0.25,
+      renderer: L.svg(),
       // maxBounds: [[20.5, 117.5], [26.5, 123.5]]
     });
 

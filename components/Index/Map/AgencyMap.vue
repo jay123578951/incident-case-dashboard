@@ -56,19 +56,16 @@ const initParkBoundaries = async () => {
   }
 
   await loadParkBoundaries(geojson.value);
+
+  // 載入後再 reset 樣式
+  resetParkSelection();
 };
 
-/**
- * 由外部主動呼叫的 reload 方法
- */
 const reloadAgencyGeoJSON = async (newParkData = props.parkData) => {
   try {
     isLoadingGeoJSON.value = true;
 
-    // 建立地圖（如尚未建立）
-    if (!map.value) {
-      await createMap(parkMapContainer.value, { showTile: false });
-    }
+    await waitForMapReady(); // 等待地圖準備完成
 
     // 載入 GeoJSON
     const res = await fetch('/geoJSON/national_park_simplify_filtered.geojson');
@@ -88,19 +85,27 @@ const reloadAgencyGeoJSON = async (newParkData = props.parkData) => {
   }
 };
 
-// onMounted(async () => {
-//   try {
-//     isLoadingGeoJSON.value = true;
-//     await createMap(parkMapContainer.value, { showTile: false });
+const waitForMapReady = async () => {
+  while (!isMapReady.value) {
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+};
 
-//     const res = await fetch('/geoJSON/national_park_simplify_filtered.geojson');
-//     geojson.value = await res.json();
-//   } catch (err) {
-//     console.error('載入公園圖層失敗:', err);
-//   } finally {
-//     isLoadingGeoJSON.value = false;
-//   }
-// });
+onMounted(async () => {
+  try {
+    isLoadingGeoJSON.value = true;
+    await createMap(parkMapContainer.value, { showTile: false });
+
+    const res = await fetch('/geoJSON/national_park_simplify_filtered.geojson');
+    geojson.value = await res.json();
+
+    await initParkBoundaries();
+  } catch (err) {
+    console.error('載入公園圖層失敗:', err);
+  } finally {
+    isLoadingGeoJSON.value = false;
+  }
+});
 
 defineExpose({
   resetParkSelection,

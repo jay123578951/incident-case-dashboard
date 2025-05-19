@@ -127,13 +127,15 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
    * 滑鼠移入高亮
    */
   const handleHover = (layer) => {
-    layer.setStyle({
-      weight: selectedBorderWeight,
-      color: defaultColor,
-      dashArray: '',
-      fillOpacity: 1
-    });
-    // layer.bringToFront();
+    const name = layer.feature.properties.COUNTYNAME;
+    if (name !== selectedCounty.value) {
+      layer.setStyle({
+        weight: borderWeight,
+        color: defaultColor,
+        dashArray: '',
+        fillOpacity: 1
+      });
+    }
   };
 
   /**
@@ -148,6 +150,8 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
    * 點擊縣市事件
    */
   const handleCountyClick = async (feature, layer, callback) => {
+    clearSelectedOutline();
+
     const name = feature.properties.COUNTYNAME;
     selectedCounty.value = name;
 
@@ -163,21 +167,45 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
   const drawSelectedOutline = async (feature) => {
     const L = window.L || (await import('leaflet'));
   
-    // 清除前一次畫的外框
+    // 清除前一次
     if (selectedOutlineLayer.value) {
       map.value.removeLayer(selectedOutlineLayer.value);
     }
   
-    // 建立新的 outline layer
-    selectedOutlineLayer.value = L.geoJSON(feature.geometry, {
+    // 陰影底層
+    const shadow = L.geoJSON(feature.geometry, {
       style: {
-        color: '#666D80',    // 外框顏色
-        weight: 2.5,         // 外框粗細
-        fillOpacity: 0,      // 不填色
-        opacity: 1,
+        color: '#999',
+        weight: 5,
+        opacity: 0.6,
+        fill: false
       }
     }).addTo(map.value);
-  };  
+  
+    // 上層白邊
+    const outline = L.geoJSON(feature.geometry, {
+      style: {
+        color: '#fff',
+        weight: 2,
+        opacity: 1,
+        fill: false
+      }
+    }).addTo(map.value);
+  
+    // 綁定為 group，方便移除
+    selectedOutlineLayer.value = L.layerGroup([shadow, outline]).addTo(map.value);
+  };
+
+
+  /**
+   * 清除選中縣市的外框
+   */
+  const clearSelectedOutline = () => {
+    if (selectedOutlineLayer.value) {
+      map.value.removeLayer(selectedOutlineLayer.value);
+      selectedOutlineLayer.value = null;
+    }
+  };
 
   /**
    * 將選中縣市高亮，其他變淺
@@ -190,7 +218,7 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
       const level = countyData?.level;
 
       layer.setStyle({
-        fillOpacity: isSelected ? 1 : 0.3,
+        fillOpacity: isSelected ? 0.8 : 0.3,
         fillColor: isSelected
           ? getPrimaryColorFromLevel(level)
           : getFadedColorFromLevel(level),

@@ -11,6 +11,7 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
   const fadedColor = options.fadedBorderColor || '#BCC2CC';
   const enableHover = options.enableHover !== false;
   const enableTooltip = options.enableTooltip !== false;
+  const selectedOutlineLayer = ref(null);
 
   const parkLayer = ref(null);
   const selectedPark = ref(null);
@@ -49,6 +50,10 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
   };
 
   const loadParkBoundaries = async (geojson, onClick = () => {}) => {
+    if (parkLayer.value) {
+      map.value.removeLayer(parkLayer.value);
+    }
+
     parkLayer.value = L.geoJSON(geojson, {
       style: feature => getFeatureStyle(feature),
       onEachFeature: (feature, layer) => {
@@ -112,7 +117,6 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
       dashArray: '',
       fillOpacity: 1
     });
-    layer.bringToFront();
   };
 
   /**
@@ -128,13 +132,62 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
    */
   const mapStore = useMapStore();
   const handleParkClick = async (feature, layer, callback) => {
+    resetParkSelection();
+    clearSelectedOutline();
+
     const name = feature.properties.Name;
     selectedPark.value = name;
 
     highlightSelectedPark();
+    drawSelectedOutline(feature);
     emit?.('select-park', name);
     mapStore.setTaiwanFaded(true);
     callback(name);
+  };
+
+  /**
+   * 畫出選中縣市的外框
+   */
+  const drawSelectedOutline = async (feature) => {
+    const L = window.L || (await import('leaflet'));
+  
+    // 清除前一次
+    if (selectedOutlineLayer.value) {
+      map.value.removeLayer(selectedOutlineLayer.value);
+    }
+  
+    // 陰影底層
+    const shadow = L.geoJSON(feature.geometry, {
+      style: {
+        color: '#999',
+        weight: 5,
+        opacity: 0.6,
+        fill: false
+      }
+    }).addTo(map.value);
+  
+    // 上層白邊
+    const outline = L.geoJSON(feature.geometry, {
+      style: {
+        color: '#fff',
+        weight: 2,
+        opacity: 1,
+        fill: false
+      }
+    }).addTo(map.value);
+  
+    // 綁定為 group，方便移除
+    selectedOutlineLayer.value = L.layerGroup([shadow, outline]).addTo(map.value);
+  };
+
+  /**
+   * 清除選中縣市的外框
+   */
+  const clearSelectedOutline = () => {
+    if (selectedOutlineLayer.value) {
+      map.value.removeLayer(selectedOutlineLayer.value);
+      selectedOutlineLayer.value = null;
+    }
   };
 
   /**
@@ -164,12 +217,17 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
   const resetParkSelection = () => {
     selectedPark.value = null;
 
+    if (selectedOutlineLayer.value) {
+      map.value.removeLayer(selectedOutlineLayer.value);
+      selectedOutlineLayer.value = null;
+    }
+
     parkLayer.value.eachLayer(layer => {
       const feature = layer.feature;
       const style = getFeatureStyle(feature);
       layer.setStyle(style);
     });
-
+  
     mapStore.setTaiwanFaded(false);
   };
 

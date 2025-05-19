@@ -1,6 +1,7 @@
 <template>
   <div v-bind="$attrs">
     <IndexCommonDateHeader
+      ref="dateHeaderRef"
       title="各山域機關數據統計"
       v-model="selectedDate"
     />
@@ -23,7 +24,7 @@
             </li>
           </ul>
 
-          <div class="relative w-full max-w-[420px] h-[630px]">
+          <div class="relative w-full max-w-[420px] h-[620px]">
             <ClientOnly>
               <IndexMapTaiwanMap
                 ref="taiwanMapRef"
@@ -57,7 +58,7 @@
           <div class="w-full lg:w-[56%]">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-2xl font-bold">
-                {{ selectedDate.year }}年{{ selectedMonthName }} 數據統計
+                {{ selectedDate.year }}年{{ selectedMonthName }} {{ selectedName }}統計
               </h2>
               <v-btn
                 variant="text"
@@ -93,6 +94,7 @@ defineOptions({
 const mapStore = useMapStore();
 const taiwanMapRef = ref(null);
 
+const dateHeaderRef = ref(null);
 const selectedDate = ref({ year: '113', month: null });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
@@ -128,11 +130,24 @@ const fetchMonthlyStats = async (year, month) => {
 };
 
 watch([selectedYear, selectedMonth], async ([y, m]) => {
+  if (dateHeaderRef.value) {
+    dateHeaderRef.value.closeSelect();
+  }
+
+  mapStore.setTaiwanFaded(false);
+
   await fetchMonthlyStats(y, m);
   
   if (taiwanMapRef.value?.reloadGeoJSON) {
     await taiwanMapRef.value.reloadGeoJSON();
+  }
+
+  if (mapRef.value?.reloadAgencyGeoJSON) {
     await mapRef.value.reloadAgencyGeoJSON();
+  }
+
+  if (taiwanMapRef.value?.countyBoundary) {
+    selectedName.value = null;
   }
 }, { immediate: true });
 
@@ -146,7 +161,6 @@ const cityListTitle = ref(['原因', '案件數', '佔比']);
 
 const mapOptions = ref({
   defaultBorderColor: '#BCC2CC',
-  // fadedBorderColor: '#BCC2CC ',
   enableHover: false,
   enableTooltip: false,
   setupTaiwanFaded: true,
@@ -218,26 +232,16 @@ watch(selectedName, async (name) => {
   try {
     isCityLoading.value = true;
 
-    // 注意：API 名稱邏輯硬編碼，記得控制格式
     const res = await fetch(`/json/agency-reason-summary/${selectedYear.value}00${name}管理處.json`);
     const { data } = await res.json();
 
-    // 更新 cityReasonData（為 computedGeoJSON 準備）
     cityReasonData.value = Array.isArray(data) ? data : [];
-
-    // 等待 computed 完成（如果你依賴 computedCityReasonData）
-    await nextTick();
-
-    // 主動更新地圖（以 mapRef 為例）
-    if (mapRef.value?.reloadAgencyGeoJSON) {
-      await mapRef.value.reloadAgencyGeoJSON();
-    }
   } catch (err) {
     console.error('載入城市資料失敗', err);
   } finally {
     isCityLoading.value = false;
   }
-}, { immediate: true });
+});
 
 const handleSelectPark = (name) => {
   selectedName.value = name;
