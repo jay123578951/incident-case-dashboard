@@ -127,19 +127,6 @@ const fetchMonthlyStats = async (year, month) => {
   }
 };
 
-// watch([selectedYear, selectedMonth], ([y, m]) => {
-//   fetchMonthlyStats(y, m);
-// }, { immediate: true });
-
-// watch([selectedYear, selectedMonth], async ([y, m]) => {
-//   await fetchMonthlyStats(y, m);
-//   await nextTick(); // 確保 computedReasonData 已更新
-
-//   if (taiwanMapRef.value?.reloadGeoJSON) {
-//     await taiwanMapRef.value.reloadGeoJSON();
-//   }
-// }, { immediate: true });
-
 watch([selectedYear, selectedMonth], async ([y, m]) => {
   await fetchMonthlyStats(y, m);
   
@@ -225,22 +212,6 @@ const rightColumn = computed(() => []);
 const cityLeftColumn = computed(() => activeBreakpoint.value === 'sm' ? computedCityReasonData.value : computedCityReasonData.value.slice(0, 9));
 const cityRightColumn = computed(() => activeBreakpoint.value === 'sm' ? [] : computedCityReasonData.value.slice(9, 13));
 
-// watch(selectedName, async (name) => {
-//   if (!name) return;
-//   try {
-//     isCityLoading.value = true;
-
-//     // 目前 API 需有「管理處」三個字，在結尾手動補上
-//     const res = await fetch(`/json/agency-reason-summary/${selectedYear.value}00${name}管理處.json`);
-//     const { data } = await res.json();
-//     cityReasonData.value = Array.isArray(data) ? data : [];
-//   } catch (err) {
-//     console.error('載入城市資料失敗', err);
-//   } finally {
-//     isCityLoading.value = false;
-//   }
-// });
-
 watch(selectedName, async (name) => {
   if (!name) return;
 
@@ -270,14 +241,14 @@ watch(selectedName, async (name) => {
 
 const handleSelectPark = (name) => {
   selectedName.value = name;
-  mapStore.setTaiwanFaded(true);         // 設定為淡化
-  taiwanMapRef.value?.updateAllCountyStyles(); // 更新台灣地圖樣式
+  mapStore.setTaiwanFaded(true);  // 設定為淡化
+  taiwanMapRef.value?.countyBoundary.updateAllCountyStyles(); // 更新台灣地圖樣式
 };
 
 const resetMap = () => {
   mapRef.value?.resetParkSelection();
   selectedName.value = null;
-  mapStore.setTaiwanFaded(false);        // 取消淡化
-  taiwanMapRef.value?.updateAllCountyStyles(); // 更新樣式
+  mapStore.setTaiwanFaded(false); // 取消淡化
+  taiwanMapRef.value?.countyBoundary.updateAllCountyStyles(); // 更新樣式
 };
 </script>

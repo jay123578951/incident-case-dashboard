@@ -4,6 +4,7 @@
       <v-select
         v-if="showYear"
         v-model="selectedYear"
+        v-model:menu="yearMenuOpen"
         label="年度"
         :items="years"
         variant="solo"
@@ -21,6 +22,7 @@
       <v-select
         v-if="showMonth"
         v-model="selectedMonth"
+        v-model:menu="monthMenuOpen"
         label="月份"
         :items="months"
         item-title="text"
@@ -84,6 +86,9 @@ const computedDensity = computed(() => {
   return 'default'
 })
 
+const yearMenuOpen = ref(false);
+const monthMenuOpen = ref(false);
+
 const selectedYear = computed({
   get: () => props.modelValue.year,
   set: (val) => {
@@ -117,6 +122,13 @@ const onMonthChange = (value) => {
     month: value
   })
 }
+
+defineExpose({
+  closeMenus: () => {
+    yearMenuOpen.value = false;
+    monthMenuOpen.value = false;
+  }
+});
 </script>
 
 <style scoped>

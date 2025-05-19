@@ -4,6 +4,7 @@
     <div class="ps-2 md:ps-0">
       <DateSelector
         v-if="showYear || showMonth"
+        ref="dateSelectorRef"
         :model-value="modelValue"
         :show-year="showYear"
         :show-month="showMonth"
@@ -18,6 +19,8 @@
 import DateSelector from './DateSelector.vue'
 
 defineOptions({ inheritAttrs: true })
+
+const dateSelectorRef = ref(null);
 
 const props = defineProps({
   title: {
@@ -43,4 +46,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+defineExpose({
+  closeSelect: () => {
+    dateSelectorRef.value?.closeMenus();
+  }
+});
 </script>

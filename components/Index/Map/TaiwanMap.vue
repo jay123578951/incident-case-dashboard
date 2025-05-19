@@ -25,7 +25,7 @@ const isLoadingGeoJSON = ref(false);
 const geojson = ref(null);
 
 const { map, isMapReady, createMap } = useLeafletMap();
-const { loadCountyBoundaries, resetCountySelection, dataByCounty, updateAllCountyStyles } = useCountyBoundaryLayer(map, emit, props.options);
+const countyBoundary = useCountyBoundaryLayer(map, emit, props.options);
 
 const initCountyBoundaries = async () => {
   if (!map.value || !isMapReady.value || !geojson.value || !props.mapData?.length) {
@@ -34,15 +34,15 @@ const initCountyBoundaries = async () => {
   }
 
   // 設定資料
-  dataByCounty.value = Object.fromEntries(
+  countyBoundary.dataByCounty.value = Object.fromEntries(
     props.mapData.map(item => [item.name, { value: item.cases, level: item.level }])
   );
 
   // 載入邊界圖層並建立 countyLayer
-  await loadCountyBoundaries(geojson.value);
+  await countyBoundary.loadCountyBoundaries(geojson.value);
 
   // 載入後再 reset 樣式
-  resetCountySelection();
+  countyBoundary.resetCountySelection();
 };
 
 const reloadGeoJSON = async () => {
@@ -51,7 +51,7 @@ const reloadGeoJSON = async () => {
 
     await waitForMapReady(); // 等待地圖準備完成
 
-    const res = await fetch('/geoJSON/twCounty2010.geo.json');
+    const res = await fetch('/geoJSON/twCounty.geojson');
     geojson.value = await res.json();
 
     await initCountyBoundaries(); // 載入邊界圖層
@@ -89,7 +89,7 @@ onMounted(async () => {
     isLoadingGeoJSON.value = true;
     await createMap(mapContainer.value, { showTile: false });
 
-    const res = await fetch('/geoJSON/twCounty2010.geo.json');
+    const res = await fetch('/geoJSON/twCounty.geojson');
     geojson.value = await res.json();
   } catch (err) {
     console.error('載入台灣邊界失敗:', err);
@@ -100,8 +100,7 @@ onMounted(async () => {
 
 defineExpose({
   map,
-  resetCountySelection,
-  updateAllCountyStyles,
+  countyBoundary,
   reloadGeoJSON
 });
 </script>

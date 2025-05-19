@@ -1,6 +1,7 @@
 <template>
   <div v-bind="$attrs">
     <IndexCommonDateHeader
+      ref="dateHeaderRef"
       title="各縣市數據統計"
       v-model="selectedDate"
     />
@@ -83,6 +84,7 @@ import {
 
 defineOptions({ inheritAttrs: true });
 
+const dateHeaderRef = ref(null);
 const selectedDate = ref({ year: '113', month: null });
 const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
@@ -109,6 +111,14 @@ const fetchMonthlyStats = async (year, month) => {
     const res = await fetch(`/json/cities-summary/${year}${safeMonth}.json`);
     const { data } = await res.json();
     rawData.value = Array.isArray(data) ? data : [];
+
+    // 同步更新地圖樣式
+    const countyData = transformToCountyData(rawData.value);
+    if (citiesMapRef.value?.countyBoundary) {
+      selectedName.value = null;
+      citiesMapRef.value.countyBoundary.dataByCounty.value = countyData;
+      citiesMapRef.value.countyBoundary.updateAllCountyStyles();
+    }
   } catch (err) {
     console.error('載入各縣市數據統計失敗', err);
     rawData.value = [];
@@ -118,8 +128,13 @@ const fetchMonthlyStats = async (year, month) => {
 };
 
 watch([selectedYear, selectedMonth], async ([y, m]) => {
+  if (dateHeaderRef.value) {
+    dateHeaderRef.value.closeSelect();
+  }
+
+  await new Promise(resolve => setTimeout(resolve, 250));
+
   await fetchMonthlyStats(y, m);
-  
   if (citiesMapRef.value?.reloadGeoJSON) {
     await citiesMapRef.value.reloadGeoJSON();
   }
@@ -208,8 +223,20 @@ watch(selectedName, async (name) => {
   }
 });
 
+const transformToCountyData = (data) => {
+  const result = {};
+  for (const item of data) {
+    const name = item.name.replace('管理處', '');
+    result[name] = {
+      value: item.cases,
+      level: item.level
+    };
+  }
+  return result;
+};
+
 const resetMap = () => {
-  citiesMapRef.value?.resetCountySelection();
+  citiesMapRef.value?.countyBoundary.resetCountySelection();
   selectedName.value = null;
 };
 </script>

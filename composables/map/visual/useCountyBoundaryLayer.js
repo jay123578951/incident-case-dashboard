@@ -12,6 +12,10 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
   const enableHover = options.enableHover !== false;
   const enableTooltip = options.enableTooltip !== false;
   const setupTaiwanFaded = options.setupTaiwanFaded || false;
+  const selectedOutlineLayer = ref(null);
+
+  const borderWeight = 1;
+  const selectedBorderWeight = 2;
 
   const countyLayer = ref(null);
   const selectedCounty = ref(null);
@@ -114,7 +118,7 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
         ? getPrimaryColorFromLevel(level)
         : getFadedColorFromLevel(level),
       fillOpacity: isInitial || isSelected ? 1 : 0.3,
-      weight: isSelected ? 2 : 1,
+      weight: isSelected ? selectedBorderWeight : borderWeight,
       color: isInitial || isSelected ? defaultColor : fadedColor
     };
   };
@@ -124,12 +128,12 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
    */
   const handleHover = (layer) => {
     layer.setStyle({
-      weight: 2,
+      weight: selectedBorderWeight,
       color: defaultColor,
       dashArray: '',
       fillOpacity: 1
     });
-    layer.bringToFront();
+    // layer.bringToFront();
   };
 
   /**
@@ -148,9 +152,32 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
     selectedCounty.value = name;
 
     highlightSelectedCounty();
+    drawSelectedOutline(feature);
     emit?.('select-county', name);
     callback(name);
   };
+
+  /**
+   * 畫出選中縣市的外框
+   */
+  const drawSelectedOutline = async (feature) => {
+    const L = window.L || (await import('leaflet'));
+  
+    // 清除前一次畫的外框
+    if (selectedOutlineLayer.value) {
+      map.value.removeLayer(selectedOutlineLayer.value);
+    }
+  
+    // 建立新的 outline layer
+    selectedOutlineLayer.value = L.geoJSON(feature.geometry, {
+      style: {
+        color: '#666D80',    // 外框顏色
+        weight: 2.5,         // 外框粗細
+        fillOpacity: 0,      // 不填色
+        opacity: 1,
+      }
+    }).addTo(map.value);
+  };  
 
   /**
    * 將選中縣市高亮，其他變淺
@@ -167,7 +194,7 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
         fillColor: isSelected
           ? getPrimaryColorFromLevel(level)
           : getFadedColorFromLevel(level),
-        weight: isSelected ? 2 : 1,
+        weight: isSelected ? selectedBorderWeight : borderWeight,
         color: isSelected ? defaultColor : fadedColor
       });
     });
@@ -178,6 +205,11 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
    */
   const resetCountySelection = () => {
     selectedCounty.value = null;
+
+    if (selectedOutlineLayer.value) {
+      map.value.removeLayer(selectedOutlineLayer.value);
+      selectedOutlineLayer.value = null;
+    }
 
     countyLayer.value.eachLayer(layer => {
       const feature = layer.feature;
