@@ -23,7 +23,7 @@
             </li>
           </ul>
 
-          <div class="relative w-full max-w-[420px] h-[620px]">
+          <div class="relative w-full max-w-[420px] h-[630px]">
             <ClientOnly>
               <IndexMapTaiwanMap
                 ref="taiwanMapRef"
@@ -127,8 +127,26 @@ const fetchMonthlyStats = async (year, month) => {
   }
 };
 
-watch([selectedYear, selectedMonth], ([y, m]) => {
-  fetchMonthlyStats(y, m);
+// watch([selectedYear, selectedMonth], ([y, m]) => {
+//   fetchMonthlyStats(y, m);
+// }, { immediate: true });
+
+// watch([selectedYear, selectedMonth], async ([y, m]) => {
+//   await fetchMonthlyStats(y, m);
+//   await nextTick(); // 確保 computedReasonData 已更新
+
+//   if (taiwanMapRef.value?.reloadGeoJSON) {
+//     await taiwanMapRef.value.reloadGeoJSON();
+//   }
+// }, { immediate: true });
+
+watch([selectedYear, selectedMonth], async ([y, m]) => {
+  await fetchMonthlyStats(y, m);
+  
+  if (taiwanMapRef.value?.reloadGeoJSON) {
+    await taiwanMapRef.value.reloadGeoJSON();
+    await mapRef.value.reloadAgencyGeoJSON();
+  }
 }, { immediate: true });
 
 const mapRef = ref(null);
@@ -207,21 +225,48 @@ const rightColumn = computed(() => []);
 const cityLeftColumn = computed(() => activeBreakpoint.value === 'sm' ? computedCityReasonData.value : computedCityReasonData.value.slice(0, 9));
 const cityRightColumn = computed(() => activeBreakpoint.value === 'sm' ? [] : computedCityReasonData.value.slice(9, 13));
 
+// watch(selectedName, async (name) => {
+//   if (!name) return;
+//   try {
+//     isCityLoading.value = true;
+
+//     // 目前 API 需有「管理處」三個字，在結尾手動補上
+//     const res = await fetch(`/json/agency-reason-summary/${selectedYear.value}00${name}管理處.json`);
+//     const { data } = await res.json();
+//     cityReasonData.value = Array.isArray(data) ? data : [];
+//   } catch (err) {
+//     console.error('載入城市資料失敗', err);
+//   } finally {
+//     isCityLoading.value = false;
+//   }
+// });
+
 watch(selectedName, async (name) => {
   if (!name) return;
+
   try {
     isCityLoading.value = true;
 
-    // 目前 API 需有「管理處」三個字，在結尾手動補上
+    // 注意：API 名稱邏輯硬編碼，記得控制格式
     const res = await fetch(`/json/agency-reason-summary/${selectedYear.value}00${name}管理處.json`);
     const { data } = await res.json();
+
+    // 更新 cityReasonData（為 computedGeoJSON 準備）
     cityReasonData.value = Array.isArray(data) ? data : [];
+
+    // 等待 computed 完成（如果你依賴 computedCityReasonData）
+    await nextTick();
+
+    // 主動更新地圖（以 mapRef 為例）
+    if (mapRef.value?.reloadAgencyGeoJSON) {
+      await mapRef.value.reloadAgencyGeoJSON();
+    }
   } catch (err) {
     console.error('載入城市資料失敗', err);
   } finally {
     isCityLoading.value = false;
   }
-});
+}, { immediate: true });
 
 const handleSelectPark = (name) => {
   selectedName.value = name;

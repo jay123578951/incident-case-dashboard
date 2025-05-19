@@ -49,7 +49,7 @@
           <template v-else>
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-2xl font-bold">
-                {{ selectedDate.year }}年{{ selectedMonthName }} 數據統計
+                {{ selectedDate.year }}年{{ selectedMonthName }} {{ selectedName }}統計
               </h2>
               <v-btn
                 variant="text"
@@ -117,8 +117,12 @@ const fetchMonthlyStats = async (year, month) => {
   }
 };
 
-watch([selectedYear, selectedMonth], ([y, m]) => {
-  fetchMonthlyStats(y, m);
+watch([selectedYear, selectedMonth], async ([y, m]) => {
+  await fetchMonthlyStats(y, m);
+  
+  if (citiesMapRef.value?.reloadGeoJSON) {
+    await citiesMapRef.value.reloadGeoJSON();
+  }
 }, { immediate: true });
 
 const citiesMapRef = ref(null);

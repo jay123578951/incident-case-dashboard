@@ -20,28 +20,69 @@ const props = defineProps({
 const emit = defineEmits(['select-county']);
 
 const mapContainer = ref(null);
-const mapInitialized = ref(false);
+// const mapInitialized = ref(false);
 const isLoadingGeoJSON = ref(false);
 const geojson = ref(null);
 
 const { map, isMapReady, createMap } = useLeafletMap();
 const { loadCountyBoundaries, resetCountySelection, dataByCounty, updateAllCountyStyles } = useCountyBoundaryLayer(map, emit, props.options);
 
-watch(
-  () => [isMapReady.value, props.mapData, geojson.value],
-  async ([ready, taiwanData, geo]) => {
-    if (ready && taiwanData?.length && geo && !mapInitialized.value) {
-      dataByCounty.value = Object.fromEntries(
-        taiwanData.map(item => [item.name, { value: item.cases, level: item.level }])
-      );
+const initCountyBoundaries = async () => {
+  if (!map.value || !isMapReady.value || !geojson.value || !props.mapData?.length) {
+    console.warn('條件不足，跳過 initCountyBoundaries');
+    return;
+  }
 
-      await loadCountyBoundaries(geo);
+  // 設定資料
+  dataByCounty.value = Object.fromEntries(
+    props.mapData.map(item => [item.name, { value: item.cases, level: item.level }])
+  );
 
-      mapInitialized.value = true;
-    }
-  },
-  { immediate: true }
-);
+  // 載入邊界圖層並建立 countyLayer
+  await loadCountyBoundaries(geojson.value);
+
+  // 載入後再 reset 樣式
+  resetCountySelection();
+};
+
+const reloadGeoJSON = async () => {
+  try {
+    isLoadingGeoJSON.value = true;
+
+    await waitForMapReady(); // 等待地圖準備完成
+
+    const res = await fetch('/geoJSON/twCounty2010.geo.json');
+    geojson.value = await res.json();
+
+    await initCountyBoundaries(); // 載入邊界圖層
+  } catch (err) {
+    console.error('重新載入台灣邊界失敗:', err);
+  } finally {
+    isLoadingGeoJSON.value = false;
+  }
+};
+
+const waitForMapReady = async () => {
+  while (!isMapReady.value) {
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+};
+
+// watch(
+//   () => [isMapReady.value, props.mapData, geojson.value],
+//   async ([ready, taiwanData, geo]) => {
+//     if (ready && taiwanData?.length && geo && !mapInitialized.value) {
+//       dataByCounty.value = Object.fromEntries(
+//         taiwanData.map(item => [item.name, { value: item.cases, level: item.level }])
+//       );
+
+//       await loadCountyBoundaries(geo);
+
+//       mapInitialized.value = true;
+//     }
+//   },
+//   { immediate: true }
+// );
 
 onMounted(async () => {
   try {
@@ -60,7 +101,8 @@ onMounted(async () => {
 defineExpose({
   map,
   resetCountySelection,
-  updateAllCountyStyles
+  updateAllCountyStyles,
+  reloadGeoJSON
 });
 </script>
 

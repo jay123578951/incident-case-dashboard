@@ -5,7 +5,7 @@
       <IndexMonthlyStatistics ref="monthly" id="monthly" class="pb-12 md:pb-24" />
       <IndexCauses ref="causes" id="causes" class="pb-12 md:pb-24" />
       <IndexCities ref="cities" id="cities" class="pb-12 md:pb-24" />
-      <IndexMountainAgency ref="mountains" id="mountains" class="pb-9" />
+      <IndexMountainAgency ref="mountains" id="mountains" class="pb-20 md:pd-44 lg:pb-60" />
     </section>
 </template>
 

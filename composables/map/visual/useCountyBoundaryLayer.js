@@ -113,7 +113,7 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
       fillColor: isInitial || isSelected
         ? getPrimaryColorFromLevel(level)
         : getFadedColorFromLevel(level),
-      fillOpacity: isInitial || isSelected ? 0.8 : 0.3,
+      fillOpacity: isInitial || isSelected ? 1 : 0.3,
       weight: isSelected ? 2 : 1,
       color: isInitial || isSelected ? defaultColor : fadedColor
     };
@@ -163,7 +163,7 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
       const level = countyData?.level;
 
       layer.setStyle({
-        fillOpacity: isSelected ? 0.8 : 0.3,
+        fillOpacity: isSelected ? 1 : 0.3,
         fillColor: isSelected
           ? getPrimaryColorFromLevel(level)
           : getFadedColorFromLevel(level),
