@@ -116,4 +116,15 @@ defineExpose({
 .leaflet-interactive:focus {
   outline: none;
 }
+
+.leaflet-tooltip.county-tooltip {
+  font-size: 18px;
+  color: #1C202E;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  font-weight: bold;
+}
 </style>

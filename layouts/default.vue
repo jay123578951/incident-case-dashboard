@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#F3F6FA] relative">
+  <div class="min-h-screen bg-[#F3F6FA] relative text-[#1C202E]">
     <!-- 背景圖層 -->
     <div class="absolute inset-0 z-0 bg-[url('/images/index/background.png')] bg-no-repeat bg-contain bg-top pointer-events-none"></div>
 
