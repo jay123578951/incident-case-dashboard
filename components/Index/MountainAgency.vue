@@ -24,7 +24,7 @@
             </li>
           </ul>
 
-          <div class="relative w-full max-w-[420px] h-[620px]">
+          <div class="relative w-full max-w-[420px] h-[630px]">
             <ClientOnly>
               <IndexMapTaiwanMap
                 ref="taiwanMapRef"
@@ -250,7 +250,7 @@ const handleSelectPark = (name) => {
 };
 
 const resetMap = () => {
-  mapRef.value?.resetParkSelection();
+  mapRef.value?.resetSelectedPark();
   selectedName.value = null;
   mapStore.setTaiwanFaded(false); // 取消淡化
   taiwanMapRef.value?.countyBoundary.updateAllCountyStyles(); // 更新樣式

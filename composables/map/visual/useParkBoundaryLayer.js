@@ -17,38 +17,54 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
   const selectedPark = ref(null);
   const dataByPark = ref({});
 
+  const primaryColorMap = {
+    high: '#FCA2AC',
+    mid: '#FFE482',
+    low: '#ADF0E3'
+  };
+
+  const fadedColorMap = {
+    high: '#FCB6BD',
+    mid: '#FFEA9E',
+    low: '#B8F2D1'
+  };
+
+  const getPrimaryColorFromLevel = (level) => primaryColorMap[level] || '#DCDFE5'; // 根據 level 回傳深色（預設 & 選中）顏色
+  const getFadedColorFromLevel = (level) => fadedColorMap[level] || '#E9ECF2'; // 根據 level 回傳淺色（非選中）顏色
+
   /**
-   * 根據 level 回傳深色（預設 & 選中）顏色
+   * 設置國家公園圖層的樣式與事件
    */
-  const getPrimaryColorFromLevel = (level) => {
-    switch (level) {
-      case 'high':
-        return '#FCA2AC';
-      case 'mid':
-        return '#FFE482';
-      case 'low':
-        return '#ADF0E3';
-      default:
-        return '#DCDFE5';
+  const setupFeatureLayer = (feature, layer, onClick) => {
+    const name = feature.properties.Name;
+    const parkData = dataByPark.value[name];
+    const value = parkData?.value ?? 0;
+
+    if (enableTooltip) {
+      layer.bindTooltip(`${name}：${value} 件`, {
+        direction: 'top',
+        sticky: true,
+        offset: [0, -4],
+        opacity: 1,
+        className: 'park-tooltip'
+      });
     }
+
+    const handlers = {
+      click: () => handleParkClick(feature, layer, onClick)
+    };
+
+    if (enableHover) {
+      handlers.mouseover = () => handleHover(layer);
+      handlers.mouseout = () => resetHover(layer, feature);
+    }
+
+    layer.on(handlers);
   };
 
   /**
-   * 根據 level 回傳淺色（非選中）顏色
+   * 載入國家公園邊界
    */
-  const getFadedColorFromLevel = (level) => {
-    switch (level) {
-      case 'high':
-        return '#FCB6BD';
-      case 'mid':
-        return '#FFEA9E';
-      case 'low':
-        return '#B8F2D1';
-      default:
-        return '#E9ECF2';
-    }
-  };
-
   const loadParkBoundaries = async (geojson, onClick = () => {}) => {
     if (parkLayer.value) {
       map.value.removeLayer(parkLayer.value);
@@ -56,32 +72,7 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
 
     parkLayer.value = L.geoJSON(geojson, {
       style: feature => getFeatureStyle(feature),
-      onEachFeature: (feature, layer) => {
-        const name = feature.properties.Name;
-        const parkData = dataByPark.value[name];
-        const value = parkData?.value ?? 0;
-
-        if (enableTooltip) {
-          layer.bindTooltip(`${name}：${value} 件`, {
-            direction: 'top',
-            sticky: true,
-            offset: [0, -4],
-            opacity: 1,
-            className: 'park-tooltip'
-          });
-        }
-
-        const handlers = {
-          click: () => handleParkClick(feature, layer, onClick)
-        };
-
-        if (enableHover) {
-          handlers.mouseover = () => handleHover(layer);
-          handlers.mouseout = () => resetHover(layer, feature);
-        }
-
-        layer.on(handlers);
-      }
+      onEachFeature: (feature, layer) => setupFeatureLayer(feature, layer, onClick)
     });
 
     parkLayer.value.addTo(map.value);
@@ -98,9 +89,7 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
     const isInitial = !selectedPark.value;
 
     return {
-      fillColor: isInitial || isSelected
-        ? getPrimaryColorFromLevel(level)
-        : getFadedColorFromLevel(level),
+      fillColor: isInitial || isSelected ? getPrimaryColorFromLevel(level) : getFadedColorFromLevel(level),
       fillOpacity: isInitial || isSelected ? 1 : 0.3,
       weight: isSelected ? 2 : 1,
       color: isInitial || isSelected ? defaultColor : fadedColor
@@ -132,17 +121,45 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
    */
   const mapStore = useMapStore();
   const handleParkClick = async (feature, layer, callback) => {
-    resetParkSelection();
+    resetSelectedPark();
     clearSelectedOutline();
 
-    const name = feature.properties.Name;
-    selectedPark.value = name;
+    selectPark(feature.properties.Name);
 
-    highlightSelectedPark();
     drawSelectedOutline(feature);
-    emit?.('select-park', name);
+    emit?.('select-park', feature.properties.Name);
     mapStore.setTaiwanFaded(true);
-    callback(name);
+    callback(feature.properties.Name);
+  };
+
+  /**
+   * 選中縣市
+   */
+  const selectPark = (name) => {
+    selectedPark.value = name;
+    updateSelectedParkStyle();
+  };
+
+  /**
+   * 更新選中縣市的樣式
+   */
+  const updateSelectedParkStyle = () => {
+    parkLayer.value.eachLayer(layer => {
+      const name = layer.feature.properties.Name;
+      const isSelected = name === selectedPark.value;
+      const parkData = dataByPark.value[name];
+      const level = parkData?.level;
+
+      layer.setStyle({});
+      layer.setStyle({
+        fillOpacity: isSelected ? 0.8 : 0.3,
+        fillColor: isSelected
+          ? getPrimaryColorFromLevel(level)
+          : getFadedColorFromLevel(level),
+        weight: isSelected ? 2 : 1,
+        color: isSelected ? defaultColor : fadedColor
+      });
+    });
   };
 
   /**
@@ -176,7 +193,7 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
       }
     }).addTo(map.value);
   
-    // 綁定為 group，方便移除
+    // 綁定為 group
     selectedOutlineLayer.value = L.layerGroup([shadow, outline]).addTo(map.value);
   };
 
@@ -191,40 +208,15 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
   };
 
   /**
-   * 將選中縣市高亮，其他變淺
-   */
-  const highlightSelectedPark = () => {
-    parkLayer.value.eachLayer(layer => {
-      const name = layer.feature.properties.Name;
-      const isSelected = name === selectedPark.value;
-      const parkData = dataByPark.value[name];
-      const level = parkData?.level;
-
-      layer.setStyle({
-        fillOpacity: isSelected ? 0.8 : 0.3,
-        fillColor: isSelected
-          ? getPrimaryColorFromLevel(level)
-          : getFadedColorFromLevel(level),
-        weight: isSelected ? 2 : 1,
-        color: isSelected ? defaultColor : fadedColor
-      });
-    });
-  };
-
-  /**
    * 重置選取狀態，回到初始狀態
    */
-  const resetParkSelection = () => {
+  const resetSelectedPark = () => {
     selectedPark.value = null;
 
-    if (selectedOutlineLayer.value) {
-      map.value.removeLayer(selectedOutlineLayer.value);
-      selectedOutlineLayer.value = null;
-    }
+    clearSelectedOutline();
 
     parkLayer.value.eachLayer(layer => {
-      const feature = layer.feature;
-      const style = getFeatureStyle(feature);
+      const style = getFeatureStyle(layer.feature);
       layer.setStyle(style);
     });
   
@@ -235,7 +227,7 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
     loadParkBoundaries,
     dataByPark,
     selectedPark,
-    highlightSelectedPark,
-    resetParkSelection
+    // highlightSelectedPark,
+    resetSelectedPark
   };
 }
