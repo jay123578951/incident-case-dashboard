@@ -1,20 +1,24 @@
 <template>
-  <v-container fluid class="sticky top-0 bg-white z-50 !p-0">
+  <v-container fluid class="sticky top-0 z-50 bg-white !p-0">
     <!-- 電腦版 -->
     <div class="hidden lg:block">
-      <v-row ref="tabRowRef" justify="center" class="!m-0 py-6 relative">
+      <v-row ref="tabRowRef" justify="center" class="relative !m-0 py-6">
         <v-btn
           v-for="(item, index) in items"
           :key="index"
           :ripple="false"
           variant="text"
           size="x-large"
-          class="nav-tab-btn !text-2xl !leading-9 !font-bold mx-4 !px-1 !rounded-none relative hover:bg-transparent"
+          class="nav-tab-btn relative mx-4 !rounded-none !px-1 !text-2xl !font-bold !leading-9 hover:bg-transparent"
           :class="{
             '!text-[#020203]': activeTab === index,
             '!text-[#7C8494]': activeTab !== index
           }"
-          @click="() => { goToSection(item.id) }"
+          @click="
+            () => {
+              goToSection(item.id);
+            }
+          "
           ref="tabButtons"
         >
           {{ item.name }}
@@ -29,9 +33,13 @@
     </div>
 
     <!-- 行動裝置 -->
-    <div class="lg:hidden block">
+    <div class="block lg:hidden">
       <!-- App Bar -->
-      <v-app-bar flat density="compact" class="border-b border-[rgba(28,32,46,0.05)] py-1 px-3 h-[56px]">
+      <v-app-bar
+        flat
+        density="compact"
+        class="h-[56px] border-b border-[rgba(28,32,46,0.05)] px-3 py-1"
+      >
         <CommonLogo padding="py-4" />
         <v-spacer />
         <v-app-bar-nav-icon width="40" @click="drawer = !drawer" />
@@ -39,12 +47,8 @@
 
       <!-- Drawer -->
       <ClientOnly>
-        <v-navigation-drawer
-          v-model="drawer"
-          location="top"
-          permanent
-        >
-          <v-list class="!m-0 relative">
+        <v-navigation-drawer v-model="drawer" location="top" permanent>
+          <v-list class="relative !m-0">
             <v-list-item
               v-for="(item, index) in items"
               :key="index"
@@ -54,10 +58,12 @@
                 :ripple="false"
                 variant="text"
                 size="x-large"
-                class="nav-tab-btn !text-2xl !leading-9 !font-bold mx-4 !px-1 !rounded-none relative hover:bg-transparent"
+                class="nav-tab-btn relative mx-4 !rounded-none !px-1 !text-2xl !font-bold !leading-9 hover:bg-transparent"
                 :class="{
-                  '!text-[#020203] !border-b-[4px] !border-[#67C0E0]': activeTab === index,
-                  '!text-[#7C8494] !border-b-[4px] !border-transparent': activeTab !== index
+                  '!border-b-[4px] !border-[#67C0E0] !text-[#020203]':
+                    activeTab === index,
+                  '!border-b-[4px] !border-transparent !text-[#7C8494]':
+                    activeTab !== index
                 }"
                 @click="onDrawerClosed(item.id, index)"
                 ref="tabButtons"

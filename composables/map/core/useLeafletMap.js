@@ -34,16 +34,16 @@ export function useLeafletMap() {
     const leafletMap = L.map(elementId, {
       center: [23.7, 121.1],
       zoom: 7.8,
-      dragging: false,            // 禁用拖曳
-      zoomControl: false,         // 禁用右上角的 + / - 控制鈕
-      scrollWheelZoom: false,     // 禁用滑鼠滾輪縮放
-      doubleClickZoom: false,     // 禁用雙擊放大
-      boxZoom: false,             // 禁用框選縮放
-      touchZoom: false,           // 禁用手勢縮放（手機）
-      attributionControl: false,  // 禁用地圖來源
+      dragging: false, // 禁用拖曳
+      zoomControl: false, // 禁用右上角的 + / - 控制鈕
+      scrollWheelZoom: false, // 禁用滑鼠滾輪縮放
+      doubleClickZoom: false, // 禁用雙擊放大
+      boxZoom: false, // 禁用框選縮放
+      touchZoom: false, // 禁用手勢縮放（手機）
+      attributionControl: false, // 禁用地圖來源
       zoomSnap: 0,
       zoomDelta: 0.25,
-      renderer: L.svg(),
+      renderer: L.svg()
       // maxBounds: [[20.5, 117.5], [26.5, 123.5]]
     });
 
@@ -63,8 +63,8 @@ export function useLeafletMap() {
 
     // 設定地圖最大可移動範圍（限制在台灣上下左右）
     leafletMap.setMaxBounds([
-      [20.5, 117.5],  // 南西界
-      [26.5, 123.5]   // 北東界
+      [20.5, 117.5], // 南西界
+      [26.5, 123.5] // 北東界
     ]);
     leafletMap.options.maxBoundsViscosity = 1.0; // 彈性邊界黏性（拖到邊界時會反彈）
 

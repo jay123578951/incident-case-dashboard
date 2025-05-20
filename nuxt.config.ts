@@ -14,7 +14,9 @@ export default defineNuxtConfig({
       'process.env.DEBUG': false
     },
     server: {
-      allowedHosts: ['d01b-2001-b400-e2d8-7d68-541f-a4b5-5d47-6fe7.ngrok-free.app'],
+      allowedHosts: [
+        'd01b-2001-b400-e2d8-7d68-541f-a4b5-5d47-6fe7.ngrok-free.app'
+      ]
     }
   },
 

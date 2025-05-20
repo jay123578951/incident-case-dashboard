@@ -18,7 +18,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "114"
+            example: '114'
       responses:
         '200':
           description: 成功回傳年度總覽資料
@@ -29,10 +29,10 @@ paths:
                 properties:
                   year:
                     type: string
-                    example: "114"
+                    example: '114'
                   previousYear:
                     type: string
-                    example: "113"
+                    example: '113'
                   summary:
                     type: array
                     items:
@@ -47,12 +47,14 @@ paths:
                             type: array
                             items:
                               type: integer
-                            example: [3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
+                            example:
+                              [3, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
                           '114':
                             type: array
                             items:
                               type: integer
-                            example: [14, 8, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
+                            example:
+                              [14, 8, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
 
   /stats/monthly-detail:
     get:
@@ -64,13 +66,13 @@ paths:
           required: true
           schema:
             type: string
-            example: "114"
+            example: '114'
         - in: query
           name: month
           required: true
           schema:
             type: string
-            example: "1"
+            example: '1'
       responses:
         '200':
           description: 成功回傳月份統計資料
@@ -81,13 +83,13 @@ paths:
                 properties:
                   year:
                     type: string
-                    example: "114"
+                    example: '114'
                   month:
                     type: string
-                    example: "1"
+                    example: '1'
                   previousMonth:
                     type: string
-                    example: "12"
+                    example: '12'
                   statistics:
                     type: array
                     items:
@@ -103,13 +105,13 @@ paths:
           required: true
           schema:
             type: string
-            example: "114"
+            example: '114'
         - in: query
           name: month
           required: true
           schema:
             type: string
-            example: "1"
+            example: '1'
       responses:
         '200':
           description: 成功回傳去年同期比較資料
@@ -120,13 +122,13 @@ paths:
                 properties:
                   year:
                     type: string
-                    example: "114"
+                    example: '114'
                   month:
                     type: string
-                    example: "1"
+                    example: '1'
                   previousYear:
                     type: string
-                    example: "113"
+                    example: '113'
                   statistics:
                     type: array
                     items:
@@ -144,13 +146,13 @@ paths:
           required: true
           schema:
             type: string
-            example: "114"
+            example: '114'
         - in: query
           name: month
           required: false
           schema:
             type: string
-            example: "1"
+            example: '1'
             description: 若不提供此欄位，將回傳整年度資料
       responses:
         '200':
@@ -162,14 +164,14 @@ paths:
                 properties:
                   year:
                     type: string
-                    example: "114"
+                    example: '114'
                   month:
                     type: string
                     nullable: true
-                    example: "1"
+                    example: '1'
                   previousMonth:
                     type: string
-                    example: "12"
+                    example: '12'
                   statistics:
                     type: array
                     items:
@@ -177,48 +179,48 @@ paths:
                         - $ref: '#/components/schemas/StatBarItem'
                         - $ref: '#/components/schemas/StatTextItem'
               example:
-                year: "114"
-                month: "1"
-                previousMonth: "12"
+                year: '114'
+                month: '1'
+                previousMonth: '12'
                 statistics:
                   - type: bar
-                    title: "案件數量 (件)"
+                    title: '案件數量 (件)'
                     thisMonth: 46
                     lastMonth: 58
                   - type: bar
-                    title: "死亡人數 (人)"
+                    title: '死亡人數 (人)'
                     thisMonth: 2
                     lastMonth: 3
                   - type: bar
-                    title: "消防員出勤人次 (人)"
+                    title: '消防員出勤人次 (人)'
                     thisMonth: 192
                     lastMonth: 186
                   - type: bar
-                    title: "直升機出勤次數 (次)"
+                    title: '直升機出勤次數 (次)'
                     thisMonth: 16
                     lastMonth: 14
                   - type: text
-                    title: "受理案件前三名的縣市"
+                    title: '受理案件前三名的縣市'
                     value:
-                      - name: "新北市"
+                      - name: '新北市'
                         thisMonth: 16
                         lastMonth: 23
-                      - name: "南投縣"
+                      - name: '南投縣'
                         thisMonth: 12
                         lastMonth: 11
-                      - name: "臺中市"
+                      - name: '臺中市'
                         thisMonth: 8
                         lastMonth: 6
                   - type: text
-                    title: "受理案件前三名的山域機關"
+                    title: '受理案件前三名的山域機關'
                     value:
-                      - name: "玉山國家公園"
+                      - name: '玉山國家公園'
                         thisMonth: 16
                         lastMonth: 18
-                      - name: "太魯閣國家公園"
+                      - name: '太魯閣國家公園'
                         thisMonth: 9
                         lastMonth: 7
-                      - name: "雪霸國家公園"
+                      - name: '雪霸國家公園'
                         thisMonth: 5
                         lastMonth: 4
 
@@ -232,13 +234,13 @@ paths:
           required: true
           schema:
             type: string
-            example: "114"
+            example: '114'
         - in: query
           name: month
           required: false
           schema:
             type: string
-            example: "1"
+            example: '1'
       responses:
         '200':
           description: 成功回傳城市統計資料
@@ -249,17 +251,17 @@ paths:
                 properties:
                   year:
                     type: string
-                    example: "114"
+                    example: '114'
                   month:
                     type: string
-                    example: "1"
+                    example: '1'
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/CityStatItem'
                 example:
-                  year: "114"
-                  month: "1"
+                  year: '114'
+                  month: '1'
                   data:
                     - name: 新北市
                       cases: 146
@@ -278,13 +280,13 @@ paths:
           required: true
           schema:
             type: string
-            example: "114"
+            example: '114'
         - in: query
           name: month
           required: false
           schema:
             type: string
-            example: "1"
+            example: '1'
         - in: query
           name: city
           required: true
@@ -301,10 +303,10 @@ paths:
                 properties:
                   year:
                     type: string
-                    example: "114"
+                    example: '114'
                   month:
                     type: string
-                    example: "1"
+                    example: '1'
                   city:
                     type: string
                     example: 新北市
@@ -313,8 +315,8 @@ paths:
                     items:
                       $ref: '#/components/schemas/CauseReasonItemSimple'
                 example:
-                  year: "114"
-                  month: "1"
+                  year: '114'
+                  month: '1'
                   city: 新北市
                   data:
                     - name: 迷路
@@ -334,13 +336,13 @@ paths:
           required: true
           schema:
             type: string
-            example: "114"
+            example: '114'
         - in: query
           name: month
           required: false
           schema:
             type: string
-            example: "1"
+            example: '1'
       responses:
         '200':
           description: 成功回傳城市統計資料
@@ -351,17 +353,17 @@ paths:
                 properties:
                   year:
                     type: string
-                    example: "114"
+                    example: '114'
                   month:
                     type: string
-                    example: "1"
+                    example: '1'
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/CityStatItem'
                 example:
-                  year: "114"
-                  month: "1"
+                  year: '114'
+                  month: '1'
                   data:
                     - name: 新北市
                       cases: 146
@@ -380,13 +382,13 @@ paths:
           required: true
           schema:
             type: string
-            example: "114"
+            example: '114'
         - in: query
           name: month
           required: false
           schema:
             type: string
-            example: "1"
+            example: '1'
         - in: query
           name: city
           required: true
@@ -403,10 +405,10 @@ paths:
                 properties:
                   year:
                     type: string
-                    example: "114"
+                    example: '114'
                   month:
                     type: string
-                    example: "1"
+                    example: '1'
                   city:
                     type: string
                     example: 新北市
@@ -415,8 +417,8 @@ paths:
                     items:
                       $ref: '#/components/schemas/CauseReasonItemSimple'
                 example:
-                  year: "114"
-                  month: "1"
+                  year: '114'
+                  month: '1'
                   city: 新北市
                   data:
                     - name: 迷路
@@ -428,7 +430,6 @@ paths:
 
 components:
   schemas:
-
     SummaryItem:
       type: object
       description: 年度統計卡片項目（案件數、死亡數等）
@@ -559,10 +560,10 @@ components:
         type:
           type: string
           enum: [bar]
-          example: "bar"
+          example: 'bar'
         title:
           type: string
-          example: "案件數量 (件)"
+          example: '案件數量 (件)'
         thisYear:
           type: integer
           example: 46
@@ -577,10 +578,10 @@ components:
         type:
           type: string
           enum: [text]
-          example: "text"
+          example: 'text'
         title:
           type: string
-          example: "受理案件前三名的縣市"
+          example: '受理案件前三名的縣市'
         value:
           type: array
           items:
@@ -589,7 +590,7 @@ components:
             properties:
               name:
                 type: string
-                example: "新北市"
+                example: '新北市'
               thisYear:
                 type: integer
                 example: 16

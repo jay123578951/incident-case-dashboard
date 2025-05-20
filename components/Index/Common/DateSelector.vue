@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import { useBreakpoints } from '@vueuse/core'
+import { useBreakpoints } from '@vueuse/core';
 
 const props = defineProps({
   modelValue: {
@@ -62,11 +62,11 @@ const props = defineProps({
     type: Boolean,
     default: true
   }
-})
+});
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue']);
 
-const years = ref(['113', '112', '111'])
+const years = ref(['113', '112', '111']);
 const months = ref(
   Array.from({ length: 12 }, (_, i) => {
     const value = String(i + 1).padStart(2, '0');
@@ -78,13 +78,13 @@ const breakpoints = useBreakpoints({
   sm: 0,
   md: 768,
   lg: 1024
-})
-const activeBreakpoint = breakpoints.active()
+});
+const activeBreakpoint = breakpoints.active();
 const computedDensity = computed(() => {
-  if (activeBreakpoint.value === 'sm') return 'comfortable'
-  if (activeBreakpoint.value === 'md') return 'comfortable'
-  return 'default'
-})
+  if (activeBreakpoint.value === 'sm') return 'comfortable';
+  if (activeBreakpoint.value === 'md') return 'comfortable';
+  return 'default';
+});
 
 const yearMenuOpen = ref(false);
 const monthMenuOpen = ref(false);
@@ -113,15 +113,15 @@ const onYearChange = (value) => {
   emit('update:modelValue', {
     year: value,
     month: props.showMonth ? selectedMonth.value : undefined
-  })
-}
+  });
+};
 
 const onMonthChange = (value) => {
   emit('update:modelValue', {
     year: selectedYear.value,
     month: value
-  })
-}
+  });
+};
 
 defineExpose({
   closeMenus: () => {
@@ -132,7 +132,7 @@ defineExpose({
 </script>
 
 <style scoped>
-.v-theme--light{
+.v-theme--light {
   --v-hover-opacity: 0.04;
   --v-theme-overlay-multiplier: 1;
 }

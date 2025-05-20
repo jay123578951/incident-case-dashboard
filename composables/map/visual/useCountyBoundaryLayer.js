@@ -58,7 +58,7 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
    */
   const loadCountyBoundaries = async (geojson, onCountyClick = () => {}) => {
     countyLayer.value = L.geoJSON(geojson, {
-      style: feature => getFeatureStyle(feature),
+      style: (feature) => getFeatureStyle(feature),
       onEachFeature: (feature, layer) => {
         const name = feature.properties.COUNTYNAME;
         const countyData = dataByCounty.value[name];
@@ -114,9 +114,10 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
     }
 
     return {
-      fillColor: isInitial || isSelected
-        ? getPrimaryColorFromLevel(level)
-        : getFadedColorFromLevel(level),
+      fillColor:
+        isInitial || isSelected
+          ? getPrimaryColorFromLevel(level)
+          : getFadedColorFromLevel(level),
       fillOpacity: isInitial || isSelected ? 1 : 0.3,
       weight: isSelected ? selectedBorderWeight : borderWeight,
       color: isInitial || isSelected ? defaultColor : fadedColor
@@ -166,12 +167,12 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
    */
   const drawSelectedOutline = async (feature) => {
     const L = window.L || (await import('leaflet'));
-  
+
     // 清除前一次
     if (selectedOutlineLayer.value) {
       map.value.removeLayer(selectedOutlineLayer.value);
     }
-  
+
     // 陰影底層
     const shadow = L.geoJSON(feature.geometry, {
       style: {
@@ -181,7 +182,7 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
         fill: false
       }
     }).addTo(map.value);
-  
+
     // 上層白邊
     const outline = L.geoJSON(feature.geometry, {
       style: {
@@ -191,11 +192,12 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
         fill: false
       }
     }).addTo(map.value);
-  
-    // 綁定為 group，方便移除
-    selectedOutlineLayer.value = L.layerGroup([shadow, outline]).addTo(map.value);
-  };
 
+    // 綁定為 group，方便移除
+    selectedOutlineLayer.value = L.layerGroup([shadow, outline]).addTo(
+      map.value
+    );
+  };
 
   /**
    * 清除選中縣市的外框
@@ -211,7 +213,7 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
    * 將選中縣市高亮，其他變淺
    */
   const highlightSelectedCounty = () => {
-    countyLayer.value.eachLayer(layer => {
+    countyLayer.value.eachLayer((layer) => {
       const name = layer.feature.properties.COUNTYNAME;
       const isSelected = name === selectedCounty.value;
       const countyData = dataByCounty.value[name];
@@ -239,7 +241,7 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
       selectedOutlineLayer.value = null;
     }
 
-    countyLayer.value.eachLayer(layer => {
+    countyLayer.value.eachLayer((layer) => {
       const feature = layer.feature;
       const style = getFeatureStyle(feature);
       layer.setStyle(style);
@@ -250,7 +252,7 @@ export function useCountyBoundaryLayer(map, emit, options = {}) {
    * 更新所有縣市樣式
    */
   const updateAllCountyStyles = () => {
-    countyLayer.value.eachLayer(layer => {
+    countyLayer.value.eachLayer((layer) => {
       const feature = layer.feature;
       const style = getFeatureStyle(feature);
       layer.setStyle(style);

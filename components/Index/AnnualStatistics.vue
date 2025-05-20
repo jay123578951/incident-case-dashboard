@@ -11,23 +11,30 @@
     </div>
 
     <section class="mb-4 md:mb-6 lg:mb-10">
-      <ul class="grid grid-cols-1 md:grid-cols-6 gap-2 md:gap-4 lg:gap-6">
-        <li v-if="processedData.length === 0" class="col-span-6 text-center text-[#999]">
+      <ul class="grid grid-cols-1 gap-2 md:grid-cols-6 md:gap-4 lg:gap-6">
+        <li
+          v-if="processedData.length === 0"
+          class="col-span-6 text-center text-[#999]"
+        >
           尚無統計資料
         </li>
         <li
           v-else
           v-for="(item, index) of processedData"
           :key="index"
-          class="bg-white rounded-2xl p-4 border border-[rgba(0, 0, 0, 0.05)] shadow-sm"
+          class="border-[rgba(0, 0, 0, 0.05)] rounded-2xl border bg-white p-4 shadow-sm"
           :class="{
             'col-span-3': item.cols === '3',
             'col-span-2': item.cols === '2'
           }"
         >
-          <div class="flex justify-between items-center mb-5 lg:mb-7">
+          <div class="mb-5 flex items-center justify-between lg:mb-7">
             <div>
-              <p class="text-[#666D80] text-[18px] lg:text-xl font-medium mb-[10px] lg:mb-4">{{ item.title }}</p>
+              <p
+                class="mb-[10px] text-[18px] font-medium text-[#666D80] lg:mb-4 lg:text-xl"
+              >
+                {{ item.title }}
+              </p>
               <AutoCounter
                 ref="counters"
                 :startAmount="0"
@@ -35,18 +42,25 @@
                 :duration="1.2"
                 :autoinit="false"
                 separator=","
-                class="text-[32px] lg:text-[40px] leading-10 font-bold"
+                class="text-[32px] font-bold leading-10 lg:text-[40px]"
               />
             </div>
             <div
-              class="p-3.5 rounded-[20px]"
+              class="rounded-[20px] p-3.5"
               :style="{ backgroundColor: item.bgColor }"
             >
-              <v-icon :icon="item.icon" size="32" :color="item.iconColor" opacity="0.4" viewBox="0 0 32 32"></v-icon>
+              <v-icon
+                :icon="item.icon"
+                size="32"
+                :color="item.iconColor"
+                opacity="0.4"
+                viewBox="0 0 32 32"
+              ></v-icon>
             </div>
           </div>
-          <div class="text-base lg:text-lg text-[#666D80]">
-            <p>與{{ rawData?.previousYear }}年比較
+          <div class="text-base text-[#666D80] lg:text-lg">
+            <p>
+              與{{ rawData?.previousYear }}年比較
               <span
                 v-if="item.formattedDifference"
                 class="px-2"
@@ -81,17 +95,17 @@
 </template>
 
 <script setup>
-import { useBreakpoints } from '@vueuse/core'
-import AutoCounter from 'vue3-autocounter'
+import { useBreakpoints } from '@vueuse/core';
+import AutoCounter from 'vue3-autocounter';
 
 defineOptions({
   inheritAttrs: true
-})
+});
 
 import {
   getComparisonSign,
   getComparisonDifference,
-  getComparisonPercentage,
+  getComparisonPercentage
 } from '~/utils/statistics';
 
 const isLoading = ref(false);
@@ -100,13 +114,36 @@ const fetchError = ref(null);
 const selectedDate = ref({ year: '113', month: '1' });
 const selectedYear = computed(() => selectedDate.value.year);
 const dataStartYear = '111';
-const counters = ref([])
+const counters = ref([]);
 
-const categories = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+const categories = [
+  '一月',
+  '二月',
+  '三月',
+  '四月',
+  '五月',
+  '六月',
+  '七月',
+  '八月',
+  '九月',
+  '十月',
+  '十一月',
+  '十二月'
+];
 const statCardUIConfigs = [
-  { icon: 'custom:folder', cols: '3', iconColor: '#317E99', bgColor: '#DAF5FE' },
+  {
+    icon: 'custom:folder',
+    cols: '3',
+    iconColor: '#317E99',
+    bgColor: '#DAF5FE'
+  },
   { icon: 'custom:car', cols: '3', iconColor: '#705800', bgColor: '#FEEFB7' },
-  { icon: 'custom:people', cols: '2', iconColor: '#2C9481', bgColor: '#C4F5EB' },
+  {
+    icon: 'custom:people',
+    cols: '2',
+    iconColor: '#2C9481',
+    bgColor: '#C4F5EB'
+  },
   { icon: 'custom:death', cols: '2', iconColor: '#483EAD', bgColor: '#EAE8FF' },
   { icon: 'custom:person', cols: '2', iconColor: '#51596B', bgColor: '#E9ECF2' }
 ];
@@ -114,8 +151,8 @@ const breakpoints = useBreakpoints({
   sm: 0,
   md: 768,
   lg: 1024
-})
-const activeBreakpoint = breakpoints.active()
+});
+const activeBreakpoint = breakpoints.active();
 
 const rawData = ref(null);
 const selectedType = ref('cases');
@@ -163,7 +200,10 @@ const processedData = computed(() => {
       ...item,
       ...config,
       sign: getComparisonSign(item.thisYear, item.lastYear),
-      formattedDifference: getComparisonDifference(item.thisYear, item.lastYear),
+      formattedDifference: getComparisonDifference(
+        item.thisYear,
+        item.lastYear
+      ),
       percentage: getComparisonPercentage(item.thisYear, item.lastYear)
     };
   });
@@ -171,12 +211,15 @@ const processedData = computed(() => {
 
 const startCounters = async () => {
   await nextTick();
-  counters.value.forEach(counter => counter?.start?.());
+  counters.value.forEach((counter) => counter?.start?.());
 };
 
-watch(selectedYear, async (year) => {
-  await fetchStats(year);
-  await startCounters();
-}, { immediate: true });
-
+watch(
+  selectedYear,
+  async (year) => {
+    await fetchStats(year);
+    await startCounters();
+  },
+  { immediate: true }
+);
 </script>

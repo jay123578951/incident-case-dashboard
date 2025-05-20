@@ -1,7 +1,4 @@
 import { h } from 'vue';
-import fireHydrant from './assets/fireHydrant/fire-hydrant';
-import aboveGroundUnused from './assets/fireHydrant/above-ground-unused';
-import underGroundUnused from './assets/fireHydrant/under-ground-unused';
 
 import folder from './assets/dashboard/folder';
 import car from './assets/dashboard/car';
@@ -13,17 +10,13 @@ import icTrendingUp from './assets/dashboard/ic-trending_up';
 
 // 所有 icon 名與 SVG 對應
 const svgContents = {
-  'fire-hydrant': fireHydrant,
-  'above-ground-unused': aboveGroundUnused,
-  'under-ground-unused': underGroundUnused,
-
-  'folder': folder,
-  'car': car,
+  folder: folder,
+  car: car,
   'ic-trending_down': icTrendingDown,
   'ic-trending_up': icTrendingUp,
-  'people': people,
-  'death': death,
-  'person': person,
+  people: people,
+  death: death,
+  person: person
 };
 
 // 產生每個 icon 的 Vue component

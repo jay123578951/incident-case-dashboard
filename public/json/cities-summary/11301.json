@@ -1,1 +1,28 @@
-{"year": "113", "month": "1", "data": [{"name": "\u65b0\u5317\u5e02", "cases": 8, "rescued": 10}, {"name": "\u6843\u5712\u5e02", "cases": 5, "rescued": 6}, {"name": "\u81fa\u4e2d\u5e02", "cases": 5, "rescued": 5}, {"name": "\u82d7\u6817\u7e23", "cases": 4, "rescued": 6}, {"name": "\u5357\u6295\u7e23", "cases": 4, "rescued": 15}, {"name": "\u82b1\u84ee\u7e23", "cases": 4, "rescued": 5}, {"name": "\u9ad8\u96c4\u5e02", "cases": 3, "rescued": 4}, {"name": "\u5b9c\u862d\u7e23", "cases": 3, "rescued": 4}, {"name": "\u5609\u7fa9\u7e23", "cases": 3, "rescued": 4}, {"name": "\u5c4f\u6771\u7e23", "cases": 3, "rescued": 3}, {"name": "\u81fa\u6771\u7e23", "cases": 3, "rescued": 3}, {"name": "\u65b0\u7af9\u7e23", "cases": 2, "rescued": 4}, {"name": "\u81fa\u5317\u5e02", "cases": 1, "rescued": 1}, {"name": "\u57fa\u9686\u5e02", "cases": 1, "rescued": 1}, {"name": "\u81fa\u5357\u5e02", "cases": 0, "rescued": 0}, {"name": "\u65b0\u7af9\u5e02", "cases": 0, "rescued": 0}, {"name": "\u5609\u7fa9\u5e02", "cases": 0, "rescued": 0}, {"name": "\u5f70\u5316\u7e23", "cases": 0, "rescued": 0}, {"name": "\u96f2\u6797\u7e23", "cases": 0, "rescued": 0}, {"name": "\u6f8e\u6e56\u7e23", "cases": 0, "rescued": 0}, {"name": "\u91d1\u9580\u7e23", "cases": 0, "rescued": 0}, {"name": "\u9023\u6c5f\u7e23", "cases": 0, "rescued": 0}]}
+{
+  "year": "113",
+  "month": "1",
+  "data": [
+    { "name": "\u65b0\u5317\u5e02", "cases": 8, "rescued": 10 },
+    { "name": "\u6843\u5712\u5e02", "cases": 5, "rescued": 6 },
+    { "name": "\u81fa\u4e2d\u5e02", "cases": 5, "rescued": 5 },
+    { "name": "\u82d7\u6817\u7e23", "cases": 4, "rescued": 6 },
+    { "name": "\u5357\u6295\u7e23", "cases": 4, "rescued": 15 },
+    { "name": "\u82b1\u84ee\u7e23", "cases": 4, "rescued": 5 },
+    { "name": "\u9ad8\u96c4\u5e02", "cases": 3, "rescued": 4 },
+    { "name": "\u5b9c\u862d\u7e23", "cases": 3, "rescued": 4 },
+    { "name": "\u5609\u7fa9\u7e23", "cases": 3, "rescued": 4 },
+    { "name": "\u5c4f\u6771\u7e23", "cases": 3, "rescued": 3 },
+    { "name": "\u81fa\u6771\u7e23", "cases": 3, "rescued": 3 },
+    { "name": "\u65b0\u7af9\u7e23", "cases": 2, "rescued": 4 },
+    { "name": "\u81fa\u5317\u5e02", "cases": 1, "rescued": 1 },
+    { "name": "\u57fa\u9686\u5e02", "cases": 1, "rescued": 1 },
+    { "name": "\u81fa\u5357\u5e02", "cases": 0, "rescued": 0 },
+    { "name": "\u65b0\u7af9\u5e02", "cases": 0, "rescued": 0 },
+    { "name": "\u5609\u7fa9\u5e02", "cases": 0, "rescued": 0 },
+    { "name": "\u5f70\u5316\u7e23", "cases": 0, "rescued": 0 },
+    { "name": "\u96f2\u6797\u7e23", "cases": 0, "rescued": 0 },
+    { "name": "\u6f8e\u6e56\u7e23", "cases": 0, "rescued": 0 },
+    { "name": "\u91d1\u9580\u7e23", "cases": 0, "rescued": 0 },
+    { "name": "\u9023\u6c5f\u7e23", "cases": 0, "rescued": 0 }
+  ]
+}

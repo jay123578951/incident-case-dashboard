@@ -1,12 +1,16 @@
 <template>
-    <section class="pb-20 md:pb-44 lg:pb-0">
-      <IndexHero class="mt-14 lg:mt-0 py-6 md:pt-10 md:pb-8 lg:pt-7 lg:pb-16" />
-      <IndexAnnualStatistics ref="annual" id="annual" class="pb-12 md:pb-24" />
-      <IndexMonthlyStatistics ref="monthly" id="monthly" class="pb-12 md:pb-24" />
-      <IndexCauses ref="causes" id="causes" class="pb-12 md:pb-24" />
-      <IndexCities ref="cities" id="cities" class="pb-12 md:pb-24" />
-      <IndexMountainAgency ref="mountains" id="mountains" class="pb-20 md:pd-44 lg:pb-60" />
-    </section>
+  <section class="pb-20 md:pb-44 lg:pb-0">
+    <IndexHero class="mt-14 py-6 md:pb-8 md:pt-10 lg:mt-0 lg:pb-16 lg:pt-7" />
+    <IndexAnnualStatistics ref="annual" id="annual" class="pb-12 md:pb-24" />
+    <IndexMonthlyStatistics ref="monthly" id="monthly" class="pb-12 md:pb-24" />
+    <IndexCauses ref="causes" id="causes" class="pb-12 md:pb-24" />
+    <IndexCities ref="cities" id="cities" class="pb-12 md:pb-24" />
+    <IndexMountainAgency
+      ref="mountains"
+      id="mountains"
+      class="md:pd-44 pb-20 lg:pb-60"
+    />
+  </section>
 </template>
 
 <script setup>
@@ -38,7 +42,8 @@ watch(
     if (newTarget && refsMap[newTarget]?.value?.$el) {
       const el = refsMap[newTarget].value.$el;
       const headerOffset = 100;
-      const top = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+      const top =
+        el.getBoundingClientRect().top + window.scrollY - headerOffset;
 
       window.scrollTo({
         top,

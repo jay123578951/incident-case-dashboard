@@ -29,7 +29,8 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
     low: '#B8F2D1'
   };
 
-  const getPrimaryColorFromLevel = (level) => primaryColorMap[level] || '#DCDFE5'; // 根據 level 回傳深色（預設 & 選中）顏色
+  const getPrimaryColorFromLevel = (level) =>
+    primaryColorMap[level] || '#DCDFE5'; // 根據 level 回傳深色（預設 & 選中）顏色
   const getFadedColorFromLevel = (level) => fadedColorMap[level] || '#E9ECF2'; // 根據 level 回傳淺色（非選中）顏色
 
   /**
@@ -71,8 +72,9 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
     }
 
     parkLayer.value = L.geoJSON(geojson, {
-      style: feature => getFeatureStyle(feature),
-      onEachFeature: (feature, layer) => setupFeatureLayer(feature, layer, onClick)
+      style: (feature) => getFeatureStyle(feature),
+      onEachFeature: (feature, layer) =>
+        setupFeatureLayer(feature, layer, onClick)
     });
 
     parkLayer.value.addTo(map.value);
@@ -89,7 +91,10 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
     const isInitial = !selectedPark.value;
 
     return {
-      fillColor: isInitial || isSelected ? getPrimaryColorFromLevel(level) : getFadedColorFromLevel(level),
+      fillColor:
+        isInitial || isSelected
+          ? getPrimaryColorFromLevel(level)
+          : getFadedColorFromLevel(level),
       fillOpacity: isInitial || isSelected ? 1 : 0.3,
       weight: isSelected ? 2 : 1,
       color: isInitial || isSelected ? defaultColor : fadedColor
@@ -144,7 +149,7 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
    * 更新選中縣市的樣式
    */
   const updateSelectedParkStyle = () => {
-    parkLayer.value.eachLayer(layer => {
+    parkLayer.value.eachLayer((layer) => {
       const name = layer.feature.properties.Name;
       const isSelected = name === selectedPark.value;
       const parkData = dataByPark.value[name];
@@ -167,12 +172,12 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
    */
   const drawSelectedOutline = async (feature) => {
     const L = window.L || (await import('leaflet'));
-  
+
     // 清除前一次
     if (selectedOutlineLayer.value) {
       map.value.removeLayer(selectedOutlineLayer.value);
     }
-  
+
     // 陰影底層
     const shadow = L.geoJSON(feature.geometry, {
       style: {
@@ -182,7 +187,7 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
         fill: false
       }
     }).addTo(map.value);
-  
+
     // 上層白邊
     const outline = L.geoJSON(feature.geometry, {
       style: {
@@ -192,9 +197,11 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
         fill: false
       }
     }).addTo(map.value);
-  
+
     // 綁定為 group
-    selectedOutlineLayer.value = L.layerGroup([shadow, outline]).addTo(map.value);
+    selectedOutlineLayer.value = L.layerGroup([shadow, outline]).addTo(
+      map.value
+    );
   };
 
   /**
@@ -215,11 +222,11 @@ export function useParkBoundaryLayer(map, emit, options = {}) {
 
     clearSelectedOutline();
 
-    parkLayer.value.eachLayer(layer => {
+    parkLayer.value.eachLayer((layer) => {
       const style = getFeatureStyle(layer.feature);
       layer.setStyle(style);
     });
-  
+
     mapStore.setTaiwanFaded(false);
   };
 

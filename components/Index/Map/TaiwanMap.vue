@@ -1,5 +1,5 @@
 <template>
-  <div ref="mapContainer" class="w-full h-full" />
+  <div ref="mapContainer" class="h-full w-full" />
 </template>
 
 <script setup>
@@ -28,14 +28,22 @@ const { map, isMapReady, createMap } = useLeafletMap();
 const countyBoundary = useCountyBoundaryLayer(map, emit, props.options);
 
 const initCountyBoundaries = async () => {
-  if (!map.value || !isMapReady.value || !geojson.value || !props.mapData?.length) {
+  if (
+    !map.value ||
+    !isMapReady.value ||
+    !geojson.value ||
+    !props.mapData?.length
+  ) {
     console.warn('條件不足，跳過 initCountyBoundaries');
     return;
   }
 
   // 設定資料
   countyBoundary.dataByCounty.value = Object.fromEntries(
-    props.mapData.map(item => [item.name, { value: item.cases, level: item.level }])
+    props.mapData.map((item) => [
+      item.name,
+      { value: item.cases, level: item.level }
+    ])
   );
 
   // 載入邊界圖層並建立 countyLayer
@@ -64,7 +72,7 @@ const reloadGeoJSON = async () => {
 
 const waitForMapReady = async () => {
   while (!isMapReady.value) {
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 50));
   }
 };
 
@@ -119,7 +127,7 @@ defineExpose({
 
 .leaflet-tooltip.county-tooltip {
   font-size: 18px;
-  color: #1C202E;
+  color: #1c202e;
   background-color: #fff;
   border: 1px solid #ccc;
   padding: 4px 8px;

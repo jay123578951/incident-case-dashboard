@@ -10,7 +10,7 @@
       ref="chartRef"
       class="w-full max-w-full rounded-2xl"
       :class="{
-        'border border-[rgba(0, 0, 0, 0.05)]': props.showBorder,
+        'border-[rgba(0, 0, 0, 0.05)] border': props.showBorder,
         'shadow-sm': props.showShadow
       }"
       :style="{

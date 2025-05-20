@@ -24,7 +24,7 @@ const chartOptions = computed(() => ({
   chart: {
     type: 'line',
     animation: true,
-    backgroundColor: props.showBackground ? 'white' : 'transparent',
+    backgroundColor: props.showBackground ? 'white' : 'transparent'
   },
   title: { text: props.title },
   xAxis: { categories: props.categories },

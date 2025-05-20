@@ -1,9 +1,6 @@
 <template>
   <div v-bind="$attrs">
-    <IndexCommonDateHeader
-      title="事故原因數據統計"
-      v-model="selectedDate"
-    />
+    <IndexCommonDateHeader title="事故原因數據統計" v-model="selectedDate" />
 
     <section class="mb-10 lg:mb-20">
       <div class="mb-6 md:mb-5 lg:mb-6">
@@ -11,27 +8,34 @@
       </div>
 
       <template v-if="reasonData.length === 0">
-        <div class="text-center text-[#999]">
-          尚無統計資料
-        </div>
+        <div class="text-center text-[#999]">尚無統計資料</div>
       </template>
       <template v-else>
-        <ul class="grid grid-cols-1 lg:grid-cols-6 gap-2.5 lg:gap-6">
+        <ul class="grid grid-cols-1 gap-2.5 lg:grid-cols-6 lg:gap-6">
           <li
             v-for="(item, index) of top5Reasons"
             :key="index"
-            class="col-span-1 lg:col-span-2 flex items-center justify-between bg-white rounded-[12px] overflow-hidden pe-5 border border-[rgba(0, 0, 0, 0.05)] shadow-sm"
+            class="border-[rgba(0, 0, 0, 0.05)] col-span-1 flex items-center justify-between overflow-hidden rounded-[12px] border bg-white pe-5 shadow-sm lg:col-span-2"
             :class="{
               'lg:col-start-2': index === 0
             }"
           >
-          <div class="flex items-center gap-x-3">
-            <div class="bg-gradient-to-r from-[#64D1BD] to-[#2DBFC6] w-14 aspect-square flex items-center justify-center rounded-br-[20px] py-[9px]">
-              <p class="text-2xl md:text-[28px] font-bold text-white">{{ index + 1 }}</p>
+            <div class="flex items-center gap-x-3">
+              <div
+                class="flex aspect-square w-14 items-center justify-center rounded-br-[20px] bg-gradient-to-r from-[#64D1BD] to-[#2DBFC6] py-[9px]"
+              >
+                <p class="text-2xl font-bold text-white md:text-[28px]">
+                  {{ index + 1 }}
+                </p>
+              </div>
+              <p class="text-2xl font-bold text-[#51596B]">{{ item.name }}</p>
             </div>
-            <p class="text-2xl font-bold text-[#51596B]">{{ item.name }}</p>
-          </div>
-            <p class="text-lg text-[#51596B]">案件數<span class="text-xl font-bold text-[#E85869] px-1">{{ item.cases }}</span>件</p>
+            <p class="text-lg text-[#51596B]">
+              案件數<span class="px-1 text-xl font-bold text-[#E85869]">{{
+                item.cases
+              }}</span
+              >件
+            </p>
           </li>
         </ul>
       </template>
@@ -43,20 +47,26 @@
       </div>
 
       <template v-if="reasonData.length === 0">
-        <div class="text-center text-[#999]">
-          尚無統計資料
-        </div>
+        <div class="text-center text-[#999]">尚無統計資料</div>
       </template>
       <template v-else>
-        <div class="w-full flex flex-col lg:flex-row gap-8 lg:gap-6">
-          <div class="w-full lg:w-[44%] flex flex-col items-center lg:items-stretch">
-            <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow-sm p-4 mb-4 md:mb-10">
+        <div class="flex w-full flex-col gap-8 lg:flex-row lg:gap-6">
+          <div
+            class="flex w-full flex-col items-center lg:w-[44%] lg:items-stretch"
+          >
+            <ul
+              class="border-[rgba(28, 32, 46, 0.1)] mb-4 flex w-fit divide-x divide-dashed rounded-lg border bg-white p-4 shadow-sm md:mb-10"
+            >
               <li class="flex flex-col items-center justify-center pe-4">
-                <p class="text-[28px] font-bold mb-0 md:mb-1.5">{{ totalCases }}</p>
+                <p class="mb-0 text-[28px] font-bold md:mb-1.5">
+                  {{ totalCases }}
+                </p>
                 <p class="text-lg text-[#666D80]">案件數量</p>
               </li>
               <li class="flex flex-col items-center justify-center ps-4">
-                <p class="text-[28px] font-bold mb-0 md:mb-1.5">{{ totalRescued }}</p>
+                <p class="mb-0 text-[28px] font-bold md:mb-1.5">
+                  {{ totalRescued }}
+                </p>
                 <p class="text-lg text-[#666D80]">救援人數</p>
               </li>
             </ul>
@@ -85,7 +95,7 @@
 </template>
 
 <script setup>
-import { useBreakpoints } from '@vueuse/core'
+import { useBreakpoints } from '@vueuse/core';
 
 const selectedDate = ref({ year: '113', month: null });
 const selectedYear = computed(() => selectedDate.value.year);
@@ -109,8 +119,8 @@ const breakpoints = useBreakpoints({
   sm: 0,
   md: 768,
   lg: 1024
-})
-const activeBreakpoint = breakpoints.active()
+});
+const activeBreakpoint = breakpoints.active();
 
 const ListTitle = ref(['原因', '案件數', '佔比%']);
 const isLoading = ref(false);
@@ -119,7 +129,7 @@ const reasonData = ref([]);
 const fetchReasonStats = async (year, month) => {
   try {
     isLoading.value = true;
-    
+
     const safeMonth = month ?? '00';
     const res = await fetch(`/json/cause-reasons/${year}${safeMonth}.json`);
 
@@ -133,21 +143,36 @@ const fetchReasonStats = async (year, month) => {
   }
 };
 
-watch([selectedYear, selectedMonth], ([y, m]) => {
-  fetchReasonStats(y, m);
-}, { immediate: true });
+watch(
+  [selectedYear, selectedMonth],
+  ([y, m]) => {
+    fetchReasonStats(y, m);
+  },
+  { immediate: true }
+);
 
-const totalCases = computed(() => reasonData.value.reduce((sum, item) => sum + item.cases, 0));
-const totalRescued = computed(() => reasonData.value.reduce((sum, item) => sum + item.rescued, 0));
+const totalCases = computed(() =>
+  reasonData.value.reduce((sum, item) => sum + item.cases, 0)
+);
+const totalRescued = computed(() =>
+  reasonData.value.reduce((sum, item) => sum + item.rescued, 0)
+);
 
-const top5Reasons = computed(() => [...reasonData.value].sort((a, b) => b.cases - a.cases).slice(0, 5));
+const top5Reasons = computed(() =>
+  [...reasonData.value].sort((a, b) => b.cases - a.cases).slice(0, 5)
+);
 
 const mergedData = computed(() => {
-  const nameToItem = Object.fromEntries(reasonData.value.map(i => [i.name, i]));
-  const total = causeCategories.reduce((sum, cat) => sum + (nameToItem[cat.name]?.cases || 0), 0);
+  const nameToItem = Object.fromEntries(
+    reasonData.value.map((i) => [i.name, i])
+  );
+  const total = causeCategories.reduce(
+    (sum, cat) => sum + (nameToItem[cat.name]?.cases || 0),
+    0
+  );
 
   return causeCategories
-    .map(cat => {
+    .map((cat) => {
       const item = nameToItem[cat.name] || {};
       const cases = item.cases || 0;
       return {
@@ -163,10 +188,20 @@ const mergedData = computed(() => {
 const chartSeries = computed(() => [
   {
     colorByPoint: false,
-    data: mergedData.value.map(i => ({ name: i.name, y: i.cases, color: i.color }))
+    data: mergedData.value.map((i) => ({
+      name: i.name,
+      y: i.cases,
+      color: i.color
+    }))
   }
 ]);
 
-const leftColumn = computed(() => activeBreakpoint.value === 'sm' ? mergedData.value : mergedData.value.slice(0, 9));
-const rightColumn = computed(() => activeBreakpoint.value === 'sm' ? [] : mergedData.value.slice(9, 13));
+const leftColumn = computed(() =>
+  activeBreakpoint.value === 'sm'
+    ? mergedData.value
+    : mergedData.value.slice(0, 9)
+);
+const rightColumn = computed(() =>
+  activeBreakpoint.value === 'sm' ? [] : mergedData.value.slice(9, 13)
+);
 </script>

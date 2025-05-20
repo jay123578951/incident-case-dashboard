@@ -11,20 +11,28 @@
         尚無統計資料
       </div>
 
-      <div v-else class="w-full flex flex-col lg:flex-row gap-8 lg:gap-6">
-        <div class="w-full lg:w-[44%] flex flex-col items-center lg:items-stretch">
-          <ul class="flex w-fit divide-x divide-dashed bg-white rounded-lg border border-[rgba(28, 32, 46, 0.1)] shadow p-4 mb-2">
+      <div v-else class="flex w-full flex-col gap-8 lg:flex-row lg:gap-6">
+        <div
+          class="flex w-full flex-col items-center lg:w-[44%] lg:items-stretch"
+        >
+          <ul
+            class="border-[rgba(28, 32, 46, 0.1)] mb-2 flex w-fit divide-x divide-dashed rounded-lg border bg-white p-4 shadow"
+          >
             <li class="flex flex-col items-center justify-center pe-4">
-              <p class="text-[28px] font-bold mb-0 md:mb-1.5">{{ totalCases }}</p>
+              <p class="mb-0 text-[28px] font-bold md:mb-1.5">
+                {{ totalCases }}
+              </p>
               <p class="text-lg text-[#666D80]">案件數量</p>
             </li>
             <li class="flex flex-col items-center justify-center ps-4">
-              <p class="text-[28px] font-bold mb-0 md:mb-1.5">{{ totalRescued }}</p>
+              <p class="mb-0 text-[28px] font-bold md:mb-1.5">
+                {{ totalRescued }}
+              </p>
               <p class="text-lg text-[#666D80]">救援人數</p>
             </li>
           </ul>
 
-          <div class="w-full h-[620px] flex justify-center lg:justify-start">
+          <div class="flex h-[620px] w-full justify-center lg:justify-start">
             <ClientOnly>
               <IndexMapTaiwanMap
                 ref="citiesMapRef"
@@ -37,7 +45,7 @@
         </div>
         <div class="w-full lg:w-[56%]">
           <template v-if="!selectedName">
-            <h2 class="text-2xl font-bold mb-4">
+            <h2 class="mb-4 text-2xl font-bold">
               {{ selectedDate.year }}年{{ selectedMonthName }} 全國縣市統計
             </h2>
             <IndexCommonStatisticsList
@@ -48,15 +56,16 @@
             />
           </template>
           <template v-else>
-            <div class="flex justify-between items-center mb-4">
+            <div class="mb-4 flex items-center justify-between">
               <h2 class="text-2xl font-bold">
-                {{ selectedDate.year }}年{{ selectedMonthName }} {{ selectedName }}統計
+                {{ selectedDate.year }}年{{ selectedMonthName }}
+                {{ selectedName }}統計
               </h2>
               <v-btn
                 variant="text"
                 size="large"
                 prepend-icon="mdi-chevron-left"
-                class="!text-[#51596B] !py-1"
+                class="!py-1 !text-[#51596B]"
                 @click="resetMap()"
               >
                 返回全國縣市
@@ -78,9 +87,7 @@
 
 <script setup>
 import { useBreakpoints } from '@vueuse/core';
-import {
-  getPreviousMonth
-} from '~/utils/statistics';
+import { getPreviousMonth } from '~/utils/statistics';
 
 defineOptions({ inheritAttrs: true });
 
@@ -90,15 +97,28 @@ const selectedYear = computed(() => selectedDate.value.year);
 const selectedMonth = computed(() => selectedDate.value.month);
 const selectedMonthName = computed(() => getMonthName(selectedMonth.value));
 const getMonthName = (month) => {
-  const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+  const monthNames = [
+    '1月',
+    '2月',
+    '3月',
+    '4月',
+    '5月',
+    '6月',
+    '7月',
+    '8月',
+    '9月',
+    '10月',
+    '11月',
+    '12月'
+  ];
   return monthNames[month - 1];
 };
 const breakpoints = useBreakpoints({
   sm: 0,
   md: 768,
   lg: 1024
-})
-const activeBreakpoint = breakpoints.active()
+});
+const activeBreakpoint = breakpoints.active();
 
 const rawData = ref([]);
 const isLoading = ref(false);
@@ -127,18 +147,22 @@ const fetchMonthlyStats = async (year, month) => {
   }
 };
 
-watch([selectedYear, selectedMonth], async ([y, m]) => {
-  if (dateHeaderRef.value) {
-    dateHeaderRef.value.closeSelect();
-  }
+watch(
+  [selectedYear, selectedMonth],
+  async ([y, m]) => {
+    if (dateHeaderRef.value) {
+      dateHeaderRef.value.closeSelect();
+    }
 
-  await new Promise(resolve => setTimeout(resolve, 250));
+    await new Promise((resolve) => setTimeout(resolve, 250));
 
-  await fetchMonthlyStats(y, m);
-  if (citiesMapRef.value?.reloadGeoJSON) {
-    await citiesMapRef.value.reloadGeoJSON();
-  }
-}, { immediate: true });
+    await fetchMonthlyStats(y, m);
+    if (citiesMapRef.value?.reloadGeoJSON) {
+      await citiesMapRef.value.reloadGeoJSON();
+    }
+  },
+  { immediate: true }
+);
 
 const citiesMapRef = ref(null);
 const selectedName = ref(null);
@@ -150,7 +174,7 @@ const cityListTitle = ref(['原因', '案件數', '佔比']);
 
 const enrichNationwideReasonData = (data) => {
   const totalCases = data.reduce((sum, item) => sum + item.cases, 0);
-  const nonZeroData = data.filter(item => item.cases > 0);
+  const nonZeroData = data.filter((item) => item.cases > 0);
   const sorted = [...nonZeroData].sort((a, b) => b.cases - a.cases);
 
   const total = sorted.length;
@@ -165,7 +189,7 @@ const enrichNationwideReasonData = (data) => {
 
     if (item.cases === 0) return { ...base, level: 'none' };
 
-    const index = sorted.findIndex(d => d.name === item.name);
+    const index = sorted.findIndex((d) => d.name === item.name);
     if (index < highCutoff) return { ...base, level: 'high' };
     if (index < midCutoff) return { ...base, level: 'mid' };
     return { ...base, level: 'low' };
@@ -180,31 +204,56 @@ const enrichCityReasonData = (data) => {
   if (!Array.isArray(data) || data.length === 0) return [];
 
   const totalCases = data.reduce((sum, item) => sum + item.cases, 0);
-  return data.map((item) => ({
-    ...item,
-    percent: totalCases ? (item.cases / totalCases) * 100 : 0,
-    previousMonth: previousMonth.value,
-  })).sort((a, b) => b.cases - a.cases);
+  return data
+    .map((item) => ({
+      ...item,
+      percent: totalCases ? (item.cases / totalCases) * 100 : 0,
+      previousMonth: previousMonth.value
+    }))
+    .sort((a, b) => b.cases - a.cases);
 };
 
-const computedReasonData = computed(() => enrichNationwideReasonData(rawData.value));
+const computedReasonData = computed(() =>
+  enrichNationwideReasonData(rawData.value)
+);
 const computedCityReasonData = computed(() => {
   if (!cityReasonData.value || cityReasonData.value.length === 0) return [];
   return enrichCityReasonData(cityReasonData.value);
 });
-const activeReasonData = computed(() => selectedName.value ? computedCityReasonData.value : computedReasonData.value);
+const activeReasonData = computed(() =>
+  selectedName.value ? computedCityReasonData.value : computedReasonData.value
+);
 
-const totalCases = computed(() => activeReasonData.value.reduce((sum, item) => sum + item.cases, 0));
-const totalRescued = computed(() => activeReasonData.value.reduce((sum, item) => sum + item.rescued, 0));
+const totalCases = computed(() =>
+  activeReasonData.value.reduce((sum, item) => sum + item.cases, 0)
+);
+const totalRescued = computed(() =>
+  activeReasonData.value.reduce((sum, item) => sum + item.rescued, 0)
+);
 
-const sortedReasonData = computed(() => [...activeReasonData.value].sort((a, b) => b.cases - a.cases));
+const sortedReasonData = computed(() =>
+  [...activeReasonData.value].sort((a, b) => b.cases - a.cases)
+);
 const mid = computed(() => Math.ceil(sortedReasonData.value.length / 2));
-const leftColumn = computed(() => activeBreakpoint.value === 'sm' ? sortedReasonData.value : sortedReasonData.value.slice(0, mid.value));
-const rightColumn = computed(() => activeBreakpoint.value === 'sm' ? [] : sortedReasonData.value.slice(mid.value));
+const leftColumn = computed(() =>
+  activeBreakpoint.value === 'sm'
+    ? sortedReasonData.value
+    : sortedReasonData.value.slice(0, mid.value)
+);
+const rightColumn = computed(() =>
+  activeBreakpoint.value === 'sm' ? [] : sortedReasonData.value.slice(mid.value)
+);
 
-
-const cityLeftColumn = computed(() => activeBreakpoint.value === 'sm' ? computedCityReasonData.value : computedCityReasonData.value.slice(0, 9));
-const cityRightColumn = computed(() => activeBreakpoint.value === 'sm' ? [] : computedCityReasonData.value.slice(9, 13));
+const cityLeftColumn = computed(() =>
+  activeBreakpoint.value === 'sm'
+    ? computedCityReasonData.value
+    : computedCityReasonData.value.slice(0, 9)
+);
+const cityRightColumn = computed(() =>
+  activeBreakpoint.value === 'sm'
+    ? []
+    : computedCityReasonData.value.slice(9, 13)
+);
 
 watch(selectedName, async (name) => {
   if (!name) return;

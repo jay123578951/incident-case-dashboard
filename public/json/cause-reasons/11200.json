@@ -1,1 +1,44 @@
-{"year": "112", "month": "0", "data": [{"name": "\u8ff7\u8def", "cases": 170, "rescued": 292, "lastYearCases": 123}, {"name": "\u9072\u6b78", "cases": 15, "rescued": 22, "lastYearCases": 10}, {"name": "\u589c\u8c37", "cases": 45, "rescued": 46, "lastYearCases": 29}, {"name": "\u75b2\u52de", "cases": 39, "rescued": 52, "lastYearCases": 29}, {"name": "\u9ad8\u5c71\u75c7", "cases": 38, "rescued": 39, "lastYearCases": 17}, {"name": "\u75be\u75c5", "cases": 36, "rescued": 36, "lastYearCases": 45}, {"name": "\u843d\u77f3", "cases": 3, "rescued": 3, "lastYearCases": 3}, {"name": "\u5275\u50b7", "cases": 113, "rescued": 122, "lastYearCases": 108}, {"name": "\u5929\u5019\u60e1\u52a3", "cases": 7, "rescued": 18, "lastYearCases": 4}, {"name": "\u52d5\u7269\u6216\u6606\u87f2\u653b\u64ca", "cases": 9, "rescued": 50, "lastYearCases": 1}, {"name": "\u843d\u96f7", "cases": 0, "rescued": 0, "lastYearCases": 0}, {"name": "\u5176\u4ed6", "cases": 22, "rescued": 49, "lastYearCases": 13}, {"name": "\u4e0d\u660e", "cases": 23, "rescued": 33, "lastYearCases": 28}]}
+{
+  "year": "112",
+  "month": "0",
+  "data": [
+    {
+      "name": "\u8ff7\u8def",
+      "cases": 170,
+      "rescued": 292,
+      "lastYearCases": 123
+    },
+    { "name": "\u9072\u6b78", "cases": 15, "rescued": 22, "lastYearCases": 10 },
+    { "name": "\u589c\u8c37", "cases": 45, "rescued": 46, "lastYearCases": 29 },
+    { "name": "\u75b2\u52de", "cases": 39, "rescued": 52, "lastYearCases": 29 },
+    {
+      "name": "\u9ad8\u5c71\u75c7",
+      "cases": 38,
+      "rescued": 39,
+      "lastYearCases": 17
+    },
+    { "name": "\u75be\u75c5", "cases": 36, "rescued": 36, "lastYearCases": 45 },
+    { "name": "\u843d\u77f3", "cases": 3, "rescued": 3, "lastYearCases": 3 },
+    {
+      "name": "\u5275\u50b7",
+      "cases": 113,
+      "rescued": 122,
+      "lastYearCases": 108
+    },
+    {
+      "name": "\u5929\u5019\u60e1\u52a3",
+      "cases": 7,
+      "rescued": 18,
+      "lastYearCases": 4
+    },
+    {
+      "name": "\u52d5\u7269\u6216\u6606\u87f2\u653b\u64ca",
+      "cases": 9,
+      "rescued": 50,
+      "lastYearCases": 1
+    },
+    { "name": "\u843d\u96f7", "cases": 0, "rescued": 0, "lastYearCases": 0 },
+    { "name": "\u5176\u4ed6", "cases": 22, "rescued": 49, "lastYearCases": 13 },
+    { "name": "\u4e0d\u660e", "cases": 23, "rescued": 33, "lastYearCases": 28 }
+  ]
+}

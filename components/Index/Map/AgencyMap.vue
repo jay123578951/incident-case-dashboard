@@ -1,5 +1,5 @@
 <template>
-  <div ref="parkMapContainer" class="absolute top-0 left-0 w-full h-full" />
+  <div ref="parkMapContainer" class="absolute left-0 top-0 h-full w-full" />
 </template>
 
 <script setup>
@@ -15,14 +15,11 @@ const props = defineProps({
 const emit = defineEmits(['select-park']);
 
 const { map, isMapReady, createMap } = useLeafletMap();
-const {
-  loadParkBoundaries,
-  dataByPark,
-  resetSelectedPark
-} = useParkBoundaryLayer(map, emit, {
-  enableHover: props.enableHover,
-  enableTooltip: props.enableTooltip
-});
+const { loadParkBoundaries, dataByPark, resetSelectedPark } =
+  useParkBoundaryLayer(map, emit, {
+    enableHover: props.enableHover,
+    enableTooltip: props.enableTooltip
+  });
 
 const parkMapContainer = ref(null);
 const isLoadingGeoJSON = ref(false);
@@ -55,7 +52,10 @@ const reloadAgencyGeoJSON = async (newParkData = props.parkData) => {
 
     // 建立對應資料
     dataByPark.value = Object.fromEntries(
-      newParkData.map(item => [item.name, { value: item.cases, level: item.level }])
+      newParkData.map((item) => [
+        item.name,
+        { value: item.cases, level: item.level }
+      ])
     );
 
     // 初始化邊界
@@ -69,7 +69,7 @@ const reloadAgencyGeoJSON = async (newParkData = props.parkData) => {
 
 const waitForMapReady = async () => {
   while (!isMapReady.value) {
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 50));
   }
 };
 

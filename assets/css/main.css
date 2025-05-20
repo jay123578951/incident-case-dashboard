@@ -1,13 +1,6 @@
 /* Main CSS file */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap');
 
-/* :root {
-  --header-height: 64px;
-  --breadcrumb-height: 65px;
-  --footer-height: 44px;
-  --container-padding: 32px;
-} */
-
 :root {
   --v-hover-opacity: 0.08;
   --v-hover-opacity-focus: 0.12;

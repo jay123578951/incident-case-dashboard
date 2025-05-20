@@ -1,1 +1,61 @@
-{"year": "113", "month": "7", "previousMonth": "7", "statistics": [{"type": "bar", "title": "\u6848\u4ef6\u6578\u91cf (\u4ef6)", "thisMonth": 40, "lastMonth": 50}, {"type": "bar", "title": "\u6b7b\u4ea1\u4eba\u6578 (\u4eba)", "thisMonth": 6, "lastMonth": 6}, {"type": "bar", "title": "\u6d88\u9632\u54e1\u51fa\u52e4\u4eba\u6b21 (\u4eba)", "thisMonth": 344, "lastMonth": 637}, {"type": "bar", "title": "\u76f4\u5347\u6a5f\u51fa\u52e4\u6b21\u6578 (\u6b21)", "thisMonth": 10, "lastMonth": 6}, {"type": "text", "title": "\u53d7\u7406\u6848\u4ef6\u524d\u4e09\u540d\u7684\u7e23\u5e02", "value": [{"name": "\u65b0\u5317\u5e02", "thisMonth": 16, "lastMonth": 4}, {"name": "\u65b0\u7af9\u7e23", "thisMonth": 5, "lastMonth": 7}, {"name": "\u5357\u6295\u7e23", "thisMonth": 5, "lastMonth": 7}]}, {"type": "text", "title": "\u53d7\u7406\u6848\u4ef6\u524d\u4e09\u540d\u7684\u5c71\u57df\u6a5f\u95dc", "value": [{"name": "\u96ea\u9738\u570b\u5bb6\u516c\u5712\u7ba1\u7406\u8655", "thisMonth": 6, "lastMonth": 2}, {"name": "\u7389\u5c71\u570b\u5bb6\u516c\u5712\u7ba1\u7406\u8655", "thisMonth": 5, "lastMonth": 4}, {"name": "\u967d\u660e\u5c71\u570b\u5bb6\u516c\u5712\u7ba1\u7406\u8655", "thisMonth": 3, "lastMonth": 3}]}]}
+{
+  "year": "113",
+  "month": "7",
+  "previousMonth": "7",
+  "statistics": [
+    {
+      "type": "bar",
+      "title": "\u6848\u4ef6\u6578\u91cf (\u4ef6)",
+      "thisMonth": 40,
+      "lastMonth": 50
+    },
+    {
+      "type": "bar",
+      "title": "\u6b7b\u4ea1\u4eba\u6578 (\u4eba)",
+      "thisMonth": 6,
+      "lastMonth": 6
+    },
+    {
+      "type": "bar",
+      "title": "\u6d88\u9632\u54e1\u51fa\u52e4\u4eba\u6b21 (\u4eba)",
+      "thisMonth": 344,
+      "lastMonth": 637
+    },
+    {
+      "type": "bar",
+      "title": "\u76f4\u5347\u6a5f\u51fa\u52e4\u6b21\u6578 (\u6b21)",
+      "thisMonth": 10,
+      "lastMonth": 6
+    },
+    {
+      "type": "text",
+      "title": "\u53d7\u7406\u6848\u4ef6\u524d\u4e09\u540d\u7684\u7e23\u5e02",
+      "value": [
+        { "name": "\u65b0\u5317\u5e02", "thisMonth": 16, "lastMonth": 4 },
+        { "name": "\u65b0\u7af9\u7e23", "thisMonth": 5, "lastMonth": 7 },
+        { "name": "\u5357\u6295\u7e23", "thisMonth": 5, "lastMonth": 7 }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "\u53d7\u7406\u6848\u4ef6\u524d\u4e09\u540d\u7684\u5c71\u57df\u6a5f\u95dc",
+      "value": [
+        {
+          "name": "\u96ea\u9738\u570b\u5bb6\u516c\u5712\u7ba1\u7406\u8655",
+          "thisMonth": 6,
+          "lastMonth": 2
+        },
+        {
+          "name": "\u7389\u5c71\u570b\u5bb6\u516c\u5712\u7ba1\u7406\u8655",
+          "thisMonth": 5,
+          "lastMonth": 4
+        },
+        {
+          "name": "\u967d\u660e\u5c71\u570b\u5bb6\u516c\u5712\u7ba1\u7406\u8655",
+          "thisMonth": 3,
+          "lastMonth": 3
+        }
+      ]
+    }
+  ]
+}

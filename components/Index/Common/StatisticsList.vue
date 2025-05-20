@@ -4,7 +4,9 @@
     :class="[
       loading
         ? 'grid-cols-2 gap-4'
-        : (rightColumn.length > 0 ? 'grid-cols-1 md:grid-cols-2 gap-4' : 'grid-cols-1')
+        : rightColumn.length > 0
+          ? 'grid-cols-1 gap-4 md:grid-cols-2'
+          : 'grid-cols-1'
     ]"
   >
     <template v-if="loading">
@@ -19,19 +21,20 @@
     <template v-else>
       <!-- 左欄 -->
       <div>
-        <div class="flex bg-[#51596B] text-white text-lg font-semibold rounded-lg mb-2 px-3 py-2 border border-[rgba(28, 32, 46, 0.1)] shadow-sm">
+        <div
+          class="border-[rgba(28, 32, 46, 0.1)] mb-2 flex rounded-lg border bg-[#51596B] px-3 py-2 text-lg font-semibold text-white shadow-sm"
+        >
           <template v-for="(title, index) in listTitle" :key="index">
-            <div
-              class="w-1/2"
-              :class="index === 0 ? 'text-start' : 'text-end'"
-            >{{ title }}</div>
+            <div class="w-1/2" :class="index === 0 ? 'text-start' : 'text-end'">
+              {{ title }}
+            </div>
           </template>
         </div>
         <ul class="grid gap-y-1.5 rounded-lg">
           <li
             v-for="item in leftColumn"
             :key="item.name"
-            class="flex items-center text-lg rounded-lg bg-white p-3 border border-[rgba(28, 32, 46, 0.1)] shadow-sm"
+            class="border-[rgba(28, 32, 46, 0.1)] flex items-center rounded-lg border bg-white p-3 text-lg shadow-sm"
             :style="getLevelStyleString(item.level)"
           >
             <div class="w-1/3 font-bold">{{ item.name }}</div>
@@ -43,19 +46,20 @@
 
       <!-- 右欄 -->
       <div v-if="rightColumn.length > 0">
-        <div class="flex bg-[#51596B] text-white text-lg font-semibold rounded-lg mb-2 px-3 py-2 border border-[rgba(28, 32, 46, 0.1)] shadow-sm">
+        <div
+          class="border-[rgba(28, 32, 46, 0.1)] mb-2 flex rounded-lg border bg-[#51596B] px-3 py-2 text-lg font-semibold text-white shadow-sm"
+        >
           <template v-for="(title, index) in listTitle" :key="index">
-            <div
-              class="w-1/2"
-              :class="index === 0 ? 'text-start' : 'text-end'"
-            >{{ title }}</div>
+            <div class="w-1/2" :class="index === 0 ? 'text-start' : 'text-end'">
+              {{ title }}
+            </div>
           </template>
         </div>
         <ul class="grid gap-y-1.5 rounded-lg">
           <li
             v-for="item in rightColumn"
             :key="item.name"
-            class="flex items-center text-lg rounded-lg bg-white p-3 border border-[rgba(28, 32, 46, 0.1)] shadow-sm"
+            class="border-[rgba(28, 32, 46, 0.1)] flex items-center rounded-lg border bg-white p-3 text-lg shadow-sm"
             :style="getLevelStyleString(item.level)"
           >
             <div class="w-1/3 font-bold">{{ item.name }}</div>

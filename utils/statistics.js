@@ -52,7 +52,7 @@ export const getComparisonPercentage = (current, last) => {
   if (lastNum === 0) {
     return currentNum === 0 ? '0.00' : '100.00';
   }
-  const percent = Math.abs((currentNum - lastNum) / lastNum * 100);
+  const percent = Math.abs(((currentNum - lastNum) / lastNum) * 100);
   return percent.toFixed(2);
 };
 
@@ -84,7 +84,9 @@ export const calculateWidthPercentages = (current, last) => {
   }
 
   const maxValue = Math.max(currentNum, lastNum);
-  const currentPercentage = Math.round(Math.max(20, (currentNum / maxValue) * 100));
+  const currentPercentage = Math.round(
+    Math.max(20, (currentNum / maxValue) * 100)
+  );
   const lastPercentage = Math.round(Math.max(20, (lastNum / maxValue) * 100));
 
   return {

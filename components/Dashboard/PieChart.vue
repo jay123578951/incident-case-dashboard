@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { useBreakpoints } from '@vueuse/core'
+import { useBreakpoints } from '@vueuse/core';
 import BaseChart from './BaseChart.vue';
 
 const props = defineProps({
@@ -27,22 +27,22 @@ const breakpoints = useBreakpoints({
   sm: 0,
   md: 768,
   lg: 1024
-})
-const activeBreakpoint = breakpoints.active()
+});
+const activeBreakpoint = breakpoints.active();
 
 const chartOptions = computed(() => ({
   chart: {
     type: 'pie',
     animation: true,
     backgroundColor: props.showBackground ? 'white' : 'transparent',
-    spacing: props.spacing,
+    spacing: props.spacing
   },
-  title: { 
-    text: props.title, 
-    style: { 
-      fontSize: '24px', 
+  title: {
+    text: props.title,
+    style: {
+      fontSize: '24px',
       fontWeight: 'bold'
-    },
+    }
   },
   plotOptions: {
     series: { animation: { duration: 500 } },
@@ -66,4 +66,4 @@ const chartOptions = computed(() => ({
     enabled: false
   }
 }));
-</script> 
+</script>

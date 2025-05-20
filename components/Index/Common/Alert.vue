@@ -13,7 +13,7 @@
 const props = defineProps({
   dataStartYear: {
     type: String,
-    required: true,
-  },
+    required: true
+  }
 });
 </script>
