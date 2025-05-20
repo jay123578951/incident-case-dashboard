@@ -28,7 +28,15 @@
           <div class="flex justify-between items-center mb-5 lg:mb-7">
             <div>
               <p class="text-[#666D80] text-[18px] lg:text-xl font-medium mb-[10px] lg:mb-4">{{ item.title }}</p>
-              <p class="text-[32px] lg:text-[40px] leading-10 font-bold">{{ item.thisYear }}</p>
+              <AutoCounter
+                ref="counters"
+                :startAmount="0"
+                :endAmount="item.thisYear"
+                :duration="1.2"
+                :autoinit="false"
+                separator=","
+                class="text-[32px] lg:text-[40px] leading-10 font-bold"
+              />
             </div>
             <div
               class="p-3.5 rounded-[20px]"
@@ -74,6 +82,7 @@
 
 <script setup>
 import { useBreakpoints } from '@vueuse/core'
+import AutoCounter from 'vue3-autocounter'
 
 defineOptions({
   inheritAttrs: true
@@ -91,6 +100,7 @@ const fetchError = ref(null);
 const selectedDate = ref({ year: '113', month: '1' });
 const selectedYear = computed(() => selectedDate.value.year);
 const dataStartYear = '111';
+const counters = ref([])
 
 const categories = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
 const statCardUIConfigs = [
@@ -159,8 +169,14 @@ const processedData = computed(() => {
   });
 });
 
-watch(selectedYear, (year) => {
-  fetchStats(year);
+const startCounters = async () => {
+  await nextTick();
+  counters.value.forEach(counter => counter?.start?.());
+};
+
+watch(selectedYear, async (year) => {
+  await fetchStats(year);
+  await startCounters();
 }, { immediate: true });
 
 </script>
