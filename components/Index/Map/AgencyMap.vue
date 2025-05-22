@@ -5,9 +5,11 @@
 <script setup>
 import { useLeafletMap } from '@/composables/map/core/useLeafletMap';
 import { useParkBoundaryLayer } from '@/composables/map/visual/useParkBoundaryLayer';
+import { useMountainBoundaryLayer } from '@/composables/map/visual/useMountainBoundaryLayer';
 
 const props = defineProps({
   parkData: { type: Object, default: () => ({}) },
+  mountainData: { type: Object, default: () => ({}) },
   enableHover: { type: Boolean, default: true },
   enableTooltip: { type: Boolean, default: true }
 });
@@ -20,8 +22,15 @@ const { loadParkBoundaries, dataByPark, resetSelectedPark } =
     enableHover: props.enableHover,
     enableTooltip: props.enableTooltip
   });
+const { loadMountainBoundaries, dataByMountain, selectedMountain, resetSelectedMountain } =
+  useMountainBoundaryLayer(map, emit, {
+    enableHover: props.enableHover,
+    enableTooltip: props.enableTooltip
+  });
 
 const parkMapContainer = ref(null);
+const parkGeoJSON = ref(null);
+const mountainGeoJSON = ref(null);
 const isLoadingGeoJSON = ref(false);
 const geojson = ref(null);
 
@@ -40,26 +49,38 @@ const initParkBoundaries = async () => {
   resetSelectedPark();
 };
 
-const reloadAgencyGeoJSON = async (newParkData = props.parkData) => {
+const reloadAgencyGeoJSON = async ({
+  parkData = props.parkData,
+  mountainData = props.mountainData
+} = {}) => {
   try {
     isLoadingGeoJSON.value = true;
 
     await waitForMapReady(); // 等待地圖準備完成
 
     // 載入 GeoJSON
-    const res = await fetch('/geoJSON/national_park_simplify_filtered.geojson');
-    geojson.value = await res.json();
+    const [parkRes, mountainRes] = await Promise.all([
+      fetch('/geoJSON/national_park_simplify_filtered.geojson'),
+      fetch('/geoJSON/forest_simplify_filtered.geojson')
+    ]);
 
-    // 建立對應資料
+    [parkGeoJSON.value, mountainGeoJSON.value] = await Promise.all([
+      parkRes.json(),
+      mountainRes.json()
+    ]);
+
+    // 整理圖層資料
     dataByPark.value = Object.fromEntries(
-      newParkData.map((item) => [
-        item.name,
-        { value: item.cases, level: item.level }
-      ])
+      parkData.map((item) => [item.name, { value: item.cases, level: item.level }])
+    );
+
+    dataByMountain.value = Object.fromEntries(
+      mountainData.map((item) => [item.name, { value: item.cases, level: item.level }])
     );
 
     // 初始化邊界
-    await initParkBoundaries();
+    await loadMountainBoundaries(mountainGeoJSON.value);
+    await loadParkBoundaries(parkGeoJSON.value);
   } catch (err) {
     console.error('重新載入公園圖層失敗:', err);
   } finally {
@@ -94,3 +115,17 @@ defineExpose({
   reloadAgencyGeoJSON
 });
 </script>
+
+<style>
+.leaflet-tooltip.mountain-tooltip,
+.leaflet-tooltip.park-tooltip {
+  font-size: 18px;
+  color: #1c202e;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  font-weight: bold;
+}
+</style>

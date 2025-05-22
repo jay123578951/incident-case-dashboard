@@ -21,6 +21,46 @@
       "name": "\u96ea\u9738\u570b\u5bb6\u516c\u5712\u7ba1\u7406\u8655",
       "cases": 31,
       "rescued": 38
+    },
+    {
+      "name": "\u5927\u5b89\u6eaa",
+      "cases": 50,
+      "rescued": 28
+    },
+    {
+      "name": "\u6fc1\u6c34\u6eaa",
+      "cases": 10,
+      "rescued": 28
+    },
+    {
+      "name": "\u963f\u91cc\u5c71",
+      "cases": 19,
+      "rescued": 28
+    },
+    {
+      "name": "\u65d7\u5c71",
+      "cases": 43,
+      "rescued": 28
+    },
+    {
+      "name": "\u5927\u6b66",
+      "cases": 30,
+      "rescued": 28
+    },
+    {
+      "name": "\u6587\u5c71",
+      "cases": 20,
+      "rescued": 10
+    },
+    {
+      "name": "\u7389\u91cc",
+      "cases": 28,
+      "rescued": 28
+    },
+    {
+      "name": "\u70cf\u4f86",
+      "cases": 1,
+      "rescued": 1
     }
   ]
 }

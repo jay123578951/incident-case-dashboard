@@ -46,6 +46,7 @@
               <IndexMapAgencyMap
                 ref="mapRef"
                 :park-data="computedReasonData"
+                :mountain-data="computedReasonData"
                 class="max-w-[420px]"
                 @select-park="handleSelectPark"
               />
@@ -147,7 +148,7 @@ const fetchMonthlyStats = async (year, month) => {
     const { data } = await res.json();
     rawData.value = Array.isArray(data) ? data : [];
   } catch (err) {
-    console.error('載入各縣市數據統計失敗', err);
+    console.error('載入各山域數據統計失敗', err);
     rawData.value = [];
   } finally {
     isLoading.value = false;
@@ -162,7 +163,6 @@ watch(
     }
 
     mapStore.setTaiwanFaded(false);
-
     await fetchMonthlyStats(y, m);
 
     if (taiwanMapRef.value?.reloadGeoJSON) {
