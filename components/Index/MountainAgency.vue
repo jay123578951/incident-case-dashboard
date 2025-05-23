@@ -185,7 +185,7 @@ const selectedName = ref(null);
 const cityReasonData = ref();
 const isCityLoading = ref(false);
 
-const ListTitle = ref(['縣市', '案件數', '救援人數']);
+const ListTitle = ref(['山域機關', '案件數', '救援人數']);
 const cityListTitle = ref(['原因', '案件數', '佔比']);
 
 const mapOptions = ref({

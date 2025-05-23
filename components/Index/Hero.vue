@@ -19,6 +19,6 @@ defineOptions({
   inheritAttrs: false
 });
 
-const title = ref('儀錶板');
+const title = ref('儀表板');
 // const title = ref('山域事故案件儀錶板');
 </script>

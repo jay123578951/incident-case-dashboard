@@ -40,7 +40,7 @@
         density="compact"
         class="h-[56px] border-b border-[rgba(28,32,46,0.05)] px-3 py-1"
       >
-        <CommonLogo padding="py-4" />
+        <!-- <CommonLogo padding="py-4" /> -->
         <v-spacer />
         <v-app-bar-nav-icon width="40" @click="drawer = !drawer" />
       </v-app-bar>
